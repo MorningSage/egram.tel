@@ -37,7 +37,7 @@ namespace Tel.Egram.Services.Messaging.Notifications
         {
             return _agent.Updates
                 .OfType<TdApi.Update.UpdateNewMessage>()
-                .Where(u => !u.DisableNotification)
+                // ToDo: Suppress messages sent with notification disabled - unsure if this should be via UpdateChatDefaultDisableNotification?
                 .Where(u => u.Message.Date > DateTimeOffset.UtcNow.ToUnixTimeSeconds() - 60)
                 .Select(update => update.Message)
                 .SelectSeq(message =>
