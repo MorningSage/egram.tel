@@ -124,15 +124,24 @@ namespace Tel.Egram.Services.Messaging.Messages
                 })
                 .SelectSeq(message =>
                 {
-                    // get user data
-                    if (message.MessageData.SenderUserId != 0)
+                    // get sender data
+                    switch (message.MessageData.SenderId)
                     {
-                        return scope.GetUser(message.MessageData.SenderUserId)
-                            .Select(user =>
-                            {
-                                message.UserData = user;
-                                return message;
-                            });
+                        case TdApi.MessageSender.MessageSenderUser senderUser when senderUser.UserId != 0L:
+                            return scope.GetUser(senderUser.UserId)
+                                .Select(user =>
+                                {
+                                    message.UserData = user;
+                                    return message;
+                                });
+                        case TdApi.MessageSender.MessageSenderChat senderChat when senderChat.ChatId != 0L:
+                            return scope.GetChat(senderChat.ChatId)
+                                .Select(chat =>
+                                {
+                                    // ToDo: "Senders" can be users or chats.  This needs to be updated to ensure everything still works
+                                    message.UserData = null;
+                                    return message;
+                                });
                     }
 
                     return Observable.Return(message);
