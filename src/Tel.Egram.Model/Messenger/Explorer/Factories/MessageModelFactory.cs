@@ -154,9 +154,6 @@ namespace Tel.Egram.Model.Messenger.Explorer.Factories
                 case TdApi.MessageContent.MessageScreenshotTaken screenshotTaken:
                     return _noteMessageModelFactory.CreateScreenshotTakenMessage(message, screenshotTaken);
                 
-                case TdApi.MessageContent.MessageChatSetTtl chatSetTtl:
-                    return _noteMessageModelFactory.CreateChatSetTtlMessage(message, chatSetTtl);
-                
                 case TdApi.MessageContent.MessageCustomServiceAction customServiceAction:
                     return _noteMessageModelFactory.CreateCustomServiceActionMessage(message, customServiceAction);
                 

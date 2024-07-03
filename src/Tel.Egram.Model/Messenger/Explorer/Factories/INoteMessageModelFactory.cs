@@ -18,7 +18,6 @@ namespace Tel.Egram.Model.Messenger.Explorer.Factories
         MessageModel CreateChatUpgradeFromMessage(Message message, TdApi.MessageContent.MessageChatUpgradeFrom chatUpgradeFrom);
         MessageModel CreatePinMessageMessage(Message message, TdApi.MessageContent.MessagePinMessage pinMessage);
         MessageModel CreateScreenshotTakenMessage(Message message, TdApi.MessageContent.MessageScreenshotTaken screenshotTaken);
-        MessageModel CreateChatSetTtlMessage(Message message, TdApi.MessageContent.MessageChatSetTtl chatSetTtl);
         MessageModel CreateCustomServiceActionMessage(Message message, TdApi.MessageContent.MessageCustomServiceAction customServiceAction);
     }
 }

@@ -102,14 +102,6 @@ namespace Tel.Egram.Model.Messenger.Explorer.Factories
             };
         }
 
-        public MessageModel CreateChatSetTtlMessage(Message message, TdApi.MessageContent.MessageChatSetTtl chatSetTtl)
-        {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
-
         public MessageModel CreateCustomServiceActionMessage(Message message, TdApi.MessageContent.MessageCustomServiceAction customServiceAction)
         {
             return new UnsupportedMessageModel
