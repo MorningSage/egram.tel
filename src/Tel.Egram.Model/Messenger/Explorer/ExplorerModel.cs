@@ -11,6 +11,7 @@ using Tel.Egram.Model.Messenger.Explorer.Loaders;
 using Tel.Egram.Services.Messaging.Chats;
 using Tel.Egram.Services.Utils;
 using Tel.Egram.Services.Utils.Reactive;
+using Range = Tel.Egram.Services.Utils.Range;
 
 namespace Tel.Egram.Model.Messenger.Explorer
 {
