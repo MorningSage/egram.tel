@@ -156,28 +156,15 @@ namespace Tel.Egram.Services.Messaging.Chats
             long offsetChatId = 0)
         {
             int limit = 100;
-            
-            return GetChats(offsetOrder, offsetChatId, limit)
-                .CollectToList()
-                .SelectSeq(list =>
-                {
-                    if (list.Count > 0)
-                    {
-                        var lastChat = list.Last();
-                        chats.AddRange(list);
-                        return GetAllChats(chats, lastChat.Order, lastChat.Id);
-                    }
-                    
-                    return chats.ToObservable();
-                });
+
+            return GetChats(limit);
         }
 
-        private IObservable<TdApi.Chat> GetChats(long offsetOrder, long offsetChatId, int limit)
+        private IObservable<TdApi.Chat> GetChats(int limit)
         {
+            // ToDo: This is not the way we should be getting chats.  Update to LoadChats
             return _agent.Execute(new TdApi.GetChats
                 {
-                    OffsetOrder = offsetOrder,
-                    OffsetChatId = offsetChatId,
                     Limit = limit
                 })
                 .SelectMany(result => result.ChatIds)
