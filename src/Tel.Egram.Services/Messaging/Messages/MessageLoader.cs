@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using TdLib;
@@ -149,16 +150,41 @@ namespace Tel.Egram.Services.Messaging.Messages
                 .SelectSeq(message =>
                 {
                     // get reply data
-                    if (fetchReply && message.MessageData.ReplyToMessageId != 0)
+                    switch (message.MessageData.ReplyTo)
                     {
-                        return scope.GetMessage(message.MessageData.ChatId, message.MessageData.ReplyToMessageId)
-                            .SelectSeq(m => MapToMessage(scope, m, false))
-                            .Select(reply =>
-                            {
-                                message.ReplyMessage = reply;
-                                return message;
-                            });
+                        case TdApi.MessageReplyTo.MessageReplyToMessage messageReplyToMessage when fetchReply:
+                            return scope.GetMessage(messageReplyToMessage.ChatId, messageReplyToMessage.MessageId)
+                                .SelectSeq(m => MapToMessage(scope, m, false))
+                                .Select(reply =>
+                                {
+                                    message.ReplyMessage = reply;
+                                    return message;
+                                });
+                        case TdApi.MessageReplyTo.MessageReplyToStory messageReplyToStory when fetchReply:
+                            Debugger.Break();
+                            
+                            // ToDo: This may fail - are stories considered Messages?  Presumably not.
+                            return scope.GetMessage(messageReplyToStory.StorySenderChatId, messageReplyToStory.StoryId)
+                                .SelectSeq(m => MapToMessage(scope, m, false))
+                                .Select(reply =>
+                                {
+                                    message.ReplyMessage = reply;
+                                    return message;
+                                });
+                        default:
+                            return Observable.Return(message);
                     }
+                    
+                    //if (fetchReply && message.MessageData.ReplyToMessageId != 0)
+                    //{
+                    //    return scope.GetMessage(message.MessageData.ChatId, message.MessageData.ReplyToMessageId)
+                    //        .SelectSeq(m => MapToMessage(scope, m, false))
+                    //        .Select(reply =>
+                    //        {
+                    //            message.ReplyMessage = reply;
+                    //            return message;
+                    //        });
+                    //}
                     
                     return Observable.Return(message);
                 });
