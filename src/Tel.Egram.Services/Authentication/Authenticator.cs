@@ -30,25 +30,22 @@ namespace Tel.Egram.Services.Authentication
         {
             return _agent.Execute(new TdApi.SetTdlibParameters
             {
-                Parameters = new TdApi.TdlibParameters
-                {
-                    UseTestDc = false,
-                    DatabaseDirectory = _storage.TdLibDirectory,
-                    FilesDirectory = _storage.TdLibDirectory,
-                    UseFileDatabase = true,
-                    UseChatInfoDatabase = true,
-                    UseMessageDatabase = true,
-                    UseSecretChats = true,
-                    ApiId = 111112,
-                    ApiHash = new Guid(new byte[]
-                        {142, 34, 97, 121, 94, 51, 206, 139, 4, 159, 245, 26, 236, 242, 11, 171}).ToString("N"),
-                    SystemLanguageCode = "en",
-                    DeviceModel = "Mac",
-                    SystemVersion = "0.1",
-                    ApplicationVersion = "0.1",
-                    EnableStorageOptimizer = true,
-                    IgnoreFileNames = false
-                }
+                UseTestDc = false,
+                DatabaseDirectory = _storage.TdLibDirectory,
+                FilesDirectory = _storage.TdLibDirectory,
+                UseFileDatabase = true,
+                UseChatInfoDatabase = true,
+                UseMessageDatabase = true,
+                UseSecretChats = true,
+                ApiId = 111112,
+                ApiHash = new Guid(new byte[]
+                    {142, 34, 97, 121, 94, 51, 206, 139, 4, 159, 245, 26, 236, 242, 11, 171}).ToString("N"),
+                SystemLanguageCode = "en",
+                DeviceModel = "Mac",
+                SystemVersion = "0.1",
+                ApplicationVersion = "0.1",
+                EnableStorageOptimizer = true,
+                IgnoreFileNames = false
             });
         }
 
