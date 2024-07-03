@@ -28,6 +28,19 @@ namespace Tel.Egram.Services.Authentication
         
         public IObservable<TdApi.Ok> SetupParameters()
         {
+            // ToDo: Add to return value?
+            _agent.Execute(new TdApi.SetOption
+            {
+                Name = "use_storage_optimizer",
+                Value = new TdApi.OptionValue.OptionValueBoolean { Value = true }
+            });
+            
+            _agent.Execute(new TdApi.SetOption
+            {
+                Name = "ignore_file_names",
+                Value = new TdApi.OptionValue.OptionValueBoolean { Value = false }
+            });
+            
             return _agent.Execute(new TdApi.SetTdlibParameters
             {
                 UseTestDc = false,
@@ -44,8 +57,6 @@ namespace Tel.Egram.Services.Authentication
                 DeviceModel = "Mac",
                 SystemVersion = "0.1",
                 ApplicationVersion = "0.1",
-                EnableStorageOptimizer = true,
-                IgnoreFileNames = false
             });
         }
 
