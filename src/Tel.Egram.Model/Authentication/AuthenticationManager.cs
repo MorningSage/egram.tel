@@ -106,8 +106,8 @@ namespace Tel.Egram.Model.Authentication
                     OnWaitingPhoneNumber(model);
                     break;
                         
-                case TdApi.AuthorizationState.AuthorizationStateWaitCode wait:
-                    OnWaitingConfirmCode(model, !wait.IsRegistered);
+                case TdApi.AuthorizationState.AuthorizationStateWaitCode _:
+                    OnWaitingConfirmCode(model);
                     break;
                         
                 case TdApi.AuthorizationState.AuthorizationStateWaitPassword _:
@@ -122,10 +122,8 @@ namespace Tel.Egram.Model.Authentication
             model.PasswordIndex = 0;
         }
 
-        private void OnWaitingConfirmCode(AuthenticationModel model, bool isRegistration)
+        private void OnWaitingConfirmCode(AuthenticationModel model)
         {
-            model.IsRegistration = isRegistration;
-            
             model.ConfirmIndex = 1;
             model.PasswordIndex = 0;
         }

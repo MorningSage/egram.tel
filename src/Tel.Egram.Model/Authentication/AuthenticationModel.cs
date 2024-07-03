@@ -18,8 +18,6 @@ namespace Tel.Egram.Model.Authentication
         public ReactiveCommand<AuthenticationModel, CheckCodeResult> CheckCodeCommand { get; set; }
         public ReactiveCommand<AuthenticationModel, CheckPasswordResult> CheckPasswordCommand { get; set; }
         
-        public bool IsRegistration { get; set; }
-        
         public int PasswordIndex { get; set; }
         public int ConfirmIndex { get; set; }
         

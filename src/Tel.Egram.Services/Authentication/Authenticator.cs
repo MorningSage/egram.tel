@@ -74,9 +74,7 @@ namespace Tel.Egram.Services.Authentication
         {
             return _agent.Execute(new TdApi.CheckAuthenticationCode
                 {
-                    Code = code,
-                    FirstName = firstName,
-                    LastName = lastName
+                    Code = code
                 });
         }
 
