@@ -19,11 +19,9 @@ namespace Tel.Egram.Services.Messaging.Chats
         {
             var newUpdates = _agent.Updates.OfType<TdApi.Update.UpdateNewChat>()
                 .Select(_ => Unit.Default);
-            var orderUpdates = _agent.Updates.OfType<TdApi.Update.UpdateChatOrder>()
+            var orderUpdates = _agent.Updates.OfType<TdApi.Update.UpdateChatPosition>()
                 .Select(_ => Unit.Default);
             var messageUpdates = _agent.Updates.OfType<TdApi.Update.UpdateChatLastMessage>()
-                .Select(_ => Unit.Default);
-            var pinnedUpdates = _agent.Updates.OfType<TdApi.Update.UpdateChatIsPinned>()
                 .Select(_ => Unit.Default);
             var draftUpdates = _agent.Updates.OfType<TdApi.Update.UpdateChatDraftMessage>()
                 .Select(_ => Unit.Default);
@@ -31,7 +29,6 @@ namespace Tel.Egram.Services.Messaging.Chats
             return newUpdates
                 .Merge(orderUpdates)
                 .Merge(messageUpdates)
-                .Merge(pinnedUpdates)
                 .Merge(draftUpdates);
         }
 
