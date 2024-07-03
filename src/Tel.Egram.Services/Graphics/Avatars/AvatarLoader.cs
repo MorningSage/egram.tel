@@ -296,7 +296,7 @@ namespace Tel.Egram.Services.Graphics.Avatars
 
         private void ResizeWithImageSharp(string filePath, string resizedFilePath, int size)
         {
-            using (SixLabors.ImageSharp.Image<Rgba32> image = SixLabors.ImageSharp.Image.Load(filePath))
+            using (var image = SixLabors.ImageSharp.Image.Load(filePath))
             {
                 image.Mutate(ctx=>ctx.Resize(size, size));
                 image.Save(resizedFilePath);
