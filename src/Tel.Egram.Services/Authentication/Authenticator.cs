@@ -57,12 +57,9 @@ namespace Tel.Egram.Services.Authentication
                 DeviceModel = "Mac",
                 SystemVersion = "0.1",
                 ApplicationVersion = "0.1",
+                // ToDo: we should add support for a database encryption key.  Note that this is no longer a separate call
+                // DatabaseEncryptionKey = [] 
             });
-        }
-
-        public IObservable<TdApi.Ok> CheckEncryptionKey()
-        {
-            return _agent.Execute(new TdApi.CheckDatabaseEncryptionKey());
         }
 
         public IObservable<TdApi.Ok> SetPhoneNumber(string phoneNumber)

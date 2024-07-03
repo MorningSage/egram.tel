@@ -38,11 +38,6 @@ namespace Tel.Egram.Model.Application
                 .Accept()
                 .DisposeWith(disposable);
 
-            stateUpdates.OfType<TdApi.AuthorizationState.AuthorizationStateWaitEncryptionKey>()
-                .SelectMany(_ => authenticator.CheckEncryptionKey())
-                .Accept()
-                .DisposeWith(disposable);
-
             stateUpdates
                 .Accept(state => HandleState(model, state))
                 .DisposeWith(disposable);
@@ -55,7 +50,6 @@ namespace Tel.Egram.Model.Application
             switch (state)
             {
                 case TdApi.AuthorizationState.AuthorizationStateWaitTdlibParameters _:
-                case TdApi.AuthorizationState.AuthorizationStateWaitEncryptionKey _:
                     GoToStartupPage(model);
                     break;
                 
