@@ -10,7 +10,7 @@ using Tel.Egram.Model.Authentication.Results;
 namespace Tel.Egram.Model.Authentication
 {
     [AddINotifyPropertyChangedInterface]
-    public class AuthenticationModel : ISupportsActivation
+    public class AuthenticationModel : IActivatableViewModel
     {
         public ReactiveCommand<Unit, Unit> SetProxyCommand { get; set; }
         

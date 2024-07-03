@@ -3,7 +3,7 @@ using ReactiveUI;
 
 namespace Tel.Egram.Model.Messenger.Explorer.Messages.Basic
 {
-    public class TextMessageModel : MessageModel, ISupportsActivation
+    public class TextMessageModel : MessageModel, IActivatableViewModel
     {
         public string Text { get; set; }
         

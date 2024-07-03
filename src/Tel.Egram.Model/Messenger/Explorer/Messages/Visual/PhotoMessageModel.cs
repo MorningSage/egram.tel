@@ -4,7 +4,7 @@ using TdLib;
 
 namespace Tel.Egram.Model.Messenger.Explorer.Messages.Visual
 {
-    public class PhotoMessageModel : VisualMessageModel, ISupportsActivation
+    public class PhotoMessageModel : VisualMessageModel, IActivatableViewModel
     {
         public string Text { get; set; }
         

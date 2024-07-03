@@ -11,7 +11,7 @@ using Tel.Egram.Services.Messaging.Chats;
 namespace Tel.Egram.Model.Messenger
 {
     [AddINotifyPropertyChangedInterface]
-    public class MessengerModel : ISupportsActivation
+    public class MessengerModel : IActivatableViewModel
     {   
         public CatalogModel CatalogModel { get; set; }
         

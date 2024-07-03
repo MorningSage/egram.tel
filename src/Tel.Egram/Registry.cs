@@ -32,6 +32,8 @@ namespace Tel.Egram
 {
     public static class Registry
     {
+        private static readonly IReadonlyDependencyResolver CurrentResolver = Locator.Current;
+        
         public static void AddUtils(this IMutableDependencyResolver services)
         {
             services.RegisterLazySingleton<IPlatform>(Platform.GetPlatform);
@@ -42,7 +44,7 @@ namespace Tel.Egram
         {
             services.RegisterLazySingleton(() =>
             {
-                var storage = services.GetService<IStorage>();
+                var storage = CurrentResolver.GetService<IStorage>();
                 var client = new TdClient();
 
                 client.Execute(new TdApi.SetLogStream
@@ -61,7 +63,7 @@ namespace Tel.Egram
 
             services.RegisterLazySingleton<IAgent>(() =>
             {
-                var client = services.GetService<TdClient>();
+                var client = CurrentResolver.GetService<TdClient>();
                 return new Agent(client);
             });
         }
@@ -75,13 +77,13 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IFileLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new FileLoader(agent);
             });
             
             services.RegisterLazySingleton<IFileExplorer>(() =>
             {
-                var platform = services.GetService<IPlatform>();
+                var platform = CurrentResolver.GetService<IPlatform>();
                 return new FileExplorer(platform);
             });
             
@@ -89,13 +91,13 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton(() =>
             {
-                var factory = services.GetService<IDatabaseContextFactory>();
+                var factory = CurrentResolver.GetService<IDatabaseContextFactory>();
                 return factory.CreateDbContext();
             });
             
             services.RegisterLazySingleton<IKeyValueStorage>(() =>
             {
-                var db = services.GetService<DatabaseContext>();
+                var db = CurrentResolver.GetService<DatabaseContext>();
                 return new KeyValueStorage(db);
             });
         }
@@ -107,7 +109,7 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IBitmapLoader>(() =>
             {
-                var fileLoader = services.GetService<IFileLoader>();
+                var fileLoader = CurrentResolver.GetService<IFileLoader>();
                 return new BitmapLoader(fileLoader);
             });
             
@@ -123,11 +125,11 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IAvatarLoader>(() =>
             {
-                var platform = services.GetService<IPlatform>();
-                var storage = services.GetService<IStorage>();
-                var fileLoader = services.GetService<IFileLoader>();
-                var avatarCache = services.GetService<IAvatarCache>();
-                var colorMapper = services.GetService<IColorMapper>();
+                var platform = CurrentResolver.GetService<IPlatform>();
+                var storage = CurrentResolver.GetService<IStorage>();
+                var fileLoader = CurrentResolver.GetService<IFileLoader>();
+                var avatarCache = CurrentResolver.GetService<IAvatarCache>();
+                var colorMapper = CurrentResolver.GetService<IColorMapper>();
                 
                 return new AvatarLoader(
                     platform,
@@ -149,8 +151,8 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IPreviewLoader>(() =>
             {
-                var fileLoader = services.GetService<IFileLoader>();
-                var previewCache = services.GetService<IPreviewCache>();
+                var fileLoader = CurrentResolver.GetService<IFileLoader>();
+                var previewCache = CurrentResolver.GetService<IPreviewCache>();
                 
                 return new PreviewLoader(
                     fileLoader,
@@ -160,60 +162,60 @@ namespace Tel.Egram
             // chats
             services.RegisterLazySingleton<IChatLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new ChatLoader(agent);
             });
             
             services.RegisterLazySingleton<IChatUpdater>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new ChatUpdater(agent);
             });
             
             services.RegisterLazySingleton<IFeedLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new FeedLoader(agent);
             });
             
             // messages
             services.RegisterLazySingleton<IMessageLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new MessageLoader(agent);
             });
             services.RegisterLazySingleton<IMessageSender>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new MessageSender(agent);
             });
             
             // notifications
             services.RegisterLazySingleton<INotificationSource>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new NotificationSource(agent);
             });
             
             // users
             services.RegisterLazySingleton<IUserLoader>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new UserLoader(agent);
             });
             
             // auth
             services.RegisterLazySingleton<IAuthenticator>(() =>
             {
-                var agent = services.GetService<IAgent>();
-                var storage = services.GetService<IStorage>();
+                var agent = CurrentResolver.GetService<IAgent>();
+                var storage = CurrentResolver.GetService<IStorage>();
                 return new Authenticator(agent, storage);
             });
             
             // settings
             services.RegisterLazySingleton<IProxyManager>(() =>
             {
-                var agent = services.GetService<IAgent>();
+                var agent = CurrentResolver.GetService<IAgent>();
                 return new ProxyManager(agent);
             });
         }
@@ -232,13 +234,13 @@ namespace Tel.Egram
                 
                 application.Initializing += (sender, args) =>
                 {
-                    var db = services.GetService<DatabaseContext>();
+                    var db = CurrentResolver.GetService<DatabaseContext>();
                     db.Database.Migrate();
                 };
 
                 application.Disposing += async (sender, args) =>
                 {
-                    var hub = services.GetService<TdClient>();
+                    var hub = CurrentResolver.GetService<TdClient>();
                     await hub.DestroyAsync();
                 };
                 
@@ -277,10 +279,10 @@ namespace Tel.Egram
             
             services.RegisterLazySingleton<IMessageModelFactory>(() =>
             {
-                var basicMessageModelFactory = services.GetService<IBasicMessageModelFactory>();
-                var noteMessageModelFactory = services.GetService<INoteMessageModelFactory>();
-                var specialMessageModelFactory = services.GetService<ISpecialMessageModelFactory>();
-                var visualMessageModelFactory = services.GetService<IVisualMessageModelFactory>();
+                var basicMessageModelFactory = CurrentResolver.GetService<IBasicMessageModelFactory>();
+                var noteMessageModelFactory = CurrentResolver.GetService<INoteMessageModelFactory>();
+                var specialMessageModelFactory = CurrentResolver.GetService<ISpecialMessageModelFactory>();
+                var visualMessageModelFactory = CurrentResolver.GetService<IVisualMessageModelFactory>();
                 
                 var stringFormatter = new StringFormatter();
                 

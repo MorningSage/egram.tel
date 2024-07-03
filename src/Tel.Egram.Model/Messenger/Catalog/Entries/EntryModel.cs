@@ -6,7 +6,7 @@ using Tel.Egram.Services.Graphics.Avatars;
 namespace Tel.Egram.Model.Messenger.Catalog.Entries
 {
     [AddINotifyPropertyChangedInterface]
-    public class EntryModel : ISupportsActivation
+    public class EntryModel : IActivatableViewModel
     {
         public long Id { get; set; }
         

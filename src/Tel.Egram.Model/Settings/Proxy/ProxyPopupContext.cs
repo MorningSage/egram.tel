@@ -6,7 +6,7 @@ using Tel.Egram.Model.Popups;
 
 namespace Tel.Egram.Model.Settings.Proxy
 {
-    public class ProxyPopupContext : PopupContext, ISupportsActivation
+    public class ProxyPopupContext : PopupContext, IActivatableViewModel
     {
         public ReactiveCommand<Unit, ProxyModel> AddProxyCommand { get; set; }
         

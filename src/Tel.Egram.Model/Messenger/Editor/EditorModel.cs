@@ -7,7 +7,7 @@ using Tel.Egram.Services.Messaging.Chats;
 namespace Tel.Egram.Model.Messenger.Editor
 {
     [AddINotifyPropertyChangedInterface]
-    public class EditorModel : ISupportsActivation
+    public class EditorModel : IActivatableViewModel
     {
         public bool IsVisible { get; set; } = true;
         

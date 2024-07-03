@@ -4,7 +4,7 @@ using TdLib;
 
 namespace Tel.Egram.Model.Messenger.Explorer.Messages.Visual
 {
-    public class StickerMessageModel : VisualMessageModel, ISupportsActivation
+    public class StickerMessageModel : VisualMessageModel, IActivatableViewModel
     {
         public TdApi.Sticker StickerData { get; set; }
         

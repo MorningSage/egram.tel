@@ -5,7 +5,7 @@ using ReactiveUI;
 namespace Tel.Egram.Model.Popups
 {
     [AddINotifyPropertyChangedInterface]
-    public class PopupModel : ISupportsActivation
+    public class PopupModel : IActivatableViewModel
     {
         public PopupContext[] Contexts { get; set; }
         

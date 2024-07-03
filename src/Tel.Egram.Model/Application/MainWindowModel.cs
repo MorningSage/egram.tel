@@ -9,7 +9,7 @@ using Tel.Egram.Model.Workspace;
 namespace Tel.Egram.Model.Application
 {
     [AddINotifyPropertyChangedInterface]
-    public class MainWindowModel : ISupportsActivation
+    public class MainWindowModel : IActivatableViewModel
     {
         public StartupModel StartupModel { get; set; }
         

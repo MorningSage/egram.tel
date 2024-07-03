@@ -7,7 +7,7 @@ using Tel.Egram.Model.Messenger.Explorer.Messages;
 namespace Tel.Egram.Model.Messenger.Homepage
 {
     [AddINotifyPropertyChangedInterface]
-    public class HomepageModel : ISupportsActivation
+    public class HomepageModel : IActivatableViewModel
     {
         public bool IsVisible { get; set; } = true;
         

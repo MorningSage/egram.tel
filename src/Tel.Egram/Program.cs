@@ -33,7 +33,7 @@ namespace Tel.Egram
         }
 
         private static void Run(
-            IDependencyResolver resolver)
+            IReadonlyDependencyResolver resolver)
         {
             var app = resolver.GetService<MainApplication>();
             var builder = AppBuilder.Configure(app);

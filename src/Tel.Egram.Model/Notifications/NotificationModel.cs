@@ -6,7 +6,7 @@ using Tel.Egram.Services.Messaging.Notifications;
 namespace Tel.Egram.Model.Notifications
 {
     [AddINotifyPropertyChangedInterface]
-    public class NotificationModel : ISupportsActivation
+    public class NotificationModel : IActivatableViewModel
     {
         public string Title { get; set; }
         

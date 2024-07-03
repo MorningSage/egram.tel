@@ -6,7 +6,7 @@ using Tel.Egram.Services.Graphics.Avatars;
 namespace Tel.Egram.Model.Workspace.Navigation
 {
     [AddINotifyPropertyChangedInterface]
-    public class NavigationModel : ISupportsActivation
+    public class NavigationModel : IActivatableViewModel
     {
         public Avatar Avatar { get; set; }
 

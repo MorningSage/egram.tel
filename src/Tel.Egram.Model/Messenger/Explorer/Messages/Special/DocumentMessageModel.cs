@@ -5,7 +5,7 @@ using TdLib;
 
 namespace Tel.Egram.Model.Messenger.Explorer.Messages.Special
 {
-    public class DocumentMessageModel : MessageModel, ISupportsActivation
+    public class DocumentMessageModel : MessageModel, IActivatableViewModel
     {
         public TdApi.Document Document { get; set; }
         

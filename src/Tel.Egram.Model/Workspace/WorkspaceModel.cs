@@ -8,7 +8,7 @@ using Tel.Egram.Model.Workspace.Navigation;
 namespace Tel.Egram.Model.Workspace
 {
     [AddINotifyPropertyChangedInterface]
-    public class WorkspaceModel : ISupportsActivation
+    public class WorkspaceModel : IActivatableViewModel
     {
         public NavigationModel NavigationModel { get; set; }
         
