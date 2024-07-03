@@ -74,7 +74,7 @@ namespace Tel.Egram.Services.Messaging.Chats
                 });
         }
 
-        private IObservable<TdApi.User> GetUser(int id)
+        private IObservable<TdApi.User> GetUser(long id)
         {
             return _agent.Execute(new TdApi.GetUser
             {

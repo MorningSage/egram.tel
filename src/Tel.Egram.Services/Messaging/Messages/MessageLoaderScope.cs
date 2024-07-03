@@ -13,8 +13,8 @@ namespace Tel.Egram.Services.Messaging.Messages
     {
         private readonly IAgent _agent;
 
-        private readonly ConcurrentDictionary<int, TdApi.User> _users
-            = new ConcurrentDictionary<int, TdApi.User>();
+        private readonly ConcurrentDictionary<long, TdApi.User> _users
+            = new ConcurrentDictionary<long, TdApi.User>();
         
         private readonly ConcurrentDictionary<long, TdApi.Chat> _chats
             = new ConcurrentDictionary<long, TdApi.Chat>();
@@ -27,7 +27,7 @@ namespace Tel.Egram.Services.Messaging.Messages
             _agent = agent;
         }
 
-        public IObservable<TdApi.User> GetUser(int userId)
+        public IObservable<TdApi.User> GetUser(long userId)
         {
             if (_users.TryGetValue(userId, out var user))
             {
