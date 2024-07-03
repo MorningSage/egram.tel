@@ -43,31 +43,26 @@ namespace Tel.Egram
             services.RegisterLazySingleton(() =>
             {
                 var storage = services.GetService<IStorage>();
+                var client = new TdClient();
+
+                client.Execute(new TdApi.SetLogStream
+                {
+                    LogStream = new TdApi.LogStream.LogStreamFile
+                    {
+                        Path        = Path.Combine(storage.LogDirectory, "tdlib.log"),
+                        MaxFileSize = 1_000_000, // 1 MiB
+                    }
+                });
                 
-                Client.Log.SetFilePath(Path.Combine(storage.LogDirectory, "tdlib.log"));
-                Client.Log.SetMaxFileSize(1_000_000); // 1MB
-                Client.Log.SetVerbosityLevel(5);
-                return new Client();
-            });
-
-            services.RegisterLazySingleton(() =>
-            {
-                var client = services.GetService<Client>();
-                return new Hub(client);
-            });
-
-            services.RegisterLazySingleton(() =>
-            {
-                var client = services.GetService<Client>();
-                var hub = services.GetService<Hub>();
-                return new Dialer(client, hub);
+                client.SetLogVerbosityLevelAsync(5);
+                
+                return client;
             });
 
             services.RegisterLazySingleton<IAgent>(() =>
             {
-                var hub = services.GetService<Hub>();
-                var dialer = services.GetService<Dialer>();
-                return new Agent(hub, dialer);
+                var client = services.GetService<TdClient>();
+                return new Agent(client);
             });
         }
         
@@ -239,26 +234,12 @@ namespace Tel.Egram
                 {
                     var db = services.GetService<DatabaseContext>();
                     db.Database.Migrate();
-                
-                    var hub = services.GetService<Hub>();
-                    var task = Task.Factory.StartNew(
-                        () => hub.Start(),
-                        TaskCreationOptions.LongRunning);
-                    
-                    task.ContinueWith(t =>
-                    {
-                        var exception = t.Exception;
-                        if (exception != null)
-                        {
-                            // TODO: handle exception and shutdown
-                        }
-                    });
                 };
 
-                application.Disposing += (sender, args) =>
+                application.Disposing += async (sender, args) =>
                 {
-                    var hub = services.GetService<Hub>();
-                    hub.Stop();
+                    var hub = services.GetService<TdClient>();
+                    await hub.DestroyAsync();
                 };
                 
                 return application;
