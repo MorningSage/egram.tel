@@ -170,5 +170,28 @@ namespace Tel.Egram.Services.Graphics.Previews
                     return HighQualitySizes;
             }
         }
+
+        public Preview GetPreview(TdApi.Thumbnail thumbnail)
+        {
+            var file = thumbnail.File;
+            
+            return new Preview
+            {
+                Bitmap = GetBitmap(file),
+                Quality = PreviewQuality.High
+            };
+        }
+
+        public IObservable<Preview> LoadPreview(TdApi.Thumbnail thumbnail)
+        {
+            var file = thumbnail.File;
+            
+            return LoadBitmap(file)
+                .Select(bitmap => new Preview
+                {
+                    Bitmap = bitmap,
+                    Quality = PreviewQuality.High
+                });
+        }
     }
 }

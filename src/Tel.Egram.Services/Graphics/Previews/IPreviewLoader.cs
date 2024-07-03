@@ -16,5 +16,9 @@ namespace Tel.Egram.Services.Graphics.Previews
         Preview GetPreview(TdApi.Sticker sticker);
 
         IObservable<Preview> LoadPreview(TdApi.Sticker sticker);
+
+        Preview GetPreview(TdApi.Thumbnail thumbnail);
+
+        IObservable<Preview> LoadPreview(TdApi.Thumbnail thumbnail);
     }
 }
