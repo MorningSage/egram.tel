@@ -114,9 +114,6 @@ namespace Tel.Egram.Model.Messenger.Explorer.Factories
                 case TdApi.MessageContent.MessageContactRegistered contactRegistered:
                     return _specialMessageModelFactory.CreateContactRegisteredMessage(message, contactRegistered);
                 
-                case TdApi.MessageContent.MessageWebsiteConnected websiteConnected:
-                    return _specialMessageModelFactory.CreateWebsiteConnectedMessage(message, websiteConnected);
-                
                 // notes
                 case TdApi.MessageContent.MessageCall messageCall:
                     return _noteMessageModelFactory.CreateCallMessage(message, messageCall);

@@ -26,11 +26,7 @@ namespace Tel.Egram.Model.Messenger.Explorer.Factories
         MessageModel CreateContactRegisteredMessage(
             Message message,
             TdApi.MessageContent.MessageContactRegistered contactRegistered);
-
-        MessageModel CreateWebsiteConnectedMessage(
-            Message message,
-            TdApi.MessageContent.MessageWebsiteConnected websiteConnected);
-
+        
         MessageModel CreateLocationMessage(
             Message message,
             TdApi.MessageContent.MessageLocation location);

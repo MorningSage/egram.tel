@@ -62,13 +62,6 @@ namespace Tel.Egram.Model.Messenger.Explorer.Factories
             return new UnsupportedMessageModel();
         }
 
-        public MessageModel CreateWebsiteConnectedMessage(
-            Message message,
-            TdApi.MessageContent.MessageWebsiteConnected websiteConnected)
-        {
-            return new UnsupportedMessageModel();
-        }
-
         public MessageModel CreateLocationMessage(
             Message message,
             TdApi.MessageContent.MessageLocation location)
