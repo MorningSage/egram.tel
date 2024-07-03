@@ -10,6 +10,7 @@ using ReactiveUI;
 using Tel.Egram.Model.Messenger.Explorer;
 using Tel.Egram.Services.Utils;
 using Tel.Egram.Services.Utils.Reactive;
+using Range = Tel.Egram.Services.Utils.Range;
 
 namespace Tel.Egram.Views.Messenger.Explorer
 {
