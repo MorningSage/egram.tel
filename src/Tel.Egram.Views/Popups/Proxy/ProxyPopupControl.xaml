@@ -6,7 +6,7 @@
         RowDefinitions="auto,auto,auto,auto,auto,auto">
         
         <ListBox
-            Items="{Binding Proxies}"
+            ItemsSource="{Binding Proxies}"
             SelectedItem="{Binding SelectedProxy, Mode=TwoWay}"
             Grid.Row="0">
             

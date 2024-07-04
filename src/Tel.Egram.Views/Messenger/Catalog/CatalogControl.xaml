@@ -27,7 +27,7 @@
         <ListBox
             Grid.Row="1"
             Grid.ColumnSpan="2" Grid.Column="0"
-            Items="{Binding Entries}"
+            ItemsSource="{Binding Entries}"
             SelectedItem="{Binding SelectedEntry, Mode=TwoWay}"
             BorderThickness="0"
             ScrollViewer.VerticalScrollBarVisibility="Hidden"

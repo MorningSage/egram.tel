@@ -63,7 +63,7 @@
                     MinWidth="380"
                     MinHeight="20"
                     Margin="12,20,12,12"
-                    Items="{Binding Contexts}"
+                    ItemsSource="{Binding Contexts}"
                     SelectedItem="{Binding Context}">
                     
                     <Carousel.DataTemplates>
