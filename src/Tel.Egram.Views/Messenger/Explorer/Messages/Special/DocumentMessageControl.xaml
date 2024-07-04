@@ -13,7 +13,7 @@
                 Grid.Column="0">
                 <Ellipse />
                 <Image
-                    Source="resm:Tel.Egram.Application.Icons.Light.File32.png?assembly=Tel.Egram.Application" />
+                    Source="avares://Tel.Egram.Application/Icons/Light/File32.png" />
             </Panel>
             
             <TextBlock

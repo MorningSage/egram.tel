@@ -15,7 +15,7 @@ namespace Tel.Egram.Services.Graphics
             _fileLoader = fileLoader;
         }
 
-        public IObservable<IBitmap> LoadFile(TdApi.File file, LoadPriority priority)
+        public IObservable<Bitmap> LoadFile(TdApi.File file, LoadPriority priority)
         {
             return _fileLoader.LoadFile(file, priority)
                 .FirstAsync(f => f.Local != null && f.Local.IsDownloadingCompleted)

@@ -1,11 +1,6 @@
 ﻿<Styles
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:styles="clr-namespace:Tel.Egram.Application.Styles">
-    
-    <Styles.Resources>
-        <styles:RobotoFontFamily x:Key="RobotoFontFamily"/>
-    </Styles.Resources>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     
     <Style Selector="TextBlock">
         <Setter Property="FontFamily" Value="{StaticResource RobotoFontFamily}" />
@@ -17,7 +12,7 @@
         <Setter Property="FontSize" Value="13" />
     </Style>
     
-    <Style Selector="DropDown">
+    <Style Selector="ComboBox">
         <Setter Property="FontFamily" Value="{StaticResource RobotoFontFamily}" />
         <Setter Property="FontSize" Value="13" />
     </Style>

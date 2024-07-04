@@ -10,7 +10,6 @@ using DynamicData.Binding;
 using Splat;
 using Tel.Egram.Services.Persistance;
 using Tel.Egram.Services.Utils.Reactive;
-using IBitmap = Avalonia.Media.Imaging.IBitmap;
 
 namespace Tel.Egram.Model.Authentication.Phone
 {
@@ -34,7 +33,7 @@ namespace Tel.Egram.Model.Authentication.Phone
         {
             return Task.Run(() =>
                 {
-                    var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
+                    //var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
                     var codes = _resourceManager.GetPhoneCodes();
     
                     model.PhoneCodes = new ObservableCollectionExtended<PhoneCodeModel>(
@@ -43,7 +42,7 @@ namespace Tel.Egram.Model.Authentication.Phone
                             {
                                 Code = "+" + c.Code,
                                 CountryCode = c.CountryCode,
-                                Flag = GetFlag(assetLoader, c.CountryCode),
+                                Flag = GetFlag(c.CountryCode),
                                 Mask = c.Mask?.ToLowerInvariant()
                             })
                             .OrderBy(m => m.CountryCode));
@@ -54,15 +53,15 @@ namespace Tel.Egram.Model.Authentication.Phone
                 .Accept();
         }
 
-        private IBitmap GetFlag(IAssetLoader assetLoader, string countryCode)
+        private Bitmap GetFlag(string countryCode)
         {
             var uri = new Uri($"resm:Tel.Egram.Application.Images.Flags.{countryCode}.png?assembly=Tel.Egram.Application");
-            if (!assetLoader.Exists(uri))
+            if (!AssetLoader.Exists(uri))
             {
                 uri = new Uri($"resm:Tel.Egram.Application.Images.Flags._unknown.png?assembly=Tel.Egram.Application");
             }
 
-            using (var stream = assetLoader.Open(uri))
+            using (var stream = AssetLoader.Open(uri))
             {
                 return new Bitmap(stream);
             }

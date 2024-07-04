@@ -22,7 +22,7 @@
             
             <Panel>
                 <Ellipse />
-                <Image Source="resm:Tel.Egram.Application.Icons.Light.More32.png?assembly=Tel.Egram.Application" />
+                <Image Source="avares://Tel.Egram.Application/Icons/Light/More32.png" />
             </Panel>
             
         </Button>

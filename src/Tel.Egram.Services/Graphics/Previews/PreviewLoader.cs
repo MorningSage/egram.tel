@@ -112,7 +112,7 @@ namespace Tel.Egram.Services.Graphics.Previews
                 });
         }
 
-        private IObservable<IBitmap> LoadBitmap(TdApi.File file)
+        private IObservable<Bitmap> LoadBitmap(TdApi.File file)
         {
             if (file != null)
             {
@@ -124,11 +124,11 @@ namespace Tel.Egram.Services.Graphics.Previews
             return Observable.Return<Bitmap>(null);
         }
 
-        private IBitmap GetBitmap(TdApi.File file)
+        private Bitmap GetBitmap(TdApi.File file)
         {
             if (file?.Local?.Path != null && _cache.TryGetValue(file.Local.Path, out var bitmap))
             {
-                return (IBitmap) bitmap;
+                return (Bitmap) bitmap;
             }
 
             return null;

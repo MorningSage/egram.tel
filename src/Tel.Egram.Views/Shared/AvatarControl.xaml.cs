@@ -9,8 +9,8 @@ namespace Tel.Egram.Views.Shared
 {
     public class AvatarControl : ContentControl
     {
-        public static readonly StyledProperty<IBitmap> SourceProperty =
-            AvaloniaProperty.Register<AvatarControl, IBitmap>(nameof(Source));
+        public static readonly StyledProperty<Bitmap> SourceProperty =
+            AvaloniaProperty.Register<AvatarControl, Bitmap>(nameof(Source));
 
         public static readonly StyledProperty<IBrush> SourceBrushProperty =
             AvaloniaProperty.Register<AvatarControl, IBrush>(nameof(SourceBrush));
@@ -42,7 +42,7 @@ namespace Tel.Egram.Views.Shared
             TextColorProperty.Changed.Subscribe(TextColorChanged);
         }
         
-        public IBitmap Source
+        public Bitmap Source
         {
             get => GetValue(SourceProperty);
             set
@@ -111,7 +111,7 @@ namespace Tel.Egram.Views.Shared
                     avatarControl.SourceBrush = null;
                 }
                 
-                if (e.NewValue is IBitmap bitmap)
+                if (e.NewValue is Bitmap bitmap)
                 {
                     avatarControl.SourceBrush = new ImageBrush(bitmap);
                 }

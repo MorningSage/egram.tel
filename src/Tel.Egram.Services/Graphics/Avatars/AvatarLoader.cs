@@ -166,21 +166,21 @@ namespace Tel.Egram.Services.Graphics.Avatars
             return Color.Parse("#" + _colorMapper[chat.Id]);
         }
 
-        private IBitmap GetBitmap(TdApi.File file, int size)
+        private Bitmap GetBitmap(TdApi.File file, int size)
         {
             if (file?.Local?.Path != null)
             {
                 var resizedFilePath = GetResizedPath(file.Local.Path, size);
                 if (_cache.TryGetValue(resizedFilePath, out var bitmap))
                 {
-                    return (IBitmap) bitmap;
+                    return (Bitmap) bitmap;
                 }
             }
 
             return null;
         }
 
-        private IObservable<IBitmap> LoadBitmap(TdApi.File file, int size)
+        private IObservable<Bitmap> LoadBitmap(TdApi.File file, int size)
         {   
             if (file != null)
             {

@@ -7,6 +7,6 @@ namespace Tel.Egram.Services.Graphics
 {
     public interface IBitmapLoader
     {
-        IObservable<IBitmap> LoadFile(TdApi.File file, LoadPriority priority);
+        IObservable<Bitmap> LoadFile(TdApi.File file, LoadPriority priority);
     }
 }

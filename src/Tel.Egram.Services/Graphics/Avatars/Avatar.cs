@@ -6,7 +6,7 @@ namespace Tel.Egram.Services.Graphics.Avatars
 {
     public class Avatar
     {
-        public IBitmap Bitmap { get; set; }
+        public Bitmap Bitmap { get; set; }
 
         public Color TextColor { get; set; } = Colors.White;
         

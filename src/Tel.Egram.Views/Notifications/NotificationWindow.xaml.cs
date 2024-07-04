@@ -1,4 +1,5 @@
-﻿using System.Reactive.Disposables;
+﻿using System;
+using System.Reactive.Disposables;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
@@ -31,11 +32,11 @@ namespace Tel.Egram.Views.Notifications
             _current = this;
         }
 
-        protected override void HandleClosed()
+        protected override void OnClosed(EventArgs e)
         {
             _current = null;
             
-            base.HandleClosed();
+            base.OnClosed(e);
         }
     }
 }

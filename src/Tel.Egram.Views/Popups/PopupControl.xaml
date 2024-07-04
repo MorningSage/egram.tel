@@ -50,7 +50,7 @@
                     BorderThickness="0">
                     
                     <Image
-                        Source="resm:Tel.Egram.Application.Icons.Dark.X32.png?assembly=Tel.Egram.Application"
+                        Source="avares://Tel.Egram.Application/Icons/Dark/X32.png"
                         Width="16"
                         Height="16"
                         Opacity="0.66" />

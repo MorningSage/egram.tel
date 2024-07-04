@@ -8,7 +8,7 @@
     MaxWidth="260"
     MaxHeight="60"
     CanResize="False"
-    HasSystemDecorations="False"
+    SystemDecorations="None"
     Background="#eeeeee"
     Topmost="True">
     

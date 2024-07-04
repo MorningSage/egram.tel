@@ -7,7 +7,9 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.11" />
     <PackageReference Include="Avalonia.Desktop" Version="11.0.11" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.11" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.11" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.11" />
     <PackageReference Include="DynamicData" Version="8.4.1" />
     <PackageReference Include="ReactiveUI" Version="20.1.1" />
     <PackageReference Include="System.Reactive" Version="6.0.1" />

@@ -39,7 +39,7 @@
             Command="{Binding RemoveCommand}"
             CommandParameter="{Binding}">
             <Image
-                Source="resm:Tel.Egram.Application.Icons.Dark.Trash32.png?assembly=Tel.Egram.Application" />
+                Source="avares://Tel.Egram.Application/Icons/Dark/Trash32.png" />
         </Button>
         
     </Grid>

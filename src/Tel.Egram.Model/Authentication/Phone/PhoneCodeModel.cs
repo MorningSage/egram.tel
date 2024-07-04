@@ -11,7 +11,7 @@ namespace Tel.Egram.Model.Authentication.Phone
         
         public string CountryCode { get; set; }
         
-        public IBitmap Flag { get; set; }
+        public Bitmap Flag { get; set; }
         
         public string Mask { get; set; }
     }

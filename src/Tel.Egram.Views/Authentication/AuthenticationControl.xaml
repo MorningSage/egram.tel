@@ -33,18 +33,18 @@
             Grid.Column="1"
             ColumnDefinitions="auto,*,auto">
             
-            <DropDown
+            <ComboBox
                 Grid.Column="0"
-                Items="{Binding PhoneCodes}"
+                ItemsSource="{Binding PhoneCodes}"
                 SelectedItem="{Binding PhoneCode, Mode=TwoWay}">
                 
-                <DropDown.ItemTemplate>
+                <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <phone:PhoneCodeControl />
                     </DataTemplate>
-                </DropDown.ItemTemplate>
+                </ComboBox.ItemTemplate>
                 
-            </DropDown>
+            </ComboBox>
             
             <TextBox
                 Grid.Column="2"
@@ -181,7 +181,7 @@
             <Setter Property="Foreground" Value="#ffffff" />
         </Style>
         
-        <Style Selector="DropDown">
+        <Style Selector="ComboBox">
             <Setter Property="Width" Value="240" />
             <Setter Property="Height" Value="28" />
             <Setter Property="Margin" Value="0,8,0,0" />
@@ -196,11 +196,11 @@
             <Setter Property="CornerRadius" Value="4" />
         </Style>
         
-        <Style Selector="DropDown /template/ Border">
+        <Style Selector="ComboBox /template/ Border">
             <Setter Property="CornerRadius" Value="4" />
         </Style>
         
-        <Style Selector="DropDown /template/ ItemsPresenter">
+        <Style Selector="ComboBox /template/ ItemsPresenter">
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
         </Style>
@@ -214,7 +214,7 @@
             <Setter Property="Height" Value="28" />
         </Style>
         
-        <Style Selector="Grid.PhoneInput DropDown">
+        <Style Selector="Grid.PhoneInput ComboBox">
             <Setter Property="Width" Value="118" />
             <Setter Property="Height" Value="28" />
         </Style>
