@@ -32,14 +32,12 @@
                 Classes="Action"
                 Grid.Column="1"
                 >
-                <!-- <Image Source="resm:Tel.Egram.Application.Icons.image.png?assembly=Tel.Egram.Application" /> -->
             </Button>
             
             <Button
                 Classes="Action"
                 Grid.Column="2"
                 >
-                <!-- <Image Source="resm:Tel.Egram.Application.Icons.file.png?assembly=Tel.Egram.Application" /> -->
             </Button>
             
             <Panel
