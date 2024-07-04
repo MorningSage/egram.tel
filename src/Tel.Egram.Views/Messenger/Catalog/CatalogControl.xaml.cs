@@ -3,13 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Tel.Egram.Model.Messenger.Catalog;
 
-namespace Tel.Egram.Views.Messenger.Catalog
+namespace Tel.Egram.Views.Messenger.Catalog;
+
+public class CatalogControl : BaseControl<CatalogModel>
 {
-    public class CatalogControl : BaseControl<CatalogModel>
+    public CatalogControl()
     {
-        public CatalogControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,7 +1,6 @@
-namespace Tel.Egram.Model.Notifications
+namespace Tel.Egram.Model.Notifications;
+
+public interface INotificationController
 {
-    public interface INotificationController
-    {
-        void Show(NotificationModel model);
-    }
+    void Show(NotificationModel model);
 }

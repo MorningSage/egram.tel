@@ -3,13 +3,12 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
 
-namespace Tel.Egram.Views.Messenger.Explorer.Messages.Shared
+namespace Tel.Egram.Views.Messenger.Explorer.Messages.Shared;
+
+public class MessageControl : ContentControl
 {
-    public class MessageControl : ContentControl
+    public MessageControl()
     {
-        public MessageControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 }

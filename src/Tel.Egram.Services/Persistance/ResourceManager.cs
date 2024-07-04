@@ -1,61 +1,41 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Reflection;
+using System.Diagnostics;
+using Avalonia.Platform;
 using Tel.Egram.Services.Persistance.Resources;
 
-namespace Tel.Egram.Services.Persistance
+namespace Tel.Egram.Services.Persistance;
+
+public class ResourceManager : IResourceManager
 {
-    public class ResourceManager : IResourceManager
+    public IList<PhoneCode> GetPhoneCodes()
     {
-        private readonly Assembly _assembly;
-        private readonly string _prefix;
-
-        public ResourceManager(Assembly assembly)
+        var codes = new List<PhoneCode>();
+            
+        var uri = new Uri("avares://Tel.Egram.Application/Resources/PhoneCodes.txt");
+        if (!AssetLoader.Exists(uri))
         {
-            _assembly = assembly;
-            _prefix = assembly.GetName().Name + ".Resources.";
+            // ToDo: Ensure that there's no issue during runtime *IF* the phone code list fails to load.
+            Debugger.Break();
+            return codes;
         }
-        
-        public IList<PhoneCode> GetPhoneCodes()
+
+        using var stream = new StreamReader(AssetLoader.Open(uri));
+            
+        while (!stream.EndOfStream)
         {
-            using (var stream = _assembly.GetManifestResourceStream(_prefix + "PhoneCodes.txt"))
-            using (var reader = new StreamReader(stream))
-            {
-                var codes = new List<PhoneCode>();
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine();
-                    if (!string.IsNullOrWhiteSpace(line))
-                    {
-                        var code = new PhoneCode();
-                        var parts = line.Split(';');
-                        
-                        if (parts.Length > 0)
-                        {
-                            code.Code = parts[0];
-                        }
+            var line = stream.ReadLine();
+            if (string.IsNullOrWhiteSpace(line)) continue;
+                
+            var code = new PhoneCode();
+            var parts = line.Split(';');
 
-                        if (parts.Length > 1)
-                        {
-                            code.CountryCode = parts[1];
-                        }
+            if (parts.Length > 0) code.Code = parts[0];
+            if (parts.Length > 1) code.CountryCode = parts[1];
+            if (parts.Length > 2) code.CountryName = parts[2];
+            if (parts.Length > 3) code.Mask = parts[3];
 
-                        if (parts.Length > 2)
-                        {
-                            code.CountryName = parts[2];
-                        }
-
-                        if (parts.Length > 3)
-                        {
-                            code.Mask = parts[3];
-                        }
-                        
-                        codes.Add(code);
-                    }
-                }
-
-                return codes;
-            }
+            codes.Add(code);
         }
+
+        return codes;
     }
 }

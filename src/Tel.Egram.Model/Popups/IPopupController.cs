@@ -1,8 +1,7 @@
-namespace Tel.Egram.Model.Popups
+namespace Tel.Egram.Model.Popups;
+
+public interface IPopupController
 {
-    public interface IPopupController
-    {
-        void Show(PopupContext context);
-        void Hide();
-    }
+    void Show(PopupContext context);
+    void Hide();
 }

@@ -10,98 +10,97 @@ using Tel.Egram.Model.Workspace;
 using Tel.Egram.Services.Authentication;
 using Tel.Egram.Services.Utils.Reactive;
 
-namespace Tel.Egram.Model.Application
+namespace Tel.Egram.Model.Application;
+
+public static class AuthenticationLogic
 {
-    public static class AuthenticationLogic
+    public static IDisposable BindAuthentication(
+        this MainWindowModel model)
     {
-        public static IDisposable BindAuthentication(
-            this MainWindowModel model)
-        {
-            return BindAuthentication(
-                model,
-                Locator.Current.GetService<IAuthenticator>());
-        }
+        return BindAuthentication(
+            model,
+            Locator.Current.GetService<IAuthenticator>());
+    }
 
-        public static IDisposable BindAuthentication(
-            this MainWindowModel model,
-            IAuthenticator authenticator)
-        {
-            var disposable = new CompositeDisposable();
+    public static IDisposable BindAuthentication(
+        this MainWindowModel model,
+        IAuthenticator authenticator)
+    {
+        var disposable = new CompositeDisposable();
             
-            var stateUpdates = authenticator
-                .ObserveState()
-                .SubscribeOn(RxApp.TaskpoolScheduler)
-                .ObserveOn(RxApp.MainThreadScheduler);
+        var stateUpdates = authenticator
+            .ObserveState()
+            .SubscribeOn(RxApp.TaskpoolScheduler)
+            .ObserveOn(RxApp.MainThreadScheduler);
             
-            stateUpdates.OfType<TdApi.AuthorizationState.AuthorizationStateWaitTdlibParameters>()
-                .SelectMany(_ => authenticator.SetupParameters())
-                .Accept()
-                .DisposeWith(disposable);
+        stateUpdates.OfType<TdApi.AuthorizationState.AuthorizationStateWaitTdlibParameters>()
+            .SelectMany(_ => authenticator.SetupParameters())
+            .Accept()
+            .DisposeWith(disposable);
 
-            stateUpdates
-                .Accept(state => HandleState(model, state))
-                .DisposeWith(disposable);
+        stateUpdates
+            .Accept(state => HandleState(model, state))
+            .DisposeWith(disposable);
 
-            return disposable;
-        }
+        return disposable;
+    }
 
-        private static void HandleState(MainWindowModel model, TdApi.AuthorizationState state)
+    private static void HandleState(MainWindowModel model, TdApi.AuthorizationState state)
+    {
+        switch (state)
         {
-            switch (state)
-            {
-                case TdApi.AuthorizationState.AuthorizationStateWaitTdlibParameters _:
-                    GoToStartupPage(model);
-                    break;
+            case TdApi.AuthorizationState.AuthorizationStateWaitTdlibParameters _:
+                GoToStartupPage(model);
+                break;
                 
-                case TdApi.AuthorizationState.AuthorizationStateWaitPhoneNumber _:
-                case TdApi.AuthorizationState.AuthorizationStateWaitCode _:
-                case TdApi.AuthorizationState.AuthorizationStateWaitPassword _:
-                    GoToAuthenticationPage(model);
-                    break;
+            case TdApi.AuthorizationState.AuthorizationStateWaitPhoneNumber _:
+            case TdApi.AuthorizationState.AuthorizationStateWaitCode _:
+            case TdApi.AuthorizationState.AuthorizationStateWaitPassword _:
+                GoToAuthenticationPage(model);
+                break;
             
-                case TdApi.AuthorizationState.AuthorizationStateReady _:
-                    GoToWorkspacePage(model);
-                    break;
-            }
+            case TdApi.AuthorizationState.AuthorizationStateReady _:
+                GoToWorkspacePage(model);
+                break;
         }
+    }
         
-        private static void GoToStartupPage(MainWindowModel model)
+    private static void GoToStartupPage(MainWindowModel model)
+    {
+        if (model.StartupModel == null)
         {
-            if (model.StartupModel == null)
-            {
-                model.StartupModel = new StartupModel();
-            }
-
-            model.WorkspaceModel = null;
-            model.AuthenticationModel = null;
-            
-            model.PageIndex = (int) Page.Initial;
+            model.StartupModel = new StartupModel();
         }
 
-        private static void GoToAuthenticationPage(MainWindowModel model)
-        {
-            if (model.AuthenticationModel == null)
-            {
-                model.AuthenticationModel = new AuthenticationModel();
-            }
+        model.WorkspaceModel = null;
+        model.AuthenticationModel = null;
             
-            model.PageIndex = (int) Page.Authentication;
+        model.PageIndex = (int) Page.Initial;
+    }
 
-            model.StartupModel = null;
-            model.WorkspaceModel = null;
-        }
-
-        private static void GoToWorkspacePage(MainWindowModel model)
+    private static void GoToAuthenticationPage(MainWindowModel model)
+    {
+        if (model.AuthenticationModel == null)
         {
-            if (model.WorkspaceModel == null)
-            {
-                model.WorkspaceModel = new WorkspaceModel();
-            }
-            
-            model.PageIndex = (int) Page.Workspace;
-            
-            model.StartupModel = null;
-            model.AuthenticationModel = null;
+            model.AuthenticationModel = new AuthenticationModel();
         }
+            
+        model.PageIndex = (int) Page.Authentication;
+
+        model.StartupModel = null;
+        model.WorkspaceModel = null;
+    }
+
+    private static void GoToWorkspacePage(MainWindowModel model)
+    {
+        if (model.WorkspaceModel == null)
+        {
+            model.WorkspaceModel = new WorkspaceModel();
+        }
+            
+        model.PageIndex = (int) Page.Workspace;
+            
+        model.StartupModel = null;
+        model.AuthenticationModel = null;
     }
 }

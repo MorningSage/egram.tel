@@ -1,70 +1,55 @@
-using System;
-using System.Linq;
-using System.Reactive.Disposables;
 using System.Reactive.Threading.Tasks;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using DynamicData.Binding;
-using Splat;
 using Tel.Egram.Services.Persistance;
 using Tel.Egram.Services.Utils.Reactive;
 
-namespace Tel.Egram.Model.Authentication.Phone
+namespace Tel.Egram.Model.Authentication.Phone;
+
+public class PhoneCodeLoader
 {
-    public class PhoneCodeLoader
+    private readonly IResourceManager _resourceManager;
+
+    public PhoneCodeLoader(
+        IResourceManager resourceManager)
     {
-        private readonly IResourceManager _resourceManager;
+        _resourceManager = resourceManager;
+    }
 
-        public PhoneCodeLoader(
-            IResourceManager resourceManager)
-        {
-            _resourceManager = resourceManager;
-        }
-
-        public PhoneCodeLoader()
-            : this(
-                Locator.Current.GetService<IResourceManager>())
-        {
-        }
-        
-        public IDisposable Bind(AuthenticationModel model)
-        {
-            return Task.Run(() =>
-                {
-                    //var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
-                    var codes = _resourceManager.GetPhoneCodes();
-    
-                    model.PhoneCodes = new ObservableCollectionExtended<PhoneCodeModel>(
-                        codes
-                            .Select(c => new PhoneCodeModel
-                            {
-                                Code = "+" + c.Code,
-                                CountryCode = c.CountryCode,
-                                Flag = GetFlag(c.CountryCode),
-                                Mask = c.Mask?.ToLowerInvariant()
-                            })
-                            .OrderBy(m => m.CountryCode));
-
-                    model.PhoneCode = model.PhoneCodes.FirstOrDefault(c => c.CountryCode == "RU");
-                })
-                .ToObservable()
-                .Accept();
-        }
-
-        private Bitmap GetFlag(string countryCode)
-        {
-            var uri = new Uri($"resm:Tel.Egram.Application.Images.Flags.{countryCode}.png?assembly=Tel.Egram.Application");
-            if (!AssetLoader.Exists(uri))
+    public IDisposable Bind(AuthenticationModel model)
+    {
+        return Task.Run(() =>
             {
-                uri = new Uri($"resm:Tel.Egram.Application.Images.Flags._unknown.png?assembly=Tel.Egram.Application");
-            }
+                //var assetLoader = AvaloniaLocator.Current.GetService<IAssetLoader>();
+                var codes = _resourceManager.GetPhoneCodes();
 
-            using (var stream = AssetLoader.Open(uri))
-            {
-                return new Bitmap(stream);
-            }
+                model.PhoneCodes = new ObservableCollectionExtended<PhoneCodeModel>(
+                    codes
+                        .Select(c => new PhoneCodeModel
+                        {
+                            Code = "+" + c.Code,
+                            CountryCode = c.CountryCode,
+                            Flag = GetFlag(c.CountryCode),
+                            Mask = c.Mask?.ToLowerInvariant()
+                        })
+                        .OrderBy(m => m.CountryCode));
+
+                model.PhoneCode = model.PhoneCodes.FirstOrDefault(c => c.CountryCode == "RU");
+            })
+            .ToObservable()
+            .Accept();
+    }
+
+    private static Bitmap GetFlag(string countryCode)
+    {
+        var uri = new Uri($"avares://Tel.Egram.Application/Images/Flags/{countryCode}.png");
+        if (!AssetLoader.Exists(uri))
+        {
+            uri = new Uri("avares://Tel.Egram.Application/Images/Flags/_unknown.png");
         }
+
+        using var stream = AssetLoader.Open(uri);
+        return new Bitmap(stream);
     }
 }

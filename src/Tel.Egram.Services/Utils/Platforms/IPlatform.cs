@@ -1,7 +1,6 @@
-namespace Tel.Egram.Services.Utils.Platforms
+namespace Tel.Egram.Services.Utils.Platforms;
+
+public interface IPlatform
 {
-    public interface IPlatform
-    {
-        int PixelDensity { get; }
-    }
+    int PixelDensity { get; }
 }

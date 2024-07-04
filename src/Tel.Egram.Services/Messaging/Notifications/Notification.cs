@@ -1,11 +1,10 @@
 using TdLib;
 
-namespace Tel.Egram.Services.Messaging.Notifications
+namespace Tel.Egram.Services.Messaging.Notifications;
+
+public class Notification
 {
-    public class Notification
-    {
-        public TdApi.Chat Chat { get; set; }
+    public TdApi.Chat Chat { get; set; }
         
-        public TdApi.Message Message { get; set; }
-    }
+    public TdApi.Message Message { get; set; }
 }

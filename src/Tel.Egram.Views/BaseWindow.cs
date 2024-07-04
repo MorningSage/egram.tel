@@ -4,23 +4,22 @@ using Avalonia;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 
-namespace Tel.Egram.Views
+namespace Tel.Egram.Views;
+
+/// <summary>
+/// Workaround for model activation
+/// </summary>
+public class BaseWindow<TViewModel> : ReactiveWindow<TViewModel>
+    where TViewModel : class
 {
-    /// <summary>
-    /// Workaround for model activation
-    /// </summary>
-    public class BaseWindow<TViewModel> : ReactiveWindow<TViewModel>
-        where TViewModel : class
+    public BaseWindow(bool activate = true)
     {
-        public BaseWindow(bool activate = true)
+        if (activate)
         {
-            if (activate)
+            this.WhenActivated(disposables =>
             {
-                this.WhenActivated(disposables =>
-                {
-                    Disposable.Create(() => { }).DisposeWith(disposables);
-                });
-            }
+                Disposable.Create(() => { }).DisposeWith(disposables);
+            });
         }
     }
 }

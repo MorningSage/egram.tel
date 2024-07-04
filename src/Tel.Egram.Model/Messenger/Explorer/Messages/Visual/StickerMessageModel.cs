@@ -2,30 +2,29 @@ using System.Reactive.Disposables;
 using ReactiveUI;
 using TdLib;
 
-namespace Tel.Egram.Model.Messenger.Explorer.Messages.Visual
-{
-    public class StickerMessageModel : VisualMessageModel, IActivatableViewModel
-    {
-        public TdApi.Sticker StickerData { get; set; }
-        
-        public StickerMessageModel()
-        {
-            this.WhenActivated(disposables =>
-            {
-                this.BindAvatarLoading()
-                    .DisposeWith(disposables);
+namespace Tel.Egram.Model.Messenger.Explorer.Messages.Visual;
 
-                this.BindPreviewLoading()
-                    .DisposeWith(disposables);
-                
-                if (Reply != null)
-                {
-                    Reply.BindPreviewLoading()
-                        .DisposeWith(disposables);
-                }
-            });
-        }
+public class StickerMessageModel : VisualMessageModel, IActivatableViewModel
+{
+    public TdApi.Sticker StickerData { get; set; }
         
-        public ViewModelActivator Activator { get; } = new ViewModelActivator();
+    public StickerMessageModel()
+    {
+        this.WhenActivated(disposables =>
+        {
+            this.BindAvatarLoading()
+                .DisposeWith(disposables);
+
+            this.BindPreviewLoading()
+                .DisposeWith(disposables);
+                
+            if (Reply != null)
+            {
+                Reply.BindPreviewLoading()
+                    .DisposeWith(disposables);
+            }
+        });
     }
+        
+    public ViewModelActivator Activator { get; } = new ViewModelActivator();
 }

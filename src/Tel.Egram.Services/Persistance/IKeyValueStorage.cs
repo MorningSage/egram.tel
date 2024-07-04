@@ -1,17 +1,16 @@
 using System.Collections.Generic;
 
-namespace Tel.Egram.Services.Persistance
+namespace Tel.Egram.Services.Persistance;
+
+public interface IKeyValueStorage
 {
-    public interface IKeyValueStorage
-    {
-        void Set<T>(string key, T value);
+    void Set<T>(string key, T value);
         
-        T Get<T>(string key);
+    T Get<T>(string key);
 
-        IList<KeyValuePair<string, T>> GetAll<T>();
+    IList<KeyValuePair<string, T>> GetAll<T>();
         
-        bool TryGet<T>(string key, out T value);
+    bool TryGet<T>(string key, out T value);
 
-        void Delete(string key);
-    }
+    void Delete(string key);
 }

@@ -1,13 +1,12 @@
 ﻿using Avalonia.Markup.Xaml;
 using Tel.Egram.Model.Popups;
 
-namespace Tel.Egram.Views.Popups
+namespace Tel.Egram.Views.Popups;
+
+public class PopupControl : BaseControl<PopupModel>
 {
-    public class PopupControl : BaseControl<PopupModel>
+    public PopupControl()
     {
-        public PopupControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 }

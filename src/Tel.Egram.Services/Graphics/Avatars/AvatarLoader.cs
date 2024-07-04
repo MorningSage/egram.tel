@@ -21,193 +21,224 @@ using DrawingBitmap = System.Drawing.Bitmap;
 using DrawingGraphics = System.Drawing.Graphics;
 using DrawingRectangle = System.Drawing.Rectangle;
 
-namespace Tel.Egram.Services.Graphics.Avatars
+namespace Tel.Egram.Services.Graphics.Avatars;
+
+public class AvatarLoader : IAvatarLoader, IDisposable
 {
-    public class AvatarLoader : IAvatarLoader, IDisposable
+    private readonly IAvatarCache _cache;
+    private readonly IPlatform _platform;
+    private readonly IStorage _storage;
+    private readonly IFileLoader _fileLoader;
+    private readonly IColorMapper _colorMapper;
+
+    private readonly object _locker;
+
+    public AvatarLoader(
+        IPlatform platform,
+        IStorage storage,
+        IFileLoader fileLoader,
+        IAvatarCache avatarCache,
+        IColorMapper colorMapper)
     {
-        private readonly IAvatarCache _cache;
-        private readonly IPlatform _platform;
-        private readonly IStorage _storage;
-        private readonly IFileLoader _fileLoader;
-        private readonly IColorMapper _colorMapper;
-
-        private readonly object _locker;
-
-        public AvatarLoader(
-            IPlatform platform,
-            IStorage storage,
-            IFileLoader fileLoader,
-            IAvatarCache avatarCache,
-            IColorMapper colorMapper)
-        {
-            _platform = platform;
-            _storage = storage;
-            _fileLoader = fileLoader;
-            _cache = avatarCache;
-            _colorMapper = colorMapper;
+        _platform = platform;
+        _storage = storage;
+        _fileLoader = fileLoader;
+        _cache = avatarCache;
+        _colorMapper = colorMapper;
             
-            _locker = new object();
-        }
+        _locker = new object();
+    }
 
-        public Avatar GetAvatar(AvatarKind kind, AvatarSize size)
+    public Avatar GetAvatar(AvatarKind kind, AvatarSize size)
+    {
+        return new Avatar
         {
-            return new Avatar
-            {
-                Bitmap = null,
-                Color = GetColor(kind),
-                Label = GetLabel(kind)
-            };
-        }
+            Bitmap = null,
+            Color = GetColor(kind),
+            Label = GetLabel(kind)
+        };
+    }
 
-        public Avatar GetAvatar(TdApi.User user, AvatarSize size)
-        {
-            int s = _platform.PixelDensity * (int) size;
+    public Avatar GetAvatar(TdApi.User user, AvatarSize size)
+    {
+        int s = _platform.PixelDensity * (int) size;
             
-            return new Avatar
+        return new Avatar
+        {
+            Bitmap = GetBitmap(user.ProfilePhoto?.Small, s),
+            Color = GetColor(user),
+            Label = GetLabel(user)
+        };
+    }
+
+    public Avatar GetAvatar(TdApi.Chat chat, AvatarSize size)
+    {
+        int s = _platform.PixelDensity * (int) size;
+            
+        return new Avatar
+        {
+            Bitmap = GetBitmap(chat.Photo?.Small, s),
+            Color = GetColor(chat),
+            Label = GetLabel(chat)
+        };
+    }
+
+    public IObservable<Avatar> LoadAvatar(AvatarKind kind, AvatarSize size)
+    {
+        return Observable.Return(GetAvatar(kind, size));
+    }
+
+    public IObservable<Avatar> LoadAvatar(TdApi.User user, AvatarSize size)
+    {
+        int s = _platform.PixelDensity * (int) size;
+            
+        return LoadBitmap(user.ProfilePhoto?.Small, s)
+            .Select(bitmap => new Avatar
             {
-                Bitmap = GetBitmap(user.ProfilePhoto?.Small, s),
+                Bitmap = bitmap,
                 Color = GetColor(user),
                 Label = GetLabel(user)
-            };
-        }
+            });
+    }
 
-        public Avatar GetAvatar(TdApi.Chat chat, AvatarSize size)
-        {
-            int s = _platform.PixelDensity * (int) size;
+    public IObservable<Avatar> LoadAvatar(TdApi.Chat chat, AvatarSize size)
+    {
+        int s = _platform.PixelDensity * (int) size;
             
-            return new Avatar
+        return LoadBitmap(chat.Photo?.Small, s)
+            .Select(bitmap => new Avatar
             {
-                Bitmap = GetBitmap(chat.Photo?.Small, s),
+                Bitmap = bitmap,
                 Color = GetColor(chat),
                 Label = GetLabel(chat)
-            };
-        }
+            });
+    }
 
-        public IObservable<Avatar> LoadAvatar(AvatarKind kind, AvatarSize size)
+    private string GetLabel(AvatarKind kind)
+    {
+        switch (kind)
         {
-            return Observable.Return(GetAvatar(kind, size));
+            case AvatarKind.Home:
+                return "@";
+            default:
+                return "";
         }
-
-        public IObservable<Avatar> LoadAvatar(TdApi.User user, AvatarSize size)
-        {
-            int s = _platform.PixelDensity * (int) size;
-            
-            return LoadBitmap(user.ProfilePhoto?.Small, s)
-                .Select(bitmap => new Avatar
-                {
-                    Bitmap = bitmap,
-                    Color = GetColor(user),
-                    Label = GetLabel(user)
-                });
-        }
-
-        public IObservable<Avatar> LoadAvatar(TdApi.Chat chat, AvatarSize size)
-        {
-            int s = _platform.PixelDensity * (int) size;
-            
-            return LoadBitmap(chat.Photo?.Small, s)
-                .Select(bitmap => new Avatar
-                {
-                    Bitmap = bitmap,
-                    Color = GetColor(chat),
-                    Label = GetLabel(chat)
-                });
-        }
-
-        private string GetLabel(AvatarKind kind)
-        {
-            switch (kind)
-            {
-                case AvatarKind.Home:
-                    return "@";
-                default:
-                    return "";
-            }
-        }
+    }
         
-        private string GetLabel(TdApi.Chat chat)
+    private string GetLabel(TdApi.Chat chat)
+    {
+        var title = chat.Title;
+        return string.IsNullOrWhiteSpace(title) ? null : title.Substring(0, 1).ToUpper();
+    }
+
+    private string GetLabel(TdApi.User user)
+    {
+        if (!string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName))
         {
-            var title = chat.Title;
-            return string.IsNullOrWhiteSpace(title) ? null : title.Substring(0, 1).ToUpper();
+            return new string(new []{ user.FirstName[0], user.LastName[0] });
         }
 
-        private string GetLabel(TdApi.User user)
+        if (!string.IsNullOrWhiteSpace(user.FirstName))
         {
-            if (!string.IsNullOrWhiteSpace(user.FirstName) && !string.IsNullOrWhiteSpace(user.LastName))
-            {
-                return new string(new []{ user.FirstName[0], user.LastName[0] });
-            }
-
-            if (!string.IsNullOrWhiteSpace(user.FirstName))
-            {
-                return new string(user.FirstName[0], 1);
-            }
+            return new string(user.FirstName[0], 1);
+        }
             
-            if (!string.IsNullOrWhiteSpace(user.LastName))
+        if (!string.IsNullOrWhiteSpace(user.LastName))
+        {
+            return new string(user.LastName[0], 1);
+        }
+
+        return null;
+    }
+
+    private Color GetColor(AvatarKind kind)
+    {
+        return Color.Parse("#" + _colorMapper[(int)kind]);
+    }
+
+    private Color GetColor(TdApi.User user)
+    {
+        return Color.Parse("#" + _colorMapper[user.Id]);
+    }
+
+    private Color GetColor(TdApi.Chat chat)
+    {
+        return Color.Parse("#" + _colorMapper[chat.Id]);
+    }
+
+    private Bitmap GetBitmap(TdApi.File file, int size)
+    {
+        if (file?.Local?.Path != null)
+        {
+            var resizedFilePath = GetResizedPath(file.Local.Path, size);
+            if (_cache.TryGetValue(resizedFilePath, out var bitmap))
             {
-                return new string(user.LastName[0], 1);
+                return (Bitmap) bitmap;
             }
-
-            return null;
         }
 
-        private Color GetColor(AvatarKind kind)
+        return null;
+    }
+
+    private IObservable<Bitmap> LoadBitmap(TdApi.File file, int size)
+    {   
+        if (file != null)
         {
-            return Color.Parse("#" + _colorMapper[(int)kind]);
+            return _fileLoader.LoadFile(file, LoadPriority.Max)
+                .FirstAsync(f => f.Local != null && f.Local.IsDownloadingCompleted)
+                .SelectMany(f => GetBitmapAsync(f.Local.Path, size));
         }
 
-        private Color GetColor(TdApi.User user)
-        {
-            return Color.Parse("#" + _colorMapper[user.Id]);
-        }
+        return Observable.Return<Bitmap>(null);
+    }
 
-        private Color GetColor(TdApi.Chat chat)
+    private Task<Bitmap> GetBitmapAsync(string filePath, int size)
+    {
+        var resizedFilePath = GetResizedPath(filePath, size);
+            
+        // return cached version
+        if (_cache.TryGetValue(resizedFilePath, out var item))
         {
-            return Color.Parse("#" + _colorMapper[chat.Id]);
+            var bitmap = (Bitmap) item;
+            return Task.FromResult(bitmap);
         }
-
-        private Bitmap GetBitmap(TdApi.File file, int size)
+            
+        // return resized version from disk
+        if (File.Exists(resizedFilePath))
         {
-            if (file?.Local?.Path != null)
+            lock (_locker)
             {
-                var resizedFilePath = GetResizedPath(file.Local.Path, size);
-                if (_cache.TryGetValue(resizedFilePath, out var bitmap))
+                if (File.Exists(resizedFilePath))
                 {
-                    return (Bitmap) bitmap;
+                    var bitmap = new Bitmap(resizedFilePath);
+                    _cache.Set(resizedFilePath, bitmap, new MemoryCacheEntryOptions
+                    {
+                        Size = 1
+                    });
+                    return Task.FromResult(bitmap);
                 }
             }
-
-            return null;
         }
-
-        private IObservable<Bitmap> LoadBitmap(TdApi.File file, int size)
-        {   
-            if (file != null)
-            {
-                return _fileLoader.LoadFile(file, LoadPriority.Max)
-                    .FirstAsync(f => f.Local != null && f.Local.IsDownloadingCompleted)
-                    .SelectMany(f => GetBitmapAsync(f.Local.Path, size));
-            }
-
-            return Observable.Return<Bitmap>(null);
-        }
-
-        private Task<Bitmap> GetBitmapAsync(string filePath, int size)
+            
+        // resize and return image
+        if (File.Exists(filePath))
         {
-            var resizedFilePath = GetResizedPath(filePath, size);
-            
-            // return cached version
-            if (_cache.TryGetValue(resizedFilePath, out var item))
-            {
-                var bitmap = (Bitmap) item;
-                return Task.FromResult(bitmap);
-            }
-            
-            // return resized version from disk
-            if (File.Exists(resizedFilePath))
+            return Task.Run(() =>
             {
                 lock (_locker)
                 {
+                    if (File.Exists(filePath) && !File.Exists(resizedFilePath))
+                    {
+                        if (_platform is WindowsPlatform)
+                        {
+                            ResizeWithSystemDrawing(filePath, resizedFilePath, size);
+                        }
+                        else
+                        {
+                            ResizeWithImageSharp(filePath, resizedFilePath, size);
+                        }
+                    }
+
                     if (File.Exists(resizedFilePath))
                     {
                         var bitmap = new Bitmap(resizedFilePath);
@@ -215,97 +246,65 @@ namespace Tel.Egram.Services.Graphics.Avatars
                         {
                             Size = 1
                         });
-                        return Task.FromResult(bitmap);
+                        return bitmap;
                     }
+
+                    return null;
                 }
-            }
+            });
+        }
+
+        return Task.FromResult<Bitmap>(null);
+    }
+
+    private string GetResizedPath(string localPath, int size)
+    {   
+        var originalName = Path.GetFileNameWithoutExtension(localPath);
+        var originalExtension = Path.GetExtension(localPath);
+
+        return Path.Combine(
+            _storage.AvatarCacheDirectory,
+            $"{originalName}_{size}{originalExtension}");
+    }
+
+    private void ResizeWithSystemDrawing(string filePath, string resizedFilePath, int size)
+    {
+        var image = DrawingImage.FromFile(filePath);
             
-            // resize and return image
-            if (File.Exists(filePath))
-            {
-                return Task.Run(() =>
-                {
-                    lock (_locker)
-                    {
-                        if (File.Exists(filePath) && !File.Exists(resizedFilePath))
-                        {
-                            if (_platform is WindowsPlatform)
-                            {
-                                ResizeWithSystemDrawing(filePath, resizedFilePath, size);
-                            }
-                            else
-                            {
-                                ResizeWithImageSharp(filePath, resizedFilePath, size);
-                            }
-                        }
+        var destRect = new DrawingRectangle(0, 0, size, size);
+        var destImage = new DrawingBitmap(size, size);
 
-                        if (File.Exists(resizedFilePath))
-                        {
-                            var bitmap = new Bitmap(resizedFilePath);
-                            _cache.Set(resizedFilePath, bitmap, new MemoryCacheEntryOptions
-                            {
-                                Size = 1
-                            });
-                            return bitmap;
-                        }
+        destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
 
-                        return null;
-                    }
-                });
-            }
-
-            return Task.FromResult<Bitmap>(null);
-        }
-
-        private string GetResizedPath(string localPath, int size)
-        {   
-            var originalName = Path.GetFileNameWithoutExtension(localPath);
-            var originalExtension = Path.GetExtension(localPath);
-
-            return Path.Combine(
-                _storage.AvatarCacheDirectory,
-                $"{originalName}_{size}{originalExtension}");
-        }
-
-        private void ResizeWithSystemDrawing(string filePath, string resizedFilePath, int size)
+        using (var graphics = DrawingGraphics.FromImage(destImage))
         {
-            var image = DrawingImage.FromFile(filePath);
-            
-            var destRect = new DrawingRectangle(0, 0, size, size);
-            var destImage = new DrawingBitmap(size, size);
+            graphics.CompositingMode = CompositingMode.SourceCopy;
+            graphics.CompositingQuality = CompositingQuality.HighQuality;
+            graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+            graphics.SmoothingMode = SmoothingMode.HighQuality;
+            graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
 
-            destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-            using (var graphics = DrawingGraphics.FromImage(destImage))
+            using (var wrapMode = new ImageAttributes())
             {
-                graphics.CompositingMode = CompositingMode.SourceCopy;
-                graphics.CompositingQuality = CompositingQuality.HighQuality;
-                graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                graphics.SmoothingMode = SmoothingMode.HighQuality;
-                graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
-
-                using (var wrapMode = new ImageAttributes())
-                {
-                    wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                    graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-                }
-            }
-
-            destImage.Save(resizedFilePath);
-        }
-
-        private void ResizeWithImageSharp(string filePath, string resizedFilePath, int size)
-        {
-            using (var image = SixLabors.ImageSharp.Image.Load(filePath))
-            {
-                image.Mutate(ctx=>ctx.Resize(size, size));
-                image.Save(resizedFilePath);
+                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
+                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
             }
         }
 
-        public void Dispose()
+        destImage.Save(resizedFilePath);
+    }
+
+    private void ResizeWithImageSharp(string filePath, string resizedFilePath, int size)
+    {
+        using (var image = SixLabors.ImageSharp.Image.Load(filePath))
         {
-            _cache.Dispose();
+            image.Mutate(ctx=>ctx.Resize(size, size));
+            image.Save(resizedFilePath);
         }
+    }
+
+    public void Dispose()
+    {
+        _cache.Dispose();
     }
 }

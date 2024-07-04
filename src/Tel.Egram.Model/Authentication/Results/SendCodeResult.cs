@@ -1,7 +1,6 @@
-namespace Tel.Egram.Model.Authentication.Results
+namespace Tel.Egram.Model.Authentication.Results;
+
+public class SendCodeResult
 {
-    public class SendCodeResult
-    {
         
-    }
 }

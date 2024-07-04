@@ -12,13 +12,12 @@ using Tel.Egram.Model.Messenger.Homepage;
 using Tel.Egram.Services.Utils;
 using Tel.Egram.Services.Utils.Reactive;
 
-namespace Tel.Egram.Views.Messenger.Homepage
-{
-    public class HomepageControl : BaseControl<HomepageModel>
-    {   
-        public HomepageControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+namespace Tel.Egram.Views.Messenger.Homepage;
+
+public class HomepageControl : BaseControl<HomepageModel>
+{   
+    public HomepageControl()
+    {
+        AvaloniaXamlLoader.Load(this);
     }
 }

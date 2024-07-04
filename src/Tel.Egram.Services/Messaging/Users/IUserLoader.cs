@@ -1,9 +1,8 @@
 using System;
 
-namespace Tel.Egram.Services.Messaging.Users
+namespace Tel.Egram.Services.Messaging.Users;
+
+public interface IUserLoader
 {
-    public interface IUserLoader
-    {
-        IObservable<User> GetMe();
-    }
+    IObservable<User> GetMe();
 }

@@ -2,112 +2,111 @@ using TdLib;
 using Tel.Egram.Model.Messenger.Explorer.Messages;
 using Tel.Egram.Services.Messaging.Messages;
 
-namespace Tel.Egram.Model.Messenger.Explorer.Factories
+namespace Tel.Egram.Model.Messenger.Explorer.Factories;
+
+public class NoteMessageModelFactory : INoteMessageModelFactory
 {
-    public class NoteMessageModelFactory : INoteMessageModelFactory
+    public MessageModel CreateCallMessage(Message message, TdApi.MessageContent.MessageCall messageCall)
     {
-        public MessageModel CreateCallMessage(Message message, TdApi.MessageContent.MessageCall messageCall)
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateBasicGroupChatCreateMessage(Message message, TdApi.MessageContent.MessageBasicGroupChatCreate basicGroupChatCreate)
+    public MessageModel CreateBasicGroupChatCreateMessage(Message message, TdApi.MessageContent.MessageBasicGroupChatCreate basicGroupChatCreate)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateChatChangeTitleMessage(Message message, TdApi.MessageContent.MessageChatChangeTitle chatChangeTitle)
+    public MessageModel CreateChatChangeTitleMessage(Message message, TdApi.MessageContent.MessageChatChangeTitle chatChangeTitle)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateChatChangePhotoMessage(Message message, TdApi.MessageContent.MessageChatChangePhoto chatChangePhoto)
+    public MessageModel CreateChatChangePhotoMessage(Message message, TdApi.MessageContent.MessageChatChangePhoto chatChangePhoto)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateChatDeletePhotoMessage(Message message, TdApi.MessageContent.MessageChatDeletePhoto chatDeletePhoto)
+    public MessageModel CreateChatDeletePhotoMessage(Message message, TdApi.MessageContent.MessageChatDeletePhoto chatDeletePhoto)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateChatAddMembersMessage(Message message, TdApi.MessageContent.MessageChatAddMembers chatAddMembers)
+    public MessageModel CreateChatAddMembersMessage(Message message, TdApi.MessageContent.MessageChatAddMembers chatAddMembers)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateChatJoinByLinkMessage(Message message, TdApi.MessageContent.MessageChatJoinByLink chatJoinByLink)
+    public MessageModel CreateChatJoinByLinkMessage(Message message, TdApi.MessageContent.MessageChatJoinByLink chatJoinByLink)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateChatDeleteMemberMessage(Message message, TdApi.MessageContent.MessageChatDeleteMember chatDeleteMember)
+    public MessageModel CreateChatDeleteMemberMessage(Message message, TdApi.MessageContent.MessageChatDeleteMember chatDeleteMember)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateChatUpgradeToMessage(Message message, TdApi.MessageContent.MessageChatUpgradeTo chatUpgradeTo)
+    public MessageModel CreateChatUpgradeToMessage(Message message, TdApi.MessageContent.MessageChatUpgradeTo chatUpgradeTo)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateChatUpgradeFromMessage(Message message, TdApi.MessageContent.MessageChatUpgradeFrom chatUpgradeFrom)
+    public MessageModel CreateChatUpgradeFromMessage(Message message, TdApi.MessageContent.MessageChatUpgradeFrom chatUpgradeFrom)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreatePinMessageMessage(Message message, TdApi.MessageContent.MessagePinMessage pinMessage)
+    public MessageModel CreatePinMessageMessage(Message message, TdApi.MessageContent.MessagePinMessage pinMessage)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateScreenshotTakenMessage(Message message, TdApi.MessageContent.MessageScreenshotTaken screenshotTaken)
+    public MessageModel CreateScreenshotTakenMessage(Message message, TdApi.MessageContent.MessageScreenshotTaken screenshotTaken)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
+    }
 
-        public MessageModel CreateCustomServiceActionMessage(Message message, TdApi.MessageContent.MessageCustomServiceAction customServiceAction)
+    public MessageModel CreateCustomServiceActionMessage(Message message, TdApi.MessageContent.MessageCustomServiceAction customServiceAction)
+    {
+        return new UnsupportedMessageModel
         {
-            return new UnsupportedMessageModel
-            {
-                Message = message
-            };
-        }
+            Message = message
+        };
     }
 }

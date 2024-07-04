@@ -1,10 +1,9 @@
-namespace Tel.Egram.Services.Graphics
+namespace Tel.Egram.Services.Graphics;
+
+public interface IColorMapper
 {
-    public interface IColorMapper
+    string this[long id]
     {
-        string this[long id]
-        {
-            get;
-        }
+        get;
     }
 }

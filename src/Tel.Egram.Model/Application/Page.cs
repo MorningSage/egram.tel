@@ -1,9 +1,8 @@
-namespace Tel.Egram.Model.Application
+namespace Tel.Egram.Model.Application;
+
+public enum Page
 {
-    public enum Page
-    {
-        Initial = 0,
-        Authentication = 1,
-        Workspace = 2
-    }
+    Initial = 0,
+    Authentication = 1,
+    Workspace = 2
 }

@@ -1,12 +1,11 @@
-namespace Tel.Egram.Model.Workspace
+namespace Tel.Egram.Model.Workspace;
+
+public enum ContentKind
 {
-    public enum ContentKind
-    {
-        Home,
-        Directs,
-        Groups,
-        Channels,
-        Bots,
-        Settings
-    }
+    Home,
+    Directs,
+    Groups,
+    Channels,
+    Bots,
+    Settings
 }

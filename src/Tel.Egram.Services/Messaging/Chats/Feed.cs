@@ -1,7 +1,6 @@
-namespace Tel.Egram.Services.Messaging.Chats
+namespace Tel.Egram.Services.Messaging.Chats;
+
+public abstract class Feed
 {
-    public abstract class Feed
-    {
         
-    }
 }

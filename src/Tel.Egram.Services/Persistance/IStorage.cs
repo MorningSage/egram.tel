@@ -1,17 +1,16 @@
-﻿namespace Tel.Egram.Services.Persistance
+﻿namespace Tel.Egram.Services.Persistance;
+
+public interface IStorage
 {
-    public interface IStorage
-    {
-        string BaseDirectory { get; }
+    string BaseDirectory { get; }
 
-        string LogDirectory { get; }
+    string LogDirectory { get; }
 
-        string TdLibDirectory { get; }
+    string TdLibDirectory { get; }
         
-        string CacheDirectory { get; }
+    string CacheDirectory { get; }
         
-        string AvatarCacheDirectory { get; }
+    string AvatarCacheDirectory { get; }
         
-        string DatabaseFile { get; }
-    }
+    string DatabaseFile { get; }
 }

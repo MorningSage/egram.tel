@@ -1,7 +1,6 @@
-namespace Tel.Egram.Services.Graphics.Avatars
+namespace Tel.Egram.Services.Graphics.Avatars;
+
+public enum AvatarKind
 {
-    public enum AvatarKind
-    {
-        Home = 0
-    }
+    Home = 0
 }

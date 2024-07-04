@@ -1,7 +1,6 @@
-namespace Tel.Egram.Model.Messenger.Explorer.Messages.Notes
+namespace Tel.Egram.Model.Messenger.Explorer.Messages.Notes;
+
+public class NoteMessageModel : MessageModel
 {
-    public class NoteMessageModel : MessageModel
-    {
         
-    }
 }

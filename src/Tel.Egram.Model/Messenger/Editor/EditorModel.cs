@@ -4,38 +4,37 @@ using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Services.Messaging.Chats;
 
-namespace Tel.Egram.Model.Messenger.Editor
-{
-    [AddINotifyPropertyChangedInterface]
-    public class EditorModel : IActivatableViewModel
-    {
-        public bool IsVisible { get; set; } = true;
-        
-        public string Text { get; set; }
-        
-        public ReactiveCommand<Unit, Unit> SendCommand { get; set; }
-        
-        public EditorModel(Chat chat)
-        {
-            this.WhenActivated(disposables =>
-            {
-                this.BindSender(chat)
-                    .DisposeWith(disposables);
-            });
-        }
+namespace Tel.Egram.Model.Messenger.Editor;
 
-        private EditorModel()
-        {
-        }
+[AddINotifyPropertyChangedInterface]
+public class EditorModel : IActivatableViewModel
+{
+    public bool IsVisible { get; set; } = true;
         
-        public static EditorModel Hidden()
-        {
-            return new EditorModel
-            {
-                IsVisible = false
-            };
-        }
+    public string Text { get; set; }
         
-        public ViewModelActivator Activator { get; } = new ViewModelActivator();
+    public ReactiveCommand<Unit, Unit> SendCommand { get; set; }
+        
+    public EditorModel(Chat chat)
+    {
+        this.WhenActivated(disposables =>
+        {
+            this.BindSender(chat)
+                .DisposeWith(disposables);
+        });
     }
+
+    private EditorModel()
+    {
+    }
+        
+    public static EditorModel Hidden()
+    {
+        return new EditorModel
+        {
+            IsVisible = false
+        };
+    }
+        
+    public ViewModelActivator Activator { get; } = new ViewModelActivator();
 }

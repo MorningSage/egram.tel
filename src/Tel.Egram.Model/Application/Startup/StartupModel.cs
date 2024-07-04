@@ -1,10 +1,9 @@
 using PropertyChanged;
 
-namespace Tel.Egram.Model.Application.Startup
+namespace Tel.Egram.Model.Application.Startup;
+
+[AddINotifyPropertyChangedInterface]
+public class StartupModel
 {
-    [AddINotifyPropertyChangedInterface]
-    public class StartupModel
-    {
         
-    }
 }

@@ -1,27 +1,26 @@
 using System.Reactive.Disposables;
 using ReactiveUI;
 
-namespace Tel.Egram.Model.Messenger.Explorer.Messages.Basic
+namespace Tel.Egram.Model.Messenger.Explorer.Messages.Basic;
+
+public class TextMessageModel : MessageModel, IActivatableViewModel
 {
-    public class TextMessageModel : MessageModel, IActivatableViewModel
+    public string Text { get; set; }
+        
+    public TextMessageModel()
     {
-        public string Text { get; set; }
-        
-        public TextMessageModel()
+        this.WhenActivated(disposables =>
         {
-            this.WhenActivated(disposables =>
-            {
-                this.BindAvatarLoading()
-                    .DisposeWith(disposables);
+            this.BindAvatarLoading()
+                .DisposeWith(disposables);
                 
-                if (Reply != null)
-                {
-                    Reply.BindPreviewLoading()
-                        .DisposeWith(disposables);
-                }
-            });
-        }
-        
-        public ViewModelActivator Activator { get; } = new ViewModelActivator();
+            if (Reply != null)
+            {
+                Reply.BindPreviewLoading()
+                    .DisposeWith(disposables);
+            }
+        });
     }
+        
+    public ViewModelActivator Activator { get; } = new ViewModelActivator();
 }

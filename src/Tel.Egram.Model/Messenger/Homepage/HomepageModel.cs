@@ -4,33 +4,32 @@ using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Model.Messenger.Explorer.Messages;
 
-namespace Tel.Egram.Model.Messenger.Homepage
+namespace Tel.Egram.Model.Messenger.Homepage;
+
+[AddINotifyPropertyChangedInterface]
+public class HomepageModel : IActivatableViewModel
 {
-    [AddINotifyPropertyChangedInterface]
-    public class HomepageModel : IActivatableViewModel
+    public bool IsVisible { get; set; } = true;
+        
+    public string SearchText { get; set; }
+        
+    public ObservableCollectionExtended<MessageModel> PromotedMessages { get; set; }
+        
+    public HomepageModel()
     {
-        public bool IsVisible { get; set; } = true;
-        
-        public string SearchText { get; set; }
-        
-        public ObservableCollectionExtended<MessageModel> PromotedMessages { get; set; }
-        
-        public HomepageModel()
-        {
 //            this.WhenActivated(disposables =>
 //            {
 //                
 //            });
-        }
+    }
         
-        public ViewModelActivator Activator => new ViewModelActivator();
+    public ViewModelActivator Activator => new ViewModelActivator();
 
-        public static HomepageModel Hidden()
+    public static HomepageModel Hidden()
+    {
+        return new HomepageModel
         {
-            return new HomepageModel
-            {
-                IsVisible = false
-            };
-        }
+            IsVisible = false
+        };
     }
 }

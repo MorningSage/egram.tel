@@ -5,23 +5,22 @@ using Avalonia.LogicalTree;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 
-namespace Tel.Egram.Views
-{
-    /// <summary>
-    /// Workaround for model activation
-    /// </summary>
-    public class BaseControl<TViewModel> : ReactiveUserControl<TViewModel>
-        where TViewModel : class
-    {   
-        public BaseControl(bool activate = true)
+namespace Tel.Egram.Views;
+
+/// <summary>
+/// Workaround for model activation
+/// </summary>
+public class BaseControl<TViewModel> : ReactiveUserControl<TViewModel>
+    where TViewModel : class
+{   
+    public BaseControl(bool activate = true)
+    {
+        if (activate)
         {
-            if (activate)
+            this.WhenActivated(disposables =>
             {
-                this.WhenActivated(disposables =>
-                {
-                    Disposable.Create(() => { }).DisposeWith(disposables);
-                });
-            }
+                Disposable.Create(() => { }).DisposeWith(disposables);
+            });
         }
     }
 }

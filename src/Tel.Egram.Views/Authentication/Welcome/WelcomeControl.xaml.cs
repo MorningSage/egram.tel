@@ -1,13 +1,12 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Tel.Egram.Views.Authentication.Welcome
+namespace Tel.Egram.Views.Authentication.Welcome;
+
+public class WelcomeControl : UserControl
 {
-    public class WelcomeControl : UserControl
+    public WelcomeControl()
     {
-        public WelcomeControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 }

@@ -1,8 +1,7 @@
-namespace Tel.Egram.Services.Utils.Platforms
+namespace Tel.Egram.Services.Utils.Platforms;
+
+public class LinuxPlatform : Platform
 {
-    public class LinuxPlatform : Platform
-    {
-        // TODO:
-        public override int PixelDensity => 1;
-    }
+    // TODO:
+    public override int PixelDensity => 1;
 }

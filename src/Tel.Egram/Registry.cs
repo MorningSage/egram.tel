@@ -68,10 +68,10 @@ namespace Tel.Egram
             });
         }
         
-        public static void AddPersistance(this IMutableDependencyResolver services)
-        {
-            services.RegisterLazySingleton<IResourceManager>(
-                () => new ResourceManager(typeof(MainApplication).Assembly));
+    public static void AddPersistance(this IMutableDependencyResolver services)
+    {
+        services.RegisterLazySingleton<IResourceManager>(
+            () => new ResourceManager());
             
             services.RegisterLazySingleton<IStorage>(() => new Storage());
             

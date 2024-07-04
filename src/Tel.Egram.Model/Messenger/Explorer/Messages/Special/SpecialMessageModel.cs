@@ -1,7 +1,6 @@
-namespace Tel.Egram.Model.Messenger.Explorer.Messages.Special
+namespace Tel.Egram.Model.Messenger.Explorer.Messages.Special;
+
+public class SpecialMessageModel : MessageModel
 {
-    public class SpecialMessageModel : MessageModel
-    {
         
-    }
 }

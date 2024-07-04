@@ -3,64 +3,63 @@ using Tel.Egram.Model.Messenger.Explorer.Messages;
 using Tel.Egram.Model.Messenger.Explorer.Messages.Special;
 using Tel.Egram.Services.Messaging.Messages;
 
-namespace Tel.Egram.Model.Messenger.Explorer.Factories
+namespace Tel.Egram.Model.Messenger.Explorer.Factories;
+
+public interface ISpecialMessageModelFactory
 {
-    public interface ISpecialMessageModelFactory
-    {
-        DocumentMessageModel CreateDocumentMessage(
-            Message message,
-            TdApi.MessageContent.MessageDocument messageDocument);
+    DocumentMessageModel CreateDocumentMessage(
+        Message message,
+        TdApi.MessageContent.MessageDocument messageDocument);
 
-        MessageModel CreateGameScoreMessage(
-            Message message,
-            TdApi.MessageContent.MessageGameScore gameScore);
+    MessageModel CreateGameScoreMessage(
+        Message message,
+        TdApi.MessageContent.MessageGameScore gameScore);
 
-        MessageModel CreatePaymentSuccessfulMessage(
-            Message message,
-            TdApi.MessageContent.MessagePaymentSuccessful paymentSuccessful);
+    MessageModel CreatePaymentSuccessfulMessage(
+        Message message,
+        TdApi.MessageContent.MessagePaymentSuccessful paymentSuccessful);
 
-        MessageModel CreatePaymentSuccessfulBotMessage(
-            Message message,
-            TdApi.MessageContent.MessagePaymentSuccessfulBot paymentSuccessfulBot);
+    MessageModel CreatePaymentSuccessfulBotMessage(
+        Message message,
+        TdApi.MessageContent.MessagePaymentSuccessfulBot paymentSuccessfulBot);
 
-        MessageModel CreateContactRegisteredMessage(
-            Message message,
-            TdApi.MessageContent.MessageContactRegistered contactRegistered);
+    MessageModel CreateContactRegisteredMessage(
+        Message message,
+        TdApi.MessageContent.MessageContactRegistered contactRegistered);
         
-        MessageModel CreateLocationMessage(
-            Message message,
-            TdApi.MessageContent.MessageLocation location);
+    MessageModel CreateLocationMessage(
+        Message message,
+        TdApi.MessageContent.MessageLocation location);
 
-        MessageModel CreateVenueMessage(
-            Message message,
-            TdApi.MessageContent.MessageVenue venue);
+    MessageModel CreateVenueMessage(
+        Message message,
+        TdApi.MessageContent.MessageVenue venue);
 
-        MessageModel CreateContactMessage(
-            Message message,
-            TdApi.MessageContent.MessageContact contact);
+    MessageModel CreateContactMessage(
+        Message message,
+        TdApi.MessageContent.MessageContact contact);
 
-        MessageModel CreateGameMessage(
-            Message message,
-            TdApi.MessageContent.MessageGame game);
+    MessageModel CreateGameMessage(
+        Message message,
+        TdApi.MessageContent.MessageGame game);
 
-        MessageModel CreateInvoiceMessage(
-            Message message,
-            TdApi.MessageContent.MessageInvoice invoice);
+    MessageModel CreateInvoiceMessage(
+        Message message,
+        TdApi.MessageContent.MessageInvoice invoice);
 
-        MessageModel CreatePassportDataSentMessage(
-            Message message,
-            TdApi.MessageContent.MessagePassportDataSent passportDataSent);
+    MessageModel CreatePassportDataSentMessage(
+        Message message,
+        TdApi.MessageContent.MessagePassportDataSent passportDataSent);
 
-        MessageModel CreatePassportDataReceivedMessage(
-            Message message,
-            TdApi.MessageContent.MessagePassportDataReceived passportDataReceived);
+    MessageModel CreatePassportDataReceivedMessage(
+        Message message,
+        TdApi.MessageContent.MessagePassportDataReceived passportDataReceived);
 
-        MessageModel CreateAudioMessage(
-            Message message,
-            TdApi.MessageContent.MessageAudio messageAudio);
+    MessageModel CreateAudioMessage(
+        Message message,
+        TdApi.MessageContent.MessageAudio messageAudio);
 
-        MessageModel CreateVoiceNoteMessage(
-            Message message,
-            TdApi.MessageContent.MessageVoiceNote voiceNote);
-    }
+    MessageModel CreateVoiceNoteMessage(
+        Message message,
+        TdApi.MessageContent.MessageVoiceNote voiceNote);
 }

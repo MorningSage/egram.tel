@@ -1,7 +1,6 @@
-namespace Tel.Egram.Model.Authentication.Results
+namespace Tel.Egram.Model.Authentication.Results;
+
+public class CheckPasswordResult
 {
-    public class CheckPasswordResult
-    {
         
-    }
 }

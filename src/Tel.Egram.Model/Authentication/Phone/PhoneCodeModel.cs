@@ -2,17 +2,16 @@ using Avalonia.Media.Imaging;
 using PropertyChanged;
 using ReactiveUI;
 
-namespace Tel.Egram.Model.Authentication.Phone
+namespace Tel.Egram.Model.Authentication.Phone;
+
+[AddINotifyPropertyChangedInterface]
+public class PhoneCodeModel
 {
-    [AddINotifyPropertyChangedInterface]
-    public class PhoneCodeModel
-    {
-        public string Code { get; init; } = string.Empty;
+    public string Code { get; init; } = string.Empty;
         
-        public string CountryCode { get; init; } = string.Empty;
+    public string CountryCode { get; init; } = string.Empty;
         
-        public Bitmap? Flag { get; init; }
+    public Bitmap? Flag { get; init; }
         
-        public string Mask { get; init; } = string.Empty;
-    }
+    public string Mask { get; init; } = string.Empty;
 }

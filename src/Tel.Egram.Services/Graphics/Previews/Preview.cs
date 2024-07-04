@@ -1,11 +1,10 @@
 using Avalonia.Media.Imaging;
 
-namespace Tel.Egram.Services.Graphics.Previews
+namespace Tel.Egram.Services.Graphics.Previews;
+
+public class Preview
 {
-    public class Preview
-    {
-        public Bitmap Bitmap { get; set; }
+    public Bitmap Bitmap { get; set; }
         
-        public PreviewQuality Quality { get; set; }
-    }
+    public PreviewQuality Quality { get; set; }
 }

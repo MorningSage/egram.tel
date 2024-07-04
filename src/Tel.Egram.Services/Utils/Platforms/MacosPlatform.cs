@@ -1,8 +1,7 @@
-namespace Tel.Egram.Services.Utils.Platforms
+namespace Tel.Egram.Services.Utils.Platforms;
+
+public class MacosPlatform : Platform
 {
-    public class MacosPlatform : Platform
-    {
-        // TODO:
-        public override int PixelDensity => 2;
-    }
+    // TODO:
+    public override int PixelDensity => 2;
 }

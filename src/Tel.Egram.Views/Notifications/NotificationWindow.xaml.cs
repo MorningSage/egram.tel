@@ -6,37 +6,36 @@ using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using Tel.Egram.Model.Notifications;
 
-namespace Tel.Egram.Views.Notifications
+namespace Tel.Egram.Views.Notifications;
+
+public class NotificationWindow : BaseWindow<NotificationModel>
 {
-    public class NotificationWindow : BaseWindow<NotificationModel>
-    {
-        private static NotificationWindow _current;
+    private static NotificationWindow _current;
         
-        public NotificationWindow() : base(false)
+    public NotificationWindow() : base(false)
+    {
+        this.WhenActivated(disposables =>
         {
-            this.WhenActivated(disposables =>
-            {
-                this.BindAutohide()
-                    .DisposeWith(disposables);
-            });
+            this.BindAutohide()
+                .DisposeWith(disposables);
+        });
             
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
+    }
 
-        public override void Show()
-        {   
-            _current?.Close();
+    public override void Show()
+    {   
+        _current?.Close();
             
-            base.Show();
+        base.Show();
 
-            _current = this;
-        }
+        _current = this;
+    }
 
-        protected override void OnClosed(EventArgs e)
-        {
-            _current = null;
+    protected override void OnClosed(EventArgs e)
+    {
+        _current = null;
             
-            base.OnClosed(e);
-        }
+        base.OnClosed(e);
     }
 }

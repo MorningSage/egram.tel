@@ -1,8 +1,7 @@
-namespace Tel.Egram.Services.Graphics.Avatars
+namespace Tel.Egram.Services.Graphics.Avatars;
+
+public enum AvatarSize
 {
-    public enum AvatarSize
-    {
-        Small = 24,
-        Regular = 32
-    }
+    Small = 24,
+    Regular = 32
 }

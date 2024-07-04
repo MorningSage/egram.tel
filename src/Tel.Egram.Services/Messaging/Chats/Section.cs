@@ -1,11 +1,10 @@
-namespace Tel.Egram.Services.Messaging.Chats
+namespace Tel.Egram.Services.Messaging.Chats;
+
+public enum Section
 {
-    public enum Section
-    {
-        Home,
-        Directs,
-        Groups,
-        Channels,
-        Bots
-    }
+    Home,
+    Directs,
+    Groups,
+    Channels,
+    Bots
 }

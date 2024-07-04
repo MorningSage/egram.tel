@@ -1,8 +1,7 @@
-namespace Tel.Egram.Services.Graphics.Previews
+namespace Tel.Egram.Services.Graphics.Previews;
+
+public enum PreviewQuality
 {
-    public enum PreviewQuality
-    {
-        Low,
-        High
-    }
+    Low,
+    High
 }

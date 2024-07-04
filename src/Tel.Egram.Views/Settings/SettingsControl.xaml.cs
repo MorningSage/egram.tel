@@ -3,13 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Tel.Egram.Model.Settings;
 
-namespace Tel.Egram.Views.Settings
+namespace Tel.Egram.Views.Settings;
+
+public class SettingsControl : BaseControl<SettingsModel>
 {
-    public class SettingsControl : BaseControl<SettingsModel>
+    public SettingsControl()
     {
-        public SettingsControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 }

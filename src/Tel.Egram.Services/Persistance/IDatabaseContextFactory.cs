@@ -1,7 +1,6 @@
-namespace Tel.Egram.Services.Persistance
+namespace Tel.Egram.Services.Persistance;
+
+public interface IDatabaseContextFactory
 {
-    public interface IDatabaseContextFactory
-    {
-        DatabaseContext CreateDbContext();
-    }
+    DatabaseContext CreateDbContext();
 }

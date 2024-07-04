@@ -2,13 +2,12 @@
 using Tel.Egram.Model.Authentication;
 using Tel.Egram.Model.Authentication.Phone;
 
-namespace Tel.Egram.Views.Authentication.Phone
+namespace Tel.Egram.Views.Authentication.Phone;
+
+public class PhoneCodeControl : BaseControl<PhoneCodeModel>
 {
-    public class PhoneCodeControl : BaseControl<PhoneCodeModel>
+    public PhoneCodeControl()
     {
-        public PhoneCodeControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 }

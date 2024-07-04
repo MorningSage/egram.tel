@@ -1,10 +1,9 @@
 using PropertyChanged;
 
-namespace Tel.Egram.Model.Messenger.Explorer.Messages
+namespace Tel.Egram.Model.Messenger.Explorer.Messages;
+
+[AddINotifyPropertyChangedInterface]
+public class UnsupportedMessageModel : MessageModel
 {
-    [AddINotifyPropertyChangedInterface]
-    public class UnsupportedMessageModel : MessageModel
-    {
         
-    }
 }

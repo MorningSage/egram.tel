@@ -3,13 +3,12 @@ using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using Tel.Egram.Model.Workspace;
 
-namespace Tel.Egram.Views.Workspace
+namespace Tel.Egram.Views.Workspace;
+
+public class WorkspaceControl : BaseControl<WorkspaceModel>
 {
-    public class WorkspaceControl : BaseControl<WorkspaceModel>
+    public WorkspaceControl()
     {
-        public WorkspaceControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 }

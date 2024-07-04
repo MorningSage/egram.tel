@@ -4,86 +4,85 @@ using System.Reactive.Linq;
 using TdLib;
 using Tel.Egram.Services.Utils.TdLib;
 
-namespace Tel.Egram.Services.Messaging.Messages
+namespace Tel.Egram.Services.Messaging.Messages;
+
+/// <summary>
+/// Caches execution results for the scope of request
+/// </summary>
+public class MessageLoaderScope : IDisposable
 {
-    /// <summary>
-    /// Caches execution results for the scope of request
-    /// </summary>
-    public class MessageLoaderScope : IDisposable
+    private readonly IAgent _agent;
+
+    private readonly ConcurrentDictionary<long, TdApi.User> _users
+        = new ConcurrentDictionary<long, TdApi.User>();
+        
+    private readonly ConcurrentDictionary<long, TdApi.Chat> _chats
+        = new ConcurrentDictionary<long, TdApi.Chat>();
+        
+    private readonly ConcurrentDictionary<(long, long), TdApi.Message> _messages
+        = new ConcurrentDictionary<(long, long), TdApi.Message>();
+
+    public MessageLoaderScope(IAgent agent)
     {
-        private readonly IAgent _agent;
+        _agent = agent;
+    }
 
-        private readonly ConcurrentDictionary<long, TdApi.User> _users
-            = new ConcurrentDictionary<long, TdApi.User>();
-        
-        private readonly ConcurrentDictionary<long, TdApi.Chat> _chats
-            = new ConcurrentDictionary<long, TdApi.Chat>();
-        
-        private readonly ConcurrentDictionary<(long, long), TdApi.Message> _messages
-            = new ConcurrentDictionary<(long, long), TdApi.Message>();
-
-        public MessageLoaderScope(IAgent agent)
+    public IObservable<TdApi.User> GetUser(long userId)
+    {
+        if (_users.TryGetValue(userId, out var user))
         {
-            _agent = agent;
+            return Observable.Return(user);
         }
 
-        public IObservable<TdApi.User> GetUser(long userId)
-        {
-            if (_users.TryGetValue(userId, out var user))
+        return _agent.Execute(new TdApi.GetUser
             {
-                return Observable.Return(user);
-            }
-
-            return _agent.Execute(new TdApi.GetUser
-                {
-                    UserId = userId
-                })
-                .Do(u =>
-                {
-                    _users.GetOrAdd(userId, u);
-                });
-        }
-
-        public IObservable<TdApi.Chat> GetChat(long chatId)
-        {
-            if (_chats.TryGetValue(chatId, out var chat))
+                UserId = userId
+            })
+            .Do(u =>
             {
-                return Observable.Return(chat);
-            }
+                _users.GetOrAdd(userId, u);
+            });
+    }
 
-            return _agent.Execute(new TdApi.GetChat
-                {
-                    ChatId = chatId
-                })
-                .Do(c =>
-                {
-                    _chats.GetOrAdd(chatId, c);
-                });
+    public IObservable<TdApi.Chat> GetChat(long chatId)
+    {
+        if (_chats.TryGetValue(chatId, out var chat))
+        {
+            return Observable.Return(chat);
         }
 
-        public IObservable<TdApi.Message> GetMessage(long chatId, long messageId)
-        {
-            if (_messages.TryGetValue((chatId, messageId), out var message))
+        return _agent.Execute(new TdApi.GetChat
             {
-                return Observable.Return(message);
-            }
+                ChatId = chatId
+            })
+            .Do(c =>
+            {
+                _chats.GetOrAdd(chatId, c);
+            });
+    }
 
-            return _agent.Execute(new TdApi.GetMessage
-                {
-                    ChatId = chatId,
-                    MessageId = messageId
-                })
-                .Do(m =>
-                {
-                    _messages.GetOrAdd((chatId, messageId), m);
-                });
-        }
-
-        public void Dispose()
+    public IObservable<TdApi.Message> GetMessage(long chatId, long messageId)
+    {
+        if (_messages.TryGetValue((chatId, messageId), out var message))
         {
-            _users.Clear();
-            _chats.Clear();
-            _messages.Clear();
+            return Observable.Return(message);
         }
+
+        return _agent.Execute(new TdApi.GetMessage
+            {
+                ChatId = chatId,
+                MessageId = messageId
+            })
+            .Do(m =>
+            {
+                _messages.GetOrAdd((chatId, messageId), m);
+            });
+    }
+
+    public void Dispose()
+    {
+        _users.Clear();
+        _chats.Clear();
+        _messages.Clear();
     }
 }

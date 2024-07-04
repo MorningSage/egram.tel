@@ -1,13 +1,12 @@
 using System;
 
-namespace Tel.Egram.Services.Utils.Formatting
+namespace Tel.Egram.Services.Utils.Formatting;
+
+public interface IStringFormatter
 {
-    public interface IStringFormatter
-    {
-        string FormatShortTime(DateTimeOffset dateTimeOffset);
+    string FormatShortTime(DateTimeOffset dateTimeOffset);
 
-        string FormatShortTime(int timestamp);
+    string FormatShortTime(int timestamp);
 
-        string FormatMemorySize(long bytes);
-    }
+    string FormatMemorySize(long bytes);
 }

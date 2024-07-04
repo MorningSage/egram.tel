@@ -1,13 +1,12 @@
 ﻿using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 
-namespace Tel.Egram.Views.Startup
+namespace Tel.Egram.Views.Startup;
+
+public class StartupControl : UserControl
 {
-    public class StartupControl : UserControl
+    public StartupControl()
     {
-        public StartupControl()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
+        AvaloniaXamlLoader.Load(this);
     }
 }

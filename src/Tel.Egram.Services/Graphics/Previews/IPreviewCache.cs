@@ -1,9 +1,8 @@
 using Microsoft.Extensions.Caching.Memory;
 
-namespace Tel.Egram.Services.Graphics.Previews
+namespace Tel.Egram.Services.Graphics.Previews;
+
+public interface IPreviewCache : IMemoryCache
 {
-    public interface IPreviewCache : IMemoryCache
-    {
         
-    }
 }
