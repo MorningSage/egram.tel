@@ -1,7 +1,8 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:phone="clr-namespace:Tel.Egram.Model.Authentication.Phone;assembly=Tel.Egram.Model">
+    xmlns:phone="clr-namespace:Tel.Egram.Model.Authentication.Phone;assembly=Tel.Egram.Model"
+    x:Class="Tel.Egram.Views.Authentication.Phone.PhoneCodeControl">
     
     <Design.DataContext>
         <phone:PhoneCodeModel />
