@@ -1,47 +1,27 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net8.0</TargetFramework>
-    <RuntimeIdentifiers>win-x64;osx-x64;linux-x64</RuntimeIdentifiers>
-    <LangVersion>12</LangVersion>
-    <Nullable>enable</Nullable>
-  </PropertyGroup>
 
-  <PropertyGroup>
-    <CFBundleName>Egram</CFBundleName>
-    <CFBundleDisplayName>Egram</CFBundleDisplayName>
-    <CFBundleIdentifier>tel.egram</CFBundleIdentifier>
-    <CFBundleExecutable>Tel.Egram</CFBundleExecutable>
-    <CFBundleIconFile>Egram.icns</CFBundleIconFile>
-    <NSPrincipalClass>AvaloniaApplication</NSPrincipalClass>
-    <NSHighResolutionCapable>true</NSHighResolutionCapable>
-  </PropertyGroup>
-  
-  <ItemGroup>
-    <ProjectReference Include="..\Tel.Egram.Application\Tel.Egram.Application.csproj" />
-    <ProjectReference Include="..\Tel.Egram.Model\Tel.Egram.Model.csproj" />
-    <ProjectReference Include="..\Tel.Egram.Services\Tel.Egram.Services.csproj" />
-  </ItemGroup>
-  
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.11" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.11" />
-    <PackageReference Include="Avalonia.Native" Version="11.0.11" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.11" />
-    <PackageReference Include="NSubsys" Version="1.0.0">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="ReactiveUI" Version="20.1.1" />
-    <PackageReference Include="System.Reactive" Version="6.0.1" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.6" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.6">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
-    <DotNetCliToolReference Include="dotnet-bundle" Version="0.9.8" />
-  </ItemGroup>
-  
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+        <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.0.11" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.0.11" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.11" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.11"/>
+        <PackageReference Include="Avalonia.Fonts.Inter" Version="11.0.11"/>
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.11"/>
+    </ItemGroup>
+    
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Tel.Egram.Application\Tel.Egram.Application.csproj" />
+    </ItemGroup>
+    
 </Project>

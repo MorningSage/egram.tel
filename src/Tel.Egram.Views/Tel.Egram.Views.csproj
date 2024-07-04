@@ -1,25 +1,25 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <RootNamespace>Tel.Egram.Views</RootNamespace>
-    <LangVersion>12</LangVersion>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="11.0.11" />
-    <PackageReference Include="Avalonia.Desktop" Version="11.0.11" />
-    <PackageReference Include="Avalonia.Diagnostics" Version="11.0.11" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.11" />
-    <PackageReference Include="DynamicData" Version="8.4.1" />
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.5.0" />
-    <PackageReference Include="ReactiveUI" Version="20.1.1" />
-    <PackageReference Include="System.Reactive" Version="6.0.1" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="**\*.xaml">
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Tel.Egram.Model\Tel.Egram.Model.csproj" />
-  </ItemGroup>
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.0.11" />
+        <PackageReference Include="Avalonia.Diagnostics" Version="11.0.11" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.11" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <AvaloniaResource Include="**\*.xaml">
+            <SubType>Designer</SubType>
+        </AvaloniaResource>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <ProjectReference Include="..\Tel.Egram.Model\Tel.Egram.Model.csproj" />
+    </ItemGroup>
+
 </Project>
