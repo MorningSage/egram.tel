@@ -7,7 +7,8 @@
     xmlns:basic1="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Basic"
     xmlns:visual1="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Visual"
     xmlns:special="clr-namespace:Tel.Egram.Model.Messenger.Explorer.Messages.Special;assembly=Tel.Egram.Model"
-    xmlns:special1="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Special">
+    xmlns:special1="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Special"
+    x:Class="Tel.Egram.Views.Messenger.Explorer.ExplorerControl">
     
 
     <!--VirtualizationMode="None"-->

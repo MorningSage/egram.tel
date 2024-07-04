@@ -1,6 +1,8 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
-    xmlns:shared="clr-namespace:Tel.Egram.Views.Shared">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:shared="clr-namespace:Tel.Egram.Views.Shared"
+    x:Class="Tel.Egram.Views.Workspace.Navigation.NavigationControl">
     
     <Grid
         ColumnDefinitions="*"

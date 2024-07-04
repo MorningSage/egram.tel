@@ -10,7 +10,8 @@
     CanResize="False"
     SystemDecorations="None"
     Background="#eeeeee"
-    Topmost="True">
+    Topmost="True"
+    x:Class="Tel.Egram.Views.Notifications.NotificationWindow">
     
     <Grid
         ColumnDefinitions="10,*,10"

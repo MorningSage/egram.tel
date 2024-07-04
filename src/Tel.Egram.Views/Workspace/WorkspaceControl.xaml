@@ -1,9 +1,10 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
-    xmlns:workspace="clr-namespace:Tel.Egram.Views.Workspace"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:settings="clr-namespace:Tel.Egram.Views.Settings"
     xmlns:messenger="clr-namespace:Tel.Egram.Views.Messenger"
-    xmlns:navigation="clr-namespace:Tel.Egram.Views.Workspace.Navigation">
+    xmlns:navigation="clr-namespace:Tel.Egram.Views.Workspace.Navigation"
+    x:Class="Tel.Egram.Views.Workspace.WorkspaceControl">
     
     <Grid
         ColumnDefinitions="64,*"

@@ -2,7 +2,8 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:proxy1="clr-namespace:Tel.Egram.Views.Popups.Proxy"
-    xmlns:proxy="clr-namespace:Tel.Egram.Model.Settings.Proxy;assembly=Tel.Egram.Model">
+    xmlns:proxy="clr-namespace:Tel.Egram.Model.Settings.Proxy;assembly=Tel.Egram.Model"
+    x:Class="Tel.Egram.Views.Popups.PopupControl">
     
     <Grid
         RowDefinitions="auto,*"

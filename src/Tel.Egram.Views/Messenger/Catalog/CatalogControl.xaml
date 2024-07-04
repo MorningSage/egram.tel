@@ -1,6 +1,8 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
-    xmlns:catalog="clr-namespace:Tel.Egram.Views.Messenger.Catalog">
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:catalog="clr-namespace:Tel.Egram.Views.Messenger.Catalog"
+    x:Class="Tel.Egram.Views.Messenger.Catalog.CatalogControl">
     
     <Grid
         Width="220"
