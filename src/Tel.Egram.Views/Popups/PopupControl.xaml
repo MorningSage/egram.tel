@@ -51,7 +51,7 @@
                     BorderThickness="0">
                     
                     <Image
-                        Source="avares://Tel.Egram.Application/Icons/Dark/X32.png"
+                        Source="avares://Tel.Egram.Views/Icons/Dark/X32.png"
                         Width="16"
                         Height="16"
                         Opacity="0.66" />

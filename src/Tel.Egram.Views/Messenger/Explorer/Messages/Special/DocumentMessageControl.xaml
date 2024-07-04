@@ -15,7 +15,7 @@
                 Grid.Column="0">
                 <Ellipse />
                 <Image
-                    Source="avares://Tel.Egram.Application/Icons/Light/File32.png" />
+                    Source="avares://Tel.Egram.Views/Icons/Light/File32.png" />
             </Panel>
             
             <TextBlock

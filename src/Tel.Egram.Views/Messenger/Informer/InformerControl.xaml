@@ -44,7 +44,7 @@
             
             <Panel>
                 <Ellipse />
-                <Image Source="avares://Tel.Egram.Application/Icons/Light/More32.png" />
+                <Image Source="avares://Tel.Egram.Views/Icons/Light/More32.png" />
             </Panel>
             
         </Button>

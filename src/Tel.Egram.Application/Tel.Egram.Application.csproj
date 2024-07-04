@@ -15,7 +15,6 @@
     
     <ItemGroup>
         <AvaloniaResource Include="Fonts\*" />
-        <AvaloniaResource Include="Icons\*" />
         <AvaloniaResource Include="Images\*" />
         <AvaloniaResource Include="Resources\*" />
 

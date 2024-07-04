@@ -47,7 +47,7 @@
                 Classes="Action"
                 Grid.Column="4"
                 >
-                <Image Source="avares://Tel.Egram.Application/Icons/Dark/Mic32.png" />
+                <Image Source="avares://Tel.Egram.Views/Icons/Dark/Mic32.png" />
             </Button>
             
         </Grid>

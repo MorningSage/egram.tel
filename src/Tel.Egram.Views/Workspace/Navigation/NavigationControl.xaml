@@ -42,7 +42,7 @@
                 <Border>
                     <Panel>
                         <Ellipse />
-                        <Image Source="avares://Tel.Egram.Application/Icons/Light/Home32.png" />
+                        <Image Source="avares://Tel.Egram.Views/Icons/Light/Home32.png" />
                     </Panel>
                 </Border>
             </TabStripItem>
@@ -53,7 +53,7 @@
                 <Border>
                     <Panel>
                         <Ellipse />
-                        <Image Source="avares://Tel.Egram.Application/Icons/Light/Person32.png" />
+                        <Image Source="avares://Tel.Egram.Views/Icons/Light/Person32.png" />
                     </Panel>
                 </Border>
             </TabStripItem>
@@ -64,7 +64,7 @@
                 <Border>
                     <Panel>
                         <Ellipse />
-                        <Image Source="avares://Tel.Egram.Application/Icons/Light/Group32.png" />
+                        <Image Source="avares://Tel.Egram.Views/Icons/Light/Group32.png" />
                     </Panel>
                 </Border>
             </TabStripItem>
@@ -75,7 +75,7 @@
                 <Border>
                     <Panel>
                         <Ellipse />
-                        <Image Source="avares://Tel.Egram.Application/Icons/Light/Channel32.png" />
+                        <Image Source="avares://Tel.Egram.Views/Icons/Light/Channel32.png" />
                     </Panel>
                 </Border>
             </TabStripItem>
@@ -86,7 +86,7 @@
                 <Border>
                     <Panel>
                         <Ellipse />
-                        <Image Source="avares://Tel.Egram.Application/Icons/Light/Bot32.png" />
+                        <Image Source="avares://Tel.Egram.Views/Icons/Light/Bot32.png" />
                     </Panel>
                 </Border>
             </TabStripItem>
@@ -99,7 +99,7 @@
             >
             <Panel>
                 <Ellipse />
-                <Image Source="avares://Tel.Egram.Application/Icons/Light/Settings32.png" />
+                <Image Source="avares://Tel.Egram.Views/Icons/Light/Settings32.png" />
             </Panel>
         </Button>
         
