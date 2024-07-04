@@ -5,7 +5,7 @@
     RequestedThemeVariant="Dark">
     
     <Application.Resources>
-        <FontFamily x:Key="RobotoFontFamily">avares://Tel.Egram.Application/Fonts/Assets/Fonts#Roboto</FontFamily>
+        <FontFamily x:Key="RobotoFontFamily">avares://Tel.Egram.Application/Fonts#Roboto</FontFamily>
     </Application.Resources>
     
     <Application.Styles>
