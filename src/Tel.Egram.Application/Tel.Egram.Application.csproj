@@ -18,7 +18,8 @@
         <AvaloniaResource Include="Icons\*" />
         <AvaloniaResource Include="Images\*" />
         <AvaloniaResource Include="Resources\*" />
-        <AvaloniaResource Include="Styles\*">
+
+        <AvaloniaResource Include="**\*.xaml">
             <SubType>Designer</SubType>
         </AvaloniaResource>
     </ItemGroup>
