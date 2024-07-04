@@ -7,12 +7,12 @@ namespace Tel.Egram.Model.Authentication.Phone
     [AddINotifyPropertyChangedInterface]
     public class PhoneCodeModel
     {
-        public string Code { get; set; }
+        public string Code { get; init; } = string.Empty;
         
-        public string CountryCode { get; set; }
+        public string CountryCode { get; init; } = string.Empty;
         
-        public Bitmap Flag { get; set; }
+        public Bitmap? Flag { get; init; }
         
-        public string Mask { get; set; }
+        public string Mask { get; init; } = string.Empty;
     }
 }
