@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.IO;
 using Tel.Egram.Services.Utils.Platforms;
 
 namespace Tel.Egram.Services.Persistance;

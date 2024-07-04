@@ -1,8 +1,5 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
-using System.Threading;
-using System.Threading.Tasks;
 using TdLib;
 
 namespace Tel.Egram.Services.Utils.TdLib;

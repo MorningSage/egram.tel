@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+﻿using Avalonia.Markup.Xaml;
 using Tel.Egram.Model.Workspace;
 
 namespace Tel.Egram.Views.Workspace;

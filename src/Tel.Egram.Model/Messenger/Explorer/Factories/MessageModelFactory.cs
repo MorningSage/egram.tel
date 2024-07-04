@@ -1,5 +1,3 @@
-using System;
-using System.Linq;
 using TdLib;
 using Tel.Egram.Model.Messenger.Explorer.Messages;
 using Tel.Egram.Services.Messaging.Messages;

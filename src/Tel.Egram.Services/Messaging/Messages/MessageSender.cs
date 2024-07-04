@@ -1,4 +1,3 @@
-using System;
 using TdLib;
 using Tel.Egram.Services.Utils.TdLib;
 

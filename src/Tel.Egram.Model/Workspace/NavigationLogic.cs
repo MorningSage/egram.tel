@@ -1,4 +1,3 @@
-using System;
 using System.Reactive.Linq;
 using ReactiveUI;
 using Tel.Egram.Model.Messenger;

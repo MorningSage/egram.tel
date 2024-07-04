@@ -1,5 +1,3 @@
-using System;
-
 namespace Tel.Egram.Services.Utils.Formatting;
 
 public class StringFormatter : IStringFormatter

@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-
-namespace Tel.Egram.Services.Persistance;
+﻿namespace Tel.Egram.Services.Persistance;
 
 public class Storage : IStorage
 {

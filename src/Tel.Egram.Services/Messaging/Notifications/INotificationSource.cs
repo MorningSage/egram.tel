@@ -1,5 +1,3 @@
-using System;
-
 namespace Tel.Egram.Services.Messaging.Notifications;
 
 public interface INotificationSource

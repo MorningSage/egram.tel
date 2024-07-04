@@ -1,7 +1,4 @@
-﻿using System;
-using System.Reactive.Disposables;
-using Avalonia;
-using Avalonia.Controls;
+﻿using System.Reactive.Disposables;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using Tel.Egram.Model.Notifications;

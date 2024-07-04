@@ -1,5 +1,4 @@
 ﻿using Avalonia.Markup.Xaml;
-using Tel.Egram.Model.Authentication;
 using Tel.Egram.Model.Authentication.Phone;
 
 namespace Tel.Egram.Views.Authentication.Phone;

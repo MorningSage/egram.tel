@@ -1,4 +1,3 @@
-using System;
 using TdLib;
 
 namespace Tel.Egram.Services.Messaging.Messages;

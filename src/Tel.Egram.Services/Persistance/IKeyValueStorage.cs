@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Tel.Egram.Services.Persistance;
 
 public interface IKeyValueStorage

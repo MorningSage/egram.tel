@@ -1,4 +1,3 @@
-using System.Reactive.Disposables;
 using DynamicData.Binding;
 using PropertyChanged;
 using ReactiveUI;

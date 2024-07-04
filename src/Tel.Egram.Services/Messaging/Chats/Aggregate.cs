@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace Tel.Egram.Services.Messaging.Chats;
 
 public class Aggregate

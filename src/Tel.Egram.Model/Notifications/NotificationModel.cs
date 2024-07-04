@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Services.Messaging.Notifications;

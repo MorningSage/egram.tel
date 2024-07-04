@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using TdLib;
+﻿using TdLib;
 
 namespace Tel.Egram.Services.Messaging.Messages;
 

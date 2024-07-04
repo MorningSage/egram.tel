@@ -1,6 +1,5 @@
 using Avalonia.Media.Imaging;
 using PropertyChanged;
-using ReactiveUI;
 
 namespace Tel.Egram.Model.Authentication.Phone;
 

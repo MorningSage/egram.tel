@@ -1,7 +1,4 @@
-using System;
-using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
-using System.Reactive.Linq;
 using DynamicData;
 using DynamicData.Binding;
 using PropertyChanged;
@@ -9,7 +6,6 @@ using ReactiveUI;
 using Tel.Egram.Model.Messenger.Explorer.Items;
 using Tel.Egram.Model.Messenger.Explorer.Loaders;
 using Tel.Egram.Services.Messaging.Chats;
-using Tel.Egram.Services.Utils;
 using Tel.Egram.Services.Utils.Reactive;
 using Range = Tel.Egram.Services.Utils.Range;
 

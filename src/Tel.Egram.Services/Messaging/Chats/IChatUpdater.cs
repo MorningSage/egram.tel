@@ -1,4 +1,3 @@
-using System;
 using System.Reactive;
 
 namespace Tel.Egram.Services.Messaging.Chats;

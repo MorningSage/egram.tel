@@ -1,5 +1,4 @@
-﻿using System;
-using Tel.Egram.Services.Messaging.Chats;
+﻿using Tel.Egram.Services.Messaging.Chats;
 
 namespace Tel.Egram.Services.Messaging.Messages;
 

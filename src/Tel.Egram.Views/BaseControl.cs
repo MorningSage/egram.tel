@@ -1,7 +1,4 @@
-using System;
 using System.Reactive.Disposables;
-using Avalonia;
-using Avalonia.LogicalTree;
 using Avalonia.ReactiveUI;
 using ReactiveUI;
 

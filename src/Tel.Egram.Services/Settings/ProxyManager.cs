@@ -1,5 +1,4 @@
-﻿using System;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using TdLib;
 using Tel.Egram.Services.Utils.TdLib;
 

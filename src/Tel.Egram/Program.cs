@@ -1,11 +1,8 @@
 ﻿using System;
 using Avalonia;
-using Avalonia.Platform;
 using Avalonia.ReactiveUI;
 using Splat;
 using Tel.Egram.Application;
-using Tel.Egram.Views.Application;
-using Tel.Egram.Model.Application;
 
 namespace Tel.Egram;
 

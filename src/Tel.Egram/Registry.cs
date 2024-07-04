@@ -1,14 +1,10 @@
 using System.IO;
-using System.Reactive.Disposables;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using Splat;
 using TdLib;
 using Tel.Egram.Application;
-using Tel.Egram.Model.Messenger.Catalog;
-using Tel.Egram.Model.Messenger.Explorer;
 using Tel.Egram.Model.Messenger.Explorer.Factories;
 using Tel.Egram.Model.Notifications;
 using Tel.Egram.Model.Popups;

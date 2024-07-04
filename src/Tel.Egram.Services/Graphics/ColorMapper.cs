@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Tel.Egram.Services.Graphics;
+﻿namespace Tel.Egram.Services.Graphics;
 
 public class ColorMapper : IColorMapper
 {

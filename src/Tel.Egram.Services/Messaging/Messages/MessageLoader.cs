@@ -1,6 +1,4 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Reactive.Linq;
 using TdLib;
 using Tel.Egram.Services.Messaging.Chats;

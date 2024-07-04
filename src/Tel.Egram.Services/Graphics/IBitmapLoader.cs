@@ -1,5 +1,4 @@
-﻿using System;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using TdLib;
 using Tel.Egram.Services.Persistance;
 

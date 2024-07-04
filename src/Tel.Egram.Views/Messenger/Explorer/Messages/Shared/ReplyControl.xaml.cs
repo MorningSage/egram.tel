@@ -1,6 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Markup.Xaml;
-using ReactiveUI;
+﻿using Avalonia.Markup.Xaml;
 using Tel.Egram.Model.Messenger.Explorer.Messages;
 
 namespace Tel.Egram.Views.Messenger.Explorer.Messages.Shared;

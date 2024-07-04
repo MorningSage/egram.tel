@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using System.Reactive.Linq;
 using DynamicData.Binding;
 using ReactiveUI;
