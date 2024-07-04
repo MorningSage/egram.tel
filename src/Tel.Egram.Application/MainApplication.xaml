@@ -4,13 +4,13 @@
     x:Class="Tel.Egram.Application.MainApplication"
     RequestedThemeVariant="Dark">
     
+    <Application.Resources>
+        <FontFamily x:Key="RobotoFontFamily">avares://Tel.Egram.Application/Fonts/Assets/Fonts#Roboto</FontFamily>
+    </Application.Resources>
+    
     <Application.Styles>
-        <StyleInclude Source="resm:Tel.Egram.Application.Styles.Theme.xaml"/>
+        <StyleInclude Source="avares://Tel.Egram.Application/Styles/Theme.xaml"/>
         <FluentTheme />
     </Application.Styles>
-    
-    <Application.Resources>
-        <FontFamily x:Key="RobotoFontFamily">avares://Tel.Egram.Application.Fonts/Assets/Fonts#Roboto</FontFamily>
-    </Application.Resources>
     
 </Application>
