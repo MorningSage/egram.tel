@@ -11,11 +11,11 @@ namespace Tel.Egram.Model.Application;
 [AddINotifyPropertyChangedInterface]
 public class MainWindowModel : IActivatableViewModel
 {
-    public StartupModel StartupModel { get; set; }
+    public StartupModel? StartupModel { get; set; }
         
-    public AuthenticationModel AuthenticationModel { get; set; }
+    public AuthenticationModel? AuthenticationModel { get; set; }
         
-    public WorkspaceModel WorkspaceModel { get; set; }
+    public WorkspaceModel? WorkspaceModel { get; set; }
         
     public PopupModel PopupModel { get; set; }
         
