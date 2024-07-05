@@ -29,16 +29,11 @@ public class MainWindowModel : IActivatableViewModel
     {
         this.WhenActivated(disposables =>
         {
-            this.BindAuthentication()
-                .DisposeWith(disposables);
-
-            this.BindConnectionInfo()
-                .DisposeWith(disposables);
-                
-            this.BindPopup()
-                .DisposeWith(disposables);
+            this.BindAuthentication().DisposeWith(disposables);
+            this.BindConnectionInfo().DisposeWith(disposables);
+            this.BindPopup().DisposeWith(disposables);
         });
     }
 
-    public ViewModelActivator Activator { get; } = new ViewModelActivator();
+    public ViewModelActivator Activator { get; } = new();
 }

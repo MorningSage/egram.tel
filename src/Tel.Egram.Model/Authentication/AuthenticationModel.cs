@@ -3,9 +3,13 @@ using System.Reactive.Disposables;
 using DynamicData.Binding;
 using PropertyChanged;
 using ReactiveUI;
+using Splat;
 using Tel.Egram.Model.Authentication.Phone;
 using Tel.Egram.Model.Authentication.Proxy;
 using Tel.Egram.Model.Authentication.Results;
+using Tel.Egram.Model.Popups;
+using Tel.Egram.Services.Authentication;
+using Tel.Egram.Services.Persistance;
 
 namespace Tel.Egram.Model.Authentication;
 
@@ -36,17 +40,9 @@ public class AuthenticationModel : IActivatableViewModel
     {
         this.WhenActivated(disposables =>
         {
-            new PhoneCodeLoader()
-                .Bind(this)
-                .DisposeWith(disposables);
-
-            new AuthenticationManager()
-                .Bind(this)
-                .DisposeWith(disposables);
-
-            new ProxyManager()
-                .Bind(this)
-                .DisposeWith(disposables);
+            new PhoneCodeLoader(Locator.Current.GetService<IResourceManager>()).Bind(this).DisposeWith(disposables);
+            new AuthenticationManager(Locator.Current.GetService<IAuthenticator>()).Bind(this).DisposeWith(disposables);
+            new ProxyManager(Locator.Current.GetService<IPopupController>()).Bind(this).DisposeWith(disposables);
         });
     }
 
