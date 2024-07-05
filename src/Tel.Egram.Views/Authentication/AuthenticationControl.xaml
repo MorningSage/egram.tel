@@ -1,8 +1,9 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
-    xmlns:authentication="clr-namespace:Tel.Egram.Views.Authentication"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:welcome="clr-namespace:Tel.Egram.Views.Authentication.Welcome"
-    xmlns:phone="clr-namespace:Tel.Egram.Views.Authentication.Phone">
+    xmlns:phone="clr-namespace:Tel.Egram.Views.Authentication.Phone"
+    x:Class="Tel.Egram.Views.Authentication.AuthenticationControl">
     
     <Grid
         Classes="AuthenticationPage"
