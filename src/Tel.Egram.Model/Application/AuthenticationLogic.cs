@@ -13,17 +13,12 @@ namespace Tel.Egram.Model.Application;
 
 public static class AuthenticationLogic
 {
-    public static IDisposable BindAuthentication(
-        this MainWindowModel model)
+    public static IDisposable BindAuthentication(this MainWindowModel model)
     {
-        return BindAuthentication(
-            model,
-            Locator.Current.GetService<IAuthenticator>());
+        return BindAuthentication(model, Locator.Current.GetService<IAuthenticator>());
     }
 
-    public static IDisposable BindAuthentication(
-        this MainWindowModel model,
-        IAuthenticator authenticator)
+    public static IDisposable BindAuthentication(this MainWindowModel model, IAuthenticator authenticator)
     {
         var disposable = new CompositeDisposable();
             
@@ -66,40 +61,25 @@ public static class AuthenticationLogic
         
     private static void GoToStartupPage(MainWindowModel model)
     {
-        if (model.StartupModel == null)
-        {
-            model.StartupModel = new StartupModel();
-        }
-
-        model.WorkspaceModel = null;
+        model.StartupModel      ??= new StartupModel();
+        model.WorkspaceModel      = null;
         model.AuthenticationModel = null;
-            
-        model.PageIndex = (int) Page.Initial;
+        model.PageIndex           = (int) Page.Initial;
     }
 
     private static void GoToAuthenticationPage(MainWindowModel model)
     {
-        if (model.AuthenticationModel == null)
-        {
-            model.AuthenticationModel = new AuthenticationModel();
-        }
-            
-        model.PageIndex = (int) Page.Authentication;
-
-        model.StartupModel = null;
-        model.WorkspaceModel = null;
+        model.AuthenticationModel ??= new AuthenticationModel();
+        model.PageIndex             = (int) Page.Authentication;
+        model.StartupModel          = null;
+        model.WorkspaceModel        = null;
     }
 
     private static void GoToWorkspacePage(MainWindowModel model)
     {
-        if (model.WorkspaceModel == null)
-        {
-            model.WorkspaceModel = new WorkspaceModel();
-        }
-            
-        model.PageIndex = (int) Page.Workspace;
-            
-        model.StartupModel = null;
+        model.WorkspaceModel    ??= new WorkspaceModel();
+        model.PageIndex           = (int) Page.Workspace;
+        model.StartupModel        = null;
         model.AuthenticationModel = null;
     }
 }
