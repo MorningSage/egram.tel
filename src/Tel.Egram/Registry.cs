@@ -262,11 +262,11 @@ namespace Tel.Egram
                 return new NoteMessageModelFactory();
             });
             
-            services.RegisterLazySingleton<ISpecialMessageModelFactory>(() =>
-            {
-                var stringFormatter = new StringFormatter();
-                return new SpecialMessageModelFactory(stringFormatter);
-            });
+        services.RegisterLazySingleton<ISpecialMessageModelFactory>(() =>
+        {
+            var stringFormatter = CurrentResolver.GetService<IStringFormatter>();
+            return new SpecialMessageModelFactory(stringFormatter);
+        });
             
             services.RegisterLazySingleton<IVisualMessageModelFactory>(() =>
             {
@@ -280,7 +280,7 @@ namespace Tel.Egram
                 var specialMessageModelFactory = CurrentResolver.GetService<ISpecialMessageModelFactory>();
                 var visualMessageModelFactory = CurrentResolver.GetService<IVisualMessageModelFactory>();
                 
-                var stringFormatter = new StringFormatter();
+            var stringFormatter = CurrentResolver.GetService<IStringFormatter>();
                 
                 return new MessageModelFactory(
                     basicMessageModelFactory,
