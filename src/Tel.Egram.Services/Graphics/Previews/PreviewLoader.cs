@@ -2,192 +2,120 @@ using System.Reactive.Linq;
 using Avalonia.Media.Imaging;
 using Microsoft.Extensions.Caching.Memory;
 using TdLib;
-using Tel.Egram.Services.Persistance;
+using Tel.Egram.Model.Messaging.Explorer.Messages.Visual;
+using Tel.Egram.Services.Persistence;
 
 namespace Tel.Egram.Services.Graphics.Previews;
 
-public class PreviewLoader : IPreviewLoader
+public class PreviewLoader(IFileLoader fileLoader, IPreviewCache previewCache) : IPreviewLoader
 {
-    private readonly IFileLoader _fileLoader;
-    private readonly IPreviewCache _cache;
-        
-    private readonly object _locker;
+    private readonly object _locker = new();
 
-    private static readonly string[] LowQualitySizes = {"m", "b", "a", "s"};
-    private static readonly string[] HighQualitySizes = {"x", "c"};
+    private static readonly string[] LowQualitySizes  = [ "m", "b", "a", "s" ];
+    private static readonly string[] HighQualitySizes = [ "x", "c" ];
 
-    public PreviewLoader(
-        IFileLoader fileLoader,
-        IPreviewCache previewCache)
-    {
-        _fileLoader = fileLoader;
-        _cache = previewCache;
-            
-        _locker = new object();
-    }
-
-    public Preview GetPreview(
-        TdApi.Photo photo,
-        PreviewQuality quality)
+    public Preview GetPreview(TdApi.Photo photo, PreviewQuality quality)
     {
         var types = GetTypesByQuality(quality);
-            
-        var file = photo.Sizes
-            .Where(s => Array.IndexOf(types, s.Type) >= 0)
-            .OrderBy(s => Array.IndexOf(types, s.Type))
-            .FirstOrDefault()?.Photo;
+        var file = photo.Sizes.Where(s => Array.IndexOf(types, s.Type) >= 0).MinBy(s => Array.IndexOf(types, s.Type))?.Photo;
             
         return new Preview
         {
-            Bitmap = GetBitmap(file),
+            Bitmap  = GetBitmap(file),
             Quality = PreviewQuality.High
         };
     }
 
-    public IObservable<Preview> LoadPreview(
-        TdApi.Photo photo,
-        PreviewQuality quality)
+    public IObservable<Preview> LoadPreview(TdApi.Photo photo, PreviewQuality quality)
     {
         var types = GetTypesByQuality(quality);
-            
-        var file = photo.Sizes
-            .Where(s => Array.IndexOf(types, s.Type) >= 0)
-            .OrderBy(s => Array.IndexOf(types, s.Type))
-            .FirstOrDefault()?.Photo;
+        var file = photo.Sizes.Where(s => Array.IndexOf(types, s.Type) >= 0).MinBy(s => Array.IndexOf(types, s.Type))?.Photo;
 
-        return LoadBitmap(file)
-            .Select(bitmap => new Preview
-            {
-                Bitmap = bitmap,
-                Quality = quality
-            });
-    }
-
-    public Preview GetPreview(TdApi.PhotoSize photoSize)
-    {
-        var file = photoSize?.Photo;
-            
-        return new Preview
+        return LoadBitmap(file).Select(bitmap => new Preview
         {
-            Bitmap = GetBitmap(file),
-            Quality = PreviewQuality.High
-        };
+            Bitmap  = bitmap,
+            Quality = quality
+        });
     }
 
-    public IObservable<Preview> LoadPreview(TdApi.PhotoSize photoSize)
+    public Preview GetPreview(TdApi.PhotoSize? photoSize) => new()
     {
-        var file = photoSize?.Photo;
-            
-        return LoadBitmap(file)
-            .Select(bitmap => new Preview
-            {
-                Bitmap = bitmap,
-                Quality = PreviewQuality.High
-            });
-    }
+        Bitmap  = GetBitmap(photoSize?.Photo),
+        Quality = PreviewQuality.High
+    };
 
-    public Preview GetPreview(TdApi.Sticker sticker)
+    public IObservable<Preview> LoadPreview(TdApi.PhotoSize? photoSize) => LoadBitmap(photoSize?.Photo).Select(bitmap => new Preview
     {
-        var file = sticker.Sticker_;
-            
-        return new Preview
-        {
-            Bitmap = GetBitmap(file),
-            Quality = PreviewQuality.High
-        };
-    }
+        Bitmap  = bitmap,
+        Quality = PreviewQuality.High
+    });
 
-    public IObservable<Preview> LoadPreview(TdApi.Sticker sticker)
+    public Preview GetPreview(TdApi.Sticker sticker) => new()
     {
-        var file = sticker.Sticker_;
-            
-        return LoadBitmap(file)
-            .Select(bitmap => new Preview
-            {
-                Bitmap = bitmap,
-                Quality = PreviewQuality.High
-            });
-    }
+        Bitmap  = GetBitmap(sticker.Sticker_),
+        Quality = PreviewQuality.High
+    };
 
-    private IObservable<Bitmap> LoadBitmap(TdApi.File file)
+    public IObservable<Preview> LoadPreview(TdApi.Sticker sticker) => LoadBitmap(sticker.Sticker_).Select(bitmap => new Preview
     {
-        if (file != null)
-        {
-            return _fileLoader.LoadFile(file, LoadPriority.Mid)
-                .FirstAsync(f => f.Local != null && f.Local.IsDownloadingCompleted)
-                .Select(f => GetBitmap(f.Local.Path));
-        }
+        Bitmap  = bitmap,
+        Quality = PreviewQuality.High
+    });
 
-        return Observable.Return<Bitmap>(null);
-    }
+    private IObservable<Bitmap?> LoadBitmap(TdApi.File? file) => file != null
+        ? fileLoader.LoadFile(file, LoadPriority.Mid)
+            .FirstAsync(f => f.Local is { IsDownloadingCompleted: true })
+            .Select(f => GetBitmap(f.Local.Path))
+        : Observable.Return<Bitmap?>(null);
 
-    private Bitmap GetBitmap(TdApi.File file)
+    private Bitmap? GetBitmap(TdApi.File? file)
     {
-        if (file?.Local?.Path != null && _cache.TryGetValue(file.Local.Path, out var bitmap))
-        {
-            return (Bitmap) bitmap;
-        }
-
-        return null;
+        return file?.Local?.Path != null && previewCache.TryGetValue(file.Local.Path, out var value) && value is Bitmap bitmap
+            ? bitmap
+            : null;
     }
 
-    private Bitmap GetBitmap(string filePath)
+    private Bitmap? GetBitmap(string filePath)
     {
         lock (_locker)
         {
-            Bitmap bitmap = null;
+            var bitmap = default(Bitmap?);
             
-            if (_cache.TryGetValue(filePath, out var item))
+            if (previewCache.TryGetValue(filePath, out var item) && item is Bitmap itemBitmap)
             {
-                bitmap = (Bitmap)item;
+                bitmap = itemBitmap;
             }
             else if (File.Exists(filePath))
             {
                 bitmap = new Bitmap(filePath);
-                _cache.Set(filePath, bitmap, new MemoryCacheEntryOptions
-                {
-                    Size = 1
-                });
+                previewCache.Set(filePath, bitmap, new MemoryCacheEntryOptions { Size = 1 });
             }
             
             return bitmap;
         }
     }
 
-    private string[] GetTypesByQuality(PreviewQuality quality)
+    private static string[] GetTypesByQuality(PreviewQuality quality)
     {
         // s m x y w
         // a b c d
-        switch (quality)
+        return quality switch
         {
-            case PreviewQuality.Low:
-                return LowQualitySizes;
-                
-            default:
-                return HighQualitySizes;
-        }
-    }
-
-    public Preview GetPreview(TdApi.Thumbnail thumbnail)
-    {
-        var file = thumbnail.File;
-            
-        return new Preview
-        {
-            Bitmap = GetBitmap(file),
-            Quality = PreviewQuality.High
+            PreviewQuality.Low  => LowQualitySizes,
+            PreviewQuality.High => HighQualitySizes,
+            _                   => []
         };
     }
 
-    public IObservable<Preview> LoadPreview(TdApi.Thumbnail thumbnail)
+    public Preview GetPreview(TdApi.Thumbnail thumbnail) => new()
     {
-        var file = thumbnail.File;
-            
-        return LoadBitmap(file)
-            .Select(bitmap => new Preview
-            {
-                Bitmap = bitmap,
-                Quality = PreviewQuality.High
-            });
-    }
+        Bitmap  = GetBitmap(thumbnail.File),
+        Quality = PreviewQuality.High
+    };
+
+    public IObservable<Preview> LoadPreview(TdApi.Thumbnail thumbnail) => LoadBitmap(thumbnail.File).Select(bitmap => new Preview
+    {
+        Bitmap  = bitmap,
+        Quality = PreviewQuality.High
+    });
 }

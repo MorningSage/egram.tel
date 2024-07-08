@@ -5,6 +5,10 @@
     xmlns:shared1="clr-namespace:Tel.Egram.Views.Shared"
     x:Class="Tel.Egram.Views.Messenger.Explorer.Messages.Shared.MessageControl">
     
+    <!--<Design.DataContext>
+        
+    </Design.DataContext>-->
+    
     <ContentControl.Styles>
         
         <Style Selector="shared|MessageControl">

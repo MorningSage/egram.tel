@@ -1,27 +1,19 @@
 ﻿using System.Reactive.Linq;
 using Avalonia.Media.Imaging;
 using TdLib;
-using Tel.Egram.Services.Persistance;
+using Tel.Egram.Services.Persistence;
 
 namespace Tel.Egram.Services.Graphics;
 
-public class BitmapLoader : IBitmapLoader, IDisposable
+public class BitmapLoader(IFileLoader fileLoader) : IBitmapLoader, IDisposable
 {
-    private readonly IFileLoader _fileLoader;
+    public IObservable<Bitmap> LoadFile(TdApi.File file, LoadPriority priority) => fileLoader
+        .LoadFile(file, priority)
+        .FirstAsync(f => f.Local is { IsDownloadingCompleted: true })
+        .Select(f => new Bitmap(f.Local.Path));
 
-    public BitmapLoader(IFileLoader fileLoader)
-    {
-        _fileLoader = fileLoader;
-    }
-
-    public IObservable<Bitmap> LoadFile(TdApi.File file, LoadPriority priority)
-    {
-        return _fileLoader.LoadFile(file, priority)
-            .FirstAsync(f => f.Local != null && f.Local.IsDownloadingCompleted)
-            .Select(f => new Bitmap(f.Local.Path));
-    }
-        
     public void Dispose()
     {
+        GC.SuppressFinalize(this);
     }
 }

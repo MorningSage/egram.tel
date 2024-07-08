@@ -1,33 +1,19 @@
-﻿using Microsoft.Extensions.Caching.Memory;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Tel.Egram.Services.Graphics.Avatars;
 
-public class AvatarCache : IAvatarCache
+public class AvatarCache(IMemoryCache cache) : IAvatarCache
 {
-    private readonly IMemoryCache _cache;
+    public bool TryGetValue(object key, [NotNullWhen(true)] out object? value) => cache.TryGetValue(key, out value);
 
-    public AvatarCache(IMemoryCache cache)
-    {
-        _cache = cache;
-    }
+    public ICacheEntry CreateEntry(object key) => cache.CreateEntry(key);
 
-    public bool TryGetValue(object key, out object value)
-    {
-        return _cache.TryGetValue(key, out value);
-    }
-
-    public ICacheEntry CreateEntry(object key)
-    {
-        return _cache.CreateEntry(key);
-    }
-
-    public void Remove(object key)
-    {
-        _cache.Remove(key);
-    }
+    public void Remove(object key) => cache.Remove(key);
 
     public void Dispose()
     {
-        _cache.Dispose();
+        GC.SuppressFinalize(this);
+        cache.Dispose();
     }
 }

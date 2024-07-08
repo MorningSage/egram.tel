@@ -7,12 +7,7 @@ namespace Tel.Egram.Model.Popups;
 [AddINotifyPropertyChangedInterface]
 public class PopupContext
 {
-    public string Title { get; set; }
+    public string? Title { get; set; }
         
-    public ReactiveCommand<Unit, Unit> CloseCommand { get; }
-
-    public PopupContext()
-    {
-        CloseCommand = ReactiveCommand.Create(() => { }, null, RxApp.MainThreadScheduler);
-    }
+    public ReactiveCommand<Unit, Unit> CloseCommand { get; } = ReactiveCommand.Create(() => { }, null, RxApp.MainThreadScheduler);
 }

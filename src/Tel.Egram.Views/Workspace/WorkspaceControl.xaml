@@ -4,7 +4,12 @@
     xmlns:settings="clr-namespace:Tel.Egram.Views.Settings"
     xmlns:messenger="clr-namespace:Tel.Egram.Views.Messenger"
     xmlns:navigation="clr-namespace:Tel.Egram.Views.Workspace.Navigation"
+    xmlns:workspace="clr-namespace:Tel.Egran.ViewModels.Workspace;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Workspace.WorkspaceControl">
+    
+    <Design.DataContext>
+        <workspace:WorkspaceModel />
+    </Design.DataContext>
     
     <Grid
         ColumnDefinitions="64,*"

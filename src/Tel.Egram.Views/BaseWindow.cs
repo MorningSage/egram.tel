@@ -7,10 +7,9 @@ namespace Tel.Egram.Views;
 /// <summary>
 /// Workaround for model activation
 /// </summary>
-public class BaseWindow<TViewModel> : ReactiveWindow<TViewModel>
-    where TViewModel : class
+public class BaseWindow<TViewModel> : ReactiveWindow<TViewModel> where TViewModel : class
 {
-    public BaseWindow(bool activate = true)
+    protected BaseWindow(bool activate = true)
     {
         if (activate)
         {

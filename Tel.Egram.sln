@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{767B3FCF-751
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tel.Egram.Views", "src\Tel.Egram.Views\Tel.Egram.Views.csproj", "{E272E3DE-72EF-42BF-9E76-09C569A4BCE9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tel.Egran.ViewModels", "src\Tel.Egran.ViewModels\Tel.Egran.ViewModels.csproj", "{BC6F21AC-F1DF-4D32-B783-CBF03473EACC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{E272E3DE-72EF-42BF-9E76-09C569A4BCE9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E272E3DE-72EF-42BF-9E76-09C569A4BCE9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E272E3DE-72EF-42BF-9E76-09C569A4BCE9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC6F21AC-F1DF-4D32-B783-CBF03473EACC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BC6F21AC-F1DF-4D32-B783-CBF03473EACC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BC6F21AC-F1DF-4D32-B783-CBF03473EACC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BC6F21AC-F1DF-4D32-B783-CBF03473EACC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -51,6 +57,7 @@ Global
 		{D532C829-670F-463A-BF6E-1557C0FCC33B} = {767B3FCF-751E-46FC-AF59-0949BA90EB74}
 		{DAF9F0FC-DFE1-48FC-92B3-30721D3A7A3F} = {767B3FCF-751E-46FC-AF59-0949BA90EB74}
 		{E272E3DE-72EF-42BF-9E76-09C569A4BCE9} = {767B3FCF-751E-46FC-AF59-0949BA90EB74}
+		{BC6F21AC-F1DF-4D32-B783-CBF03473EACC} = {767B3FCF-751E-46FC-AF59-0949BA90EB74}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3D35C07F-9F13-4E04-A5E0-36C92839CCD3}

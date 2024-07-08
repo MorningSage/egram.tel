@@ -1,9 +1,9 @@
 ﻿using Avalonia.Markup.Xaml;
-using Tel.Egram.Model.Messenger.Catalog;
+using Tel.Egran.ViewModels.Messaging.Catalog;
 
 namespace Tel.Egram.Views.Messenger.Catalog;
 
-public class CatalogControl : BaseControl<CatalogModel>
+public class CatalogControl : BaseControl<CatalogViewModel>
 {
     public CatalogControl()
     {

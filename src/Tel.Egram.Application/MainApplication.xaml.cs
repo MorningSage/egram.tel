@@ -1,39 +1,39 @@
-﻿using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
+﻿using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
-using Tel.Egram.Model.Application;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using TdLib;
+using Tel.Egram.Services;
+using Tel.Egram.Services.Persistence;
 using Tel.Egram.Views.Application;
+using Tel.Egran.ViewModels.Application;
 
 namespace Tel.Egram.Application;
 
 public class MainApplication : Avalonia.Application
 {
-    public event EventHandler Initializing = delegate { };
-    public event EventHandler Disposing= delegate { };
-        
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-            
-        Initializing?.Invoke(this, EventArgs.Empty);
+        Registry.Services.GetRequiredService<DatabaseContext>().Database.Migrate();
     }
 
     public override void OnFrameworkInitializationCompleted()
     {
-        var model = new MainWindowModel();
+        var model = new MainWindowViewModel();
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.Startup += (sender, args) => model.Activator.Activate();
             desktop.MainWindow = new MainWindow { DataContext = model };
-            desktop.Exit += (sender, args) =>
+            desktop.Exit += async (sender, args) =>
             {
                 model.Activator.Deactivate();
-                Disposing?.Invoke(sender, args);
+                await Registry.Services.GetRequiredService<TdClient>().DestroyAsync();
             };
         }
             
         base.OnFrameworkInitializationCompleted();
     }
-        
+    
 }

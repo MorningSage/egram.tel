@@ -1,173 +1,83 @@
 using System.Reactive.Linq;
 using TdLib;
+using Tel.Egram.Model.Messaging.Chats;
 using Tel.Egram.Services.Utils.Reactive;
 using Tel.Egram.Services.Utils.TdLib;
 
 namespace Tel.Egram.Services.Messaging.Chats;
 
-public class ChatLoader : IChatLoader
+public class ChatLoader(IAgent agent) : IChatLoader
 {
-    private readonly IAgent _agent;
-    private readonly long _promoChatId;
+    private const long PromoChatId = -1001316949630L;
 
-    public ChatLoader(IAgent agent)
+    public IObservable<Chat> LoadChat(long chatId) => agent.Execute(new TdApi.GetChat { ChatId = chatId }).SelectSeq(chat =>
     {
-        _agent = agent;
-        _promoChatId = -1001316949630L;
-    }
-
-    public IObservable<Chat> LoadChat(long chatId)
-    {
-        return _agent.Execute(new TdApi.GetChat
-            {
-                ChatId = chatId
-            })
-            .SelectSeq(chat =>
-            {
-                if (chat.Type is TdApi.ChatType.ChatTypePrivate type)
-                {
-                    return GetUser(type.UserId)
-                        .Select(user => new Chat
-                        {
-                            ChatData = chat,
-                            User = user
-                        });
-                }
-
-                return Observable.Return(new Chat
-                {
-                    ChatData = chat
-                });
-            });
-    }
-
-    public IObservable<Chat> LoadChats()
-    {
-        return GetAllChats(new List<TdApi.Chat>())
-            .SelectSeq(chat =>
-            {
-                if (chat.Type is TdApi.ChatType.ChatTypePrivate type)
-                {
-                    return GetUser(type.UserId)
-                        .Select(user => new Chat
-                        {
-                            ChatData = chat,
-                            User = user
-                        });
-                }
-                    
-                return Observable.Return(new Chat
-                {
-                    ChatData = chat
-                });
-            });
-    }
-
-    public IObservable<Chat> LoadChannels()
-    {
-        return LoadChats().Where(chat =>
+        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { ChatData = chat });
+        
+        return GetUser(type.UserId).Select(user => new Chat
         {
-            if (chat.ChatData.Type is TdApi.ChatType.ChatTypeSupergroup supergroupType)
-            {
-                return supergroupType.IsChannel;
-            }
-            return false;
+            ChatData = chat,
+            User     = user
         });
-    }
+    });
 
-    public IObservable<Chat> LoadDirects()
+    public IObservable<Chat> LoadChats() => GetAllChats().SelectSeq(chat =>
     {
-        return LoadChats().Where(chat =>
+        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { ChatData = chat });
+        
+        return GetUser(type.UserId).Select(user => new Chat
         {
-            if (chat.ChatData.Type is TdApi.ChatType.ChatTypePrivate)
-            {
-                return chat.User != null &&
-                       chat.User.Type is TdApi.UserType.UserTypeRegular;
-            }
-            return false;
+            ChatData = chat,
+            User     = user
         });
-    }
 
-    public IObservable<Chat> LoadGroups()
+    });
+
+    public IObservable<Chat> LoadChannels() => LoadChats().Where(chat =>
+        chat.ChatData.Type is TdApi.ChatType.ChatTypeSupergroup { IsChannel: true }
+    );
+
+    public IObservable<Chat> LoadDirects() => LoadChats().Where(chat => 
+        chat.ChatData.Type is TdApi.ChatType.ChatTypePrivate && chat.User is { Type: TdApi.UserType.UserTypeRegular }
+    );
+
+    public IObservable<Chat> LoadGroups() => LoadChats().Where(chat => 
+        chat.ChatData.Type is TdApi.ChatType.ChatTypeSupergroup supergroupType
+            ? !supergroupType.IsChannel
+            : chat.ChatData.Type is TdApi.ChatType.ChatTypeBasicGroup
+    );
+
+    public IObservable<Chat> LoadBots() => LoadChats().Where(chat => 
+        chat.ChatData.Type is TdApi.ChatType.ChatTypePrivate && chat.User is { Type: TdApi.UserType.UserTypeBot }
+    );
+
+    public IObservable<Chat> LoadPromo() => agent.Execute(new TdApi.GetChat { ChatId = PromoChatId }).SelectSeq(chat =>
     {
-        return LoadChats().Where(chat =>
+        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { ChatData = chat });
+        
+        return GetUser(type.UserId).Select(user => new Chat
         {
-            if (chat.ChatData.Type is TdApi.ChatType.ChatTypeSupergroup supergroupType)
-            {
-                return !supergroupType.IsChannel;
-            }
-
-            return chat.ChatData.Type is TdApi.ChatType.ChatTypeBasicGroup;
+            ChatData = chat,
+            User = user
         });
-    }
+    });
 
-    public IObservable<Chat> LoadBots()
+    private IObservable<TdApi.User> GetUser(long id) => agent.Execute(new TdApi.GetUser
     {
-        return LoadChats().Where(chat =>
-        {
-            if (chat.ChatData.Type is TdApi.ChatType.ChatTypePrivate)
-            {
-                return chat.User != null &&
-                       chat.User.Type is TdApi.UserType.UserTypeBot;
-            }
-            return false;
-        });
-    }
+        UserId = id
+    });
 
-    public IObservable<Chat> LoadPromo()
+    private IObservable<TdApi.Chat> GetAllChats()
     {
-        return _agent.Execute(new TdApi.GetChat
-            {
-                ChatId = _promoChatId
-            })
-            .SelectSeq(chat =>
-            {
-                if (chat.Type is TdApi.ChatType.ChatTypePrivate type)
-                {
-                    return GetUser(type.UserId)
-                        .Select(user => new Chat
-                        {
-                            ChatData = chat,
-                            User = user
-                        });
-                }
-                        
-                return Observable.Return(new Chat
-                {
-                    ChatData = chat
-                });
-            });
-    }
-
-    private IObservable<TdApi.User> GetUser(long id)
-    {
-        return _agent.Execute(new TdApi.GetUser
-        {
-            UserId = id
-        });
-    }
-
-    private IObservable<TdApi.Chat> GetAllChats(
-        List<TdApi.Chat> chats,
-        long offsetOrder = long.MaxValue,
-        long offsetChatId = 0)
-    {
-        int limit = 100;
-
+        const int limit = 100;
         return GetChats(limit);
     }
 
     private IObservable<TdApi.Chat> GetChats(int limit)
     {
         // ToDo: This is not the way we should be getting chats.  Update to LoadChats
-        return _agent.Execute(new TdApi.GetChats
-            {
-                Limit = limit
-            })
+        return agent.Execute(new TdApi.GetChats { Limit = limit })
             .SelectMany(result => result.ChatIds)
-            .SelectSeq(chatId => _agent.Execute(new TdApi.GetChat
-            {
-                ChatId = chatId
-            }));
+            .SelectSeq(chatId => agent.Execute(new TdApi.GetChat { ChatId = chatId }));
     }
 }

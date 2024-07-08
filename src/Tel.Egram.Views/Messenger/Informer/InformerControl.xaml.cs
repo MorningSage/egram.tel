@@ -1,9 +1,9 @@
 ﻿using Avalonia.Markup.Xaml;
-using Tel.Egram.Model.Messenger.Informer;
+using Tel.Egran.ViewModels.Messaging.Informer;
 
 namespace Tel.Egram.Views.Messenger.Informer;
 
-public class InformerControl : BaseControl<InformerModel>
+public class InformerControl : BaseControl<InformerViewModel>
 {
     public InformerControl()
     {

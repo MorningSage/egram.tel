@@ -1,11 +1,11 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:startup="clr-namespace:Tel.Egram.Model.Application.Startup;assembly=Tel.Egram.Model"
+    xmlns:application="clr-namespace:Tel.Egram.Model.Application;assembly=Tel.Egram.Model"
     x:Class="Tel.Egram.Views.Startup.StartupControl">
     
     <Design.DataContext>
-        <startup:StartupModel />
+        <application:StartupModel />
     </Design.DataContext>
     
 </UserControl>

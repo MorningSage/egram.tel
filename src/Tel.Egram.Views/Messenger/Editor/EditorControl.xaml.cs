@@ -1,9 +1,9 @@
 ﻿using Avalonia.Markup.Xaml;
-using Tel.Egram.Model.Messenger.Editor;
+using Tel.Egran.ViewModels.Messaging.Editor;
 
 namespace Tel.Egram.Views.Messenger.Editor;
 
-public class EditorControl : BaseControl<EditorModel>
+public class EditorControl : BaseControl<EditorViewModel>
 {
     public EditorControl()
     {

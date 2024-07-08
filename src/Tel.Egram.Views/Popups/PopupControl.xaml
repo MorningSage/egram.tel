@@ -2,8 +2,13 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:proxy1="clr-namespace:Tel.Egram.Views.Popups.Proxy"
-    xmlns:proxy="clr-namespace:Tel.Egram.Model.Settings.Proxy;assembly=Tel.Egram.Model"
+    xmlns:popups="clr-namespace:Tel.Egran.ViewModels.Popups;assembly=Tel.Egran.ViewModels"
+    xmlns:proxy2="clr-namespace:Tel.Egran.ViewModels.Settings.Proxy;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Popups.PopupControl">
+    
+    <Design.DataContext>
+        <popups:PopupModel />
+    </Design.DataContext>
     
     <Grid
         RowDefinitions="auto,*"
@@ -69,7 +74,7 @@
                     
                     <Carousel.DataTemplates>
                         
-                        <DataTemplate DataType="{x:Type proxy:ProxyPopupContext}">
+                        <DataTemplate DataType="{x:Type proxy2:ProxyPopupContext}">
                             <proxy1:ProxyPopupControl />
                         </DataTemplate>
                         

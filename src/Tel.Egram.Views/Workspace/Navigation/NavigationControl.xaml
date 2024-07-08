@@ -2,7 +2,12 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="clr-namespace:Tel.Egram.Views.Shared"
+    xmlns:navigation="clr-namespace:Tel.Egran.ViewModels.Workspace.Navigation;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Workspace.Navigation.NavigationControl">
+    
+    <Design.DataContext>
+        <navigation:NavigationModel />
+    </Design.DataContext>
     
     <Grid
         ColumnDefinitions="*"

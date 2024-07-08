@@ -19,17 +19,7 @@ internal abstract class Program
 
     private static void CollectServices(IMutableDependencyResolver services)
     {
-        services.AddUtils();
-        services.AddTdLib();
-        services.AddPersistance();
-        services.AddServices();
-            
-        services.AddComponents();
-        services.AddApplication();
-        services.AddAuthentication();
-        services.AddWorkspace();
-        services.AddSettings();
-        services.AddMessenger();
+
     }
         
     private static AppBuilder BuildAvaloniaApp()

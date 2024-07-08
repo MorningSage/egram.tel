@@ -1,57 +1,42 @@
 ﻿using System.Reactive.Linq;
 using TdLib;
-using Tel.Egram.Services.Persistance;
+using Tel.Egram.Services.Persistence;
 using Tel.Egram.Services.Utils.TdLib;
 
 namespace Tel.Egram.Services.Authentication;
 
-public class Authenticator : IAuthenticator
+public class Authenticator(IAgent agent, IStorage storage) : IAuthenticator
 {
-    private readonly IAgent _agent;
-    private readonly IStorage _storage;
+    public IObservable<TdApi.AuthorizationState> ObserveState() => agent.Updates
+        .OfType<TdApi.Update.UpdateAuthorizationState>()
+        .Select(update => update.AuthorizationState);
 
-    public Authenticator(
-        IAgent agent,
-        IStorage storage
-    )
-    {
-        _agent = agent;
-        _storage = storage;
-    }
-
-    public IObservable<TdApi.AuthorizationState> ObserveState()
-    {   
-        return _agent.Updates.OfType<TdApi.Update.UpdateAuthorizationState>()
-            .Select(update => update.AuthorizationState);
-    }
-        
     public IObservable<TdApi.Ok> SetupParameters()
     {
         // ToDo: Add to return value?
-        _agent.Execute(new TdApi.SetOption
+        agent.Execute(new TdApi.SetOption
         {
             Name = "use_storage_optimizer",
             Value = new TdApi.OptionValue.OptionValueBoolean { Value = true }
         });
             
-        _agent.Execute(new TdApi.SetOption
+        agent.Execute(new TdApi.SetOption
         {
             Name = "ignore_file_names",
             Value = new TdApi.OptionValue.OptionValueBoolean { Value = false }
         });
             
-        return _agent.Execute(new TdApi.SetTdlibParameters
+        return agent.Execute(new TdApi.SetTdlibParameters
         {
             UseTestDc = false,
-            DatabaseDirectory = _storage.TdLibDirectory,
-            FilesDirectory = _storage.TdLibDirectory,
+            DatabaseDirectory = storage.TdLibDirectory,
+            FilesDirectory = storage.TdLibDirectory,
             UseFileDatabase = true,
             UseChatInfoDatabase = true,
             UseMessageDatabase = true,
             UseSecretChats = true,
             ApiId = 111112,
-            ApiHash = new Guid(new byte[]
-                {142, 34, 97, 121, 94, 51, 206, 139, 4, 159, 245, 26, 236, 242, 11, 171}).ToString("N"),
+            ApiHash = new Guid([ 142, 34, 97, 121, 94, 51, 206, 139, 4, 159, 245, 26, 236, 242, 11, 171 ]).ToString("N"),
             SystemLanguageCode = "en",
             DeviceModel = "Mac",
             SystemVersion = "0.1",
@@ -61,24 +46,18 @@ public class Authenticator : IAuthenticator
         });
     }
 
-    public IObservable<TdApi.Ok> SetPhoneNumber(string phoneNumber)
+    public IObservable<TdApi.Ok> SetPhoneNumber(string phoneNumber) => agent.Execute(new TdApi.SetAuthenticationPhoneNumber
     {
-        return _agent.Execute(new TdApi.SetAuthenticationPhoneNumber
-        {
-            PhoneNumber = phoneNumber
-        });
-    }
+        PhoneNumber = phoneNumber
+    });
 
-    public IObservable<TdApi.Ok> CheckCode(string code)
+    public IObservable<TdApi.Ok> CheckCode(string code) => agent.Execute(new TdApi.CheckAuthenticationCode
     {
-        return _agent.Execute(new TdApi.CheckAuthenticationCode { Code = code });
-    }
+        Code = code
+    });
 
-    public IObservable<TdApi.Ok> CheckPassword(string password)
+    public IObservable<TdApi.Ok> CheckPassword(string password) => agent.Execute(new TdApi.CheckAuthenticationPassword
     {
-        return _agent.Execute(new TdApi.CheckAuthenticationPassword
-        {
-            Password = password
-        });
-    }
+        Password = password
+    });
 }

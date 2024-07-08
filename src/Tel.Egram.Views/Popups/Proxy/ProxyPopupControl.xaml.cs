@@ -1,5 +1,5 @@
 ﻿using Avalonia.Markup.Xaml;
-using Tel.Egram.Model.Settings.Proxy;
+using Tel.Egran.ViewModels.Settings.Proxy;
 
 namespace Tel.Egram.Views.Popups.Proxy;
 

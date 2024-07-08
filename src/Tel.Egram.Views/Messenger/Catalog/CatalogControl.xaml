@@ -2,7 +2,12 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:catalog="clr-namespace:Tel.Egram.Views.Messenger.Catalog"
+    xmlns:catalog1="clr-namespace:Tel.Egran.ViewModels.Messaging.Catalog;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Messenger.Catalog.CatalogControl">
+    
+    <Design.DataContext>
+        <catalog1:CatalogViewModel />
+    </Design.DataContext>
     
     <Grid
         Width="220"

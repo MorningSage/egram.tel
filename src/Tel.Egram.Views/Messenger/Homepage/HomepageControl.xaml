@@ -1,8 +1,13 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:homepage="clr-namespace:Tel.Egran.ViewModels.Messaging.Explorer.Homepage;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Messenger.Homepage.HomepageControl">
 
+    <Design.DataContext>
+        <homepage:HomepageViewModel />
+    </Design.DataContext>
+    
     <Grid
         ColumnDefinitions="*,auto"
         RowDefinitions="46,6,*">

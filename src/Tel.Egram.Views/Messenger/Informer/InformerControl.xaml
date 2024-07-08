@@ -2,7 +2,12 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="clr-namespace:Tel.Egram.Views.Shared"
+    xmlns:informer="clr-namespace:Tel.Egran.ViewModels.Messaging.Informer;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Messenger.Informer.InformerControl">
+    
+    <Design.DataContext>
+        <informer:InformerViewModel />
+    </Design.DataContext>
     
     <Grid
         Width="516"

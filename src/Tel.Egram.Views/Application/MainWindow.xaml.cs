@@ -2,11 +2,11 @@
 using Avalonia;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
-using Tel.Egram.Model.Application;
+using Tel.Egran.ViewModels.Application;
 
 namespace Tel.Egram.Views.Application;
 
-public partial class MainWindow : BaseWindow<MainWindowModel>
+public partial class MainWindow : BaseWindow<MainWindowViewModel>
 {
     public MainWindow() : base(false)
     {

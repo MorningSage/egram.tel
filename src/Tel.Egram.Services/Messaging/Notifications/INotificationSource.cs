@@ -1,8 +1,10 @@
+using Tel.Egram.Model.Notifications;
+
 namespace Tel.Egram.Services.Messaging.Notifications;
 
 public interface INotificationSource
 {
-    IObservable<Notification> ChatNotifications();
+    IObservable<NotificationModel> ChatNotifications();
 
-    IObservable<Notification> MessagesNotifications();
+    IObservable<NotificationModel> MessagesNotifications();
 }

@@ -5,13 +5,13 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
-using Tel.Egram.Model.Messenger.Explorer;
 using Tel.Egram.Services.Utils.Reactive;
+using Tel.Egran.ViewModels.Messaging.Explorer;
 using Range = Tel.Egram.Services.Utils.Range;
 
 namespace Tel.Egram.Views.Messenger.Explorer;
 
-public class ExplorerControl : BaseControl<ExplorerModel>
+public class ExplorerControl : BaseControl<ExplorerViewModel>
 {
     public static readonly DirectProperty<ExplorerControl, Range> VisibleRangeProperty =
         AvaloniaProperty.RegisterDirect<ExplorerControl, Range>(

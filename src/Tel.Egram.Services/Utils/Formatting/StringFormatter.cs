@@ -4,10 +4,7 @@ public class StringFormatter : IStringFormatter
 {
     private static readonly string[] FileSizes = [ "B", "KB", "MB", "GB", "TB" ];
     
-    public string FormatShortTime(DateTimeOffset dateTimeOffset)
-    {
-        return dateTimeOffset.ToString("hh:mm");
-    }
+    public string FormatShortTime(DateTimeOffset dateTimeOffset) => dateTimeOffset.ToString("hh:mm");
 
     public string FormatShortTime(int timestamp)
     {

@@ -1,4 +1,5 @@
 ﻿using TdLib;
+using Tel.Egram.Model.Graphics.Avatars;
 
 namespace Tel.Egram.Services.Graphics.Avatars;
 

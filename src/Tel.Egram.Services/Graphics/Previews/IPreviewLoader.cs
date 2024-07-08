@@ -1,4 +1,5 @@
 using TdLib;
+using Tel.Egram.Model.Messaging.Explorer.Messages.Visual;
 
 namespace Tel.Egram.Services.Graphics.Previews;
 

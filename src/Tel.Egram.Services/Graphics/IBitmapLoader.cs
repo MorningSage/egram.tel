@@ -1,6 +1,6 @@
 ﻿using Avalonia.Media.Imaging;
 using TdLib;
-using Tel.Egram.Services.Persistance;
+using Tel.Egram.Services.Persistence;
 
 namespace Tel.Egram.Services.Graphics;
 

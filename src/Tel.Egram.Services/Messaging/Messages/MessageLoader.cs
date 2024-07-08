@@ -1,198 +1,135 @@
 ﻿using System.Diagnostics;
 using System.Reactive.Linq;
 using TdLib;
+using Tel.Egram.Model.Messaging.Chats;
+using Tel.Egram.Model.Messaging.Messages;
 using Tel.Egram.Services.Messaging.Chats;
 using Tel.Egram.Services.Utils.Reactive;
 using Tel.Egram.Services.Utils.TdLib;
 
 namespace Tel.Egram.Services.Messaging.Messages;
 
-public class MessageLoader : IMessageLoader
+public class MessageLoader(IAgent agent) : IMessageLoader
 {
-    private readonly IAgent _agent;
-    private readonly int _limit = 10;
-
-    public MessageLoader(IAgent agent)
-    {
-        _agent = agent;
-    }
+    private const int Limit = 10;
 
     public IObservable<Message> LoadMessage(long chatId, long messageId)
     {
-        var scope = new MessageLoaderScope(_agent);
+        var scope = new MessageLoaderScope(agent);
             
-        return scope.GetMessage(chatId, messageId)
-            .SelectSeq(m => MapToMessage(scope, m))
-            .Finally(() =>
-            {
-                scope.Dispose();
-            });
+        return scope.GetMessage(chatId, messageId).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        {
+            scope.Dispose();
+        });
     }
 
-    public IObservable<Message> LoadMessages(
-        Aggregate feed,
-        AggregateLoadingState state)
+    public IObservable<Message> LoadMessages(Aggregate feed, AggregateLoadingState state)
     {
-        var scope = new MessageLoaderScope(_agent);
+        var scope = new MessageLoaderScope(agent);
             
-        return LoadAggregateMessages(feed, state)
-            .SelectSeq(m => MapToMessage(scope, m))
-            .Finally(() =>
-            {
-                scope.Dispose();
-            });
+        return LoadAggregateMessages(feed, state).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        {
+            scope.Dispose();
+        });
     }
 
-    public IObservable<Message> LoadInitMessages(
-        Chat chat,
-        long fromMessageId,
-        int limit)
+    public IObservable<Message> LoadInitMessages(Chat chat, long fromMessageId, int limit)
     {
-        var scope = new MessageLoaderScope(_agent);
+        var scope = new MessageLoaderScope(agent);
             
-        return GetMessages(chat.ChatData, fromMessageId, limit, -(limit - 1) / 2)
-            .SelectSeq(m => MapToMessage(scope, m))
-            .Finally(() =>
-            {
-                scope.Dispose();
-            });
+        return GetMessages(chat.ChatData, fromMessageId, limit, -(limit - 1) / 2).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        {
+            scope.Dispose();
+        });
     }
 
-    public IObservable<Message> LoadPrevMessages(
-        Chat chat,
-        long fromMessageId,
-        int limit)
+    public IObservable<Message> LoadPrevMessages(Chat chat, long fromMessageId, int limit)
     {
-        var scope = new MessageLoaderScope(_agent);
+        var scope = new MessageLoaderScope(agent);
             
-        return GetMessages(chat.ChatData, fromMessageId, limit, 0)
-            .SelectSeq(m => MapToMessage(scope, m))
-            .Finally(() =>
-            {
-                scope.Dispose();
-            });
+        return GetMessages(chat.ChatData, fromMessageId, limit, 0).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        {
+            scope.Dispose();
+        });
     }
 
-    public IObservable<Message> LoadNextMessages(
-        Chat chat,
-        long fromMessageId,
-        int limit)
+    public IObservable<Message> LoadNextMessages(Chat chat, long fromMessageId, int limit)
     {
-        var scope = new MessageLoaderScope(_agent);
+        var scope = new MessageLoaderScope(agent);
             
-        return GetMessages(chat.ChatData, fromMessageId, limit, -(limit - 1))
-            .Where(m => m.Id != fromMessageId)
-            .SelectSeq(m => MapToMessage(scope, m))
-            .Finally(() =>
-            {
-                scope.Dispose();
-            });
+        return GetMessages(chat.ChatData, fromMessageId, limit, -(limit - 1)).Where(m => m.Id != fromMessageId).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        {
+            scope.Dispose();
+        });
     }
 
     public IObservable<Message> LoadPinnedMessage(Chat chat)
     {
-        var scope = new MessageLoaderScope(_agent);
+        var scope = new MessageLoaderScope(agent);
             
-        return GetPinnedMessage(chat.ChatData)
-            .Where(m => m != null)
-            .SelectSeq(m => MapToMessage(scope, m))
-            .Finally(() =>
-            {
-                scope.Dispose();
-            });
+        return GetPinnedMessage(chat.ChatData).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        {
+            scope.Dispose();
+        });
     }
 
-    private IObservable<Message> MapToMessage(
-        MessageLoaderScope scope,
-        TdApi.Message msg,
-        bool fetchReply = true)
+    private IObservable<Message> MapToMessage(MessageLoaderScope scope, TdApi.Message msg, bool fetchReply = true)
     {
-        return Observable.Return(new Message
-            {
-                MessageData = msg
-            })
-            .SelectSeq(message =>
+        return Observable.Return(new Message { MessageData = msg })
+            .SelectSeq(message => scope.GetChat(msg.ChatId).Select(chat =>
             {
                 // get chat data
-                return scope.GetChat(msg.ChatId)
-                    .Select(chat =>
-                    {
-                        message.ChatData = chat;
-                        return message;
-                    });
-            })
+                message.ChatData = chat;
+                return message;
+            }))
             .SelectSeq(message =>
             {
                 // get sender data
-                switch (message.MessageData.SenderId)
+                return message.MessageData.SenderId switch
                 {
-                    case TdApi.MessageSender.MessageSenderUser senderUser when senderUser.UserId != 0L:
-                        return scope.GetUser(senderUser.UserId)
-                            .Select(user =>
-                            {
-                                message.UserData = user;
-                                return message;
-                            });
-                    case TdApi.MessageSender.MessageSenderChat senderChat when senderChat.ChatId != 0L:
-                        return scope.GetChat(senderChat.ChatId)
-                            .Select(chat =>
-                            {
-                                // ToDo: "Senders" can be users or chats.  This needs to be updated to ensure everything still works
-                                message.UserData = null;
-                                return message;
-                            });
-                }
-
-                return Observable.Return(message);
+                    TdApi.MessageSender.MessageSenderUser senderUser when senderUser.UserId != 0L => scope.GetUser(senderUser.UserId).Select(user =>
+                    {
+                        message.UserData = user;
+                        return message;
+                    }),
+                    TdApi.MessageSender.MessageSenderChat senderChat when senderChat.ChatId != 0L => scope.GetChat(senderChat.ChatId).Select(chat =>
+                    {
+                        // ToDo: "Senders" can be users or chats.  This needs to be updated to ensure everything still works
+                        message.UserData = null;
+                        return message;
+                    }),
+                    _ => Observable.Return(message)
+                };
             })
             .SelectSeq(message =>
             {
                 // get reply data
-                switch (message.MessageData.ReplyTo)
+                return message.MessageData.ReplyTo switch
                 {
-                    case TdApi.MessageReplyTo.MessageReplyToMessage messageReplyToMessage when fetchReply:
-                        return scope.GetMessage(messageReplyToMessage.ChatId, messageReplyToMessage.MessageId)
-                            .SelectSeq(m => MapToMessage(scope, m, false))
-                            .Select(reply =>
-                            {
-                                message.ReplyMessage = reply;
-                                return message;
-                            });
-                    case TdApi.MessageReplyTo.MessageReplyToStory messageReplyToStory when fetchReply:
-                        Debugger.Break();
-                            
+                    TdApi.MessageReplyTo.MessageReplyToMessage messageReplyToMessage when fetchReply => scope.GetMessage(messageReplyToMessage.ChatId, messageReplyToMessage.MessageId)
+                        .SelectSeq(m => MapToMessage(scope, m, false))
+                        .Select(reply =>
+                        {
+                            message.ReplyMessage = reply;
+                            return message;
+                        }),
+                    TdApi.MessageReplyTo.MessageReplyToStory messageReplyToStory when fetchReply =>
                         // ToDo: This may fail - are stories considered Messages?  Presumably not.
-                        return scope.GetMessage(messageReplyToStory.StorySenderChatId, messageReplyToStory.StoryId)
+                        scope.GetMessage(messageReplyToStory.StorySenderChatId, messageReplyToStory.StoryId)
                             .SelectSeq(m => MapToMessage(scope, m, false))
                             .Select(reply =>
                             {
                                 message.ReplyMessage = reply;
                                 return message;
-                            });
-                    default:
-                        return Observable.Return(message);
-                }
-                    
-                //if (fetchReply && message.MessageData.ReplyToMessageId != 0)
-                //{
-                //    return scope.GetMessage(message.MessageData.ChatId, message.MessageData.ReplyToMessageId)
-                //        .SelectSeq(m => MapToMessage(scope, m, false))
-                //        .Select(reply =>
-                //        {
-                //            message.ReplyMessage = reply;
-                //            return message;
-                //        });
-                //}
-                    
-                return Observable.Return(message);
+                            }),
+                    _ => Observable.Return(message)
+                };
             });
     }
 
-    private IObservable<TdApi.Message> LoadAggregateMessages(
-        Aggregate aggregate,
-        AggregateLoadingState state)
+    private IObservable<TdApi.Message> LoadAggregateMessages(Aggregate aggregate, AggregateLoadingState state)
     {
-        var actualLimit = _limit;
+        var actualLimit = Limit;
             
         var list = aggregate.Chats.Select(f =>
         {
@@ -201,11 +138,11 @@ public class MessageLoader : IMessageLoader
             return Enumerable.Range(0, stackedCount)
                 .Select(_ => state.PopMessageFromStack(f.ChatData.Id)) // get stacked messages for this chat
                 .ToObservable()
-                .Concat(stackedCount < _limit
+                .Concat(stackedCount < Limit
                     ? LoadChannelMessages(f, new ChatLoadingState // load messages from the server
                     {
                         LastMessageId = state.GetLastMessageId(f.ChatData.Id)
-                    }, _limit, 0)
+                    }, Limit, 0)
                     : Observable.Empty<TdApi.Message>())
                 .CollectToList()
                 .Do(l =>
@@ -221,75 +158,54 @@ public class MessageLoader : IMessageLoader
                 .SelectMany(messages => messages);
         });
             
-        return list.Merge()
-            .CollectToList()
-            .SelectMany(l =>
-            {
-                // make sure all messages are unique
-                var all = l.GroupBy(m => m.Id)
-                    .Select(g => g.First())
-                    .OrderByDescending(m => m.Date)
-                    .ToArray();
-
-                var toBeReturned = all.Take(actualLimit);
-                var toBeStacked = all.Skip(actualLimit);
-
-                // remember last message id
-                foreach (var message in all.Reverse())
-                {
-                    state.SetLastMessageId(message.ChatId, message.Id);
-                }
-                    
-                // put into stack
-                foreach (var message in toBeStacked.Reverse())
-                {
-                    state.PushMessageToStack(message.ChatId, message);
-                }
-
-                return toBeReturned;
-            });
-    }
-
-    private IObservable<TdApi.Message> LoadChannelMessages(
-        Chat chat,
-        ChatLoadingState state,
-        int limit,
-        int offset)
-    {
-        // get messages for corresponding chat
-        return GetMessages(chat.ChatData, state.LastMessageId, limit, offset)
-            .Do(message =>
-            {
-                if (state.LastMessageId < message.Id)
-                {
-                    state.LastMessageId = message.Id;
-                }
-            });
-    }
-
-    private IObservable<TdApi.Message> GetMessages(
-        TdApi.Chat chat,
-        long fromMessageId,
-        int limit,
-        int offset)
-    {   
-        return _agent.Execute(new TdApi.GetChatHistory
-            {
-                ChatId = chat.Id,
-                FromMessageId = fromMessageId,
-                Limit = limit,
-                Offset = offset,
-                OnlyLocal = false
-            })
-            .SelectMany(history => history.Messages_);
-    }
-
-    private IObservable<TdApi.Message> GetPinnedMessage(
-        TdApi.Chat chat)
-    {
-        return _agent.Execute(new TdApi.GetChatPinnedMessage
+        return list.Merge().CollectToList().SelectMany(l =>
         {
-            ChatId = chat.Id
+            // make sure all messages are not null and unique
+            var all = l.OfType<TdApi.Message>().GroupBy(m => m.Id).Select(g => g.First()).OrderByDescending(m => m.Date).ToArray();
+
+            var toBeReturned = all.Take(actualLimit);
+            var toBeStacked  = all.Skip(actualLimit);
+
+            // remember last message id
+            foreach (var message in all.Reverse())
+            {
+                state.SetLastMessageId(message.ChatId, message.Id);
+            }
+            
+            // put into stack
+            foreach (var message in toBeStacked.Reverse())
+            {
+                state.PushMessageToStack(message.ChatId, message);
+            }
+
+            return toBeReturned;
         });
     }
+
+    private IObservable<TdApi.Message> LoadChannelMessages(Chat chat, ChatLoadingState state, int limit, int offset)
+    {
+        // get messages for corresponding chat
+        return GetMessages(chat.ChatData, state.LastMessageId, limit, offset).Do(message =>
+        {
+            if (state.LastMessageId < message.Id)
+            {
+                state.LastMessageId = message.Id;
+            }
+        });
+    }
+
+    private IObservable<TdApi.Message> GetMessages(TdApi.Chat chat, long fromMessageId, int limit, int offset) => agent.Execute(new TdApi.GetChatHistory
+    {
+        ChatId        = chat.Id,
+        FromMessageId = fromMessageId,
+        Limit         = limit,
+        Offset        = offset,
+        OnlyLocal     = false
+    }).SelectMany(history => history.Messages_);
+
+    // ToDo: This method returns the most recent pin.  We may want to update to SearchChatMessages with a filter of Pinned so that we can find and display all of them?
+    private IObservable<TdApi.Message> GetPinnedMessage(TdApi.Chat chat) => agent.Execute(new TdApi.GetChatPinnedMessage
+    {
+        ChatId = chat.Id
+    });
 }

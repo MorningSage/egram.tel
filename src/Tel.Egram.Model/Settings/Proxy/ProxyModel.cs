@@ -9,7 +9,7 @@ public class ProxyModel
 {
     public int Id { get; set; }
         
-    public TdApi.Proxy Proxy { get; set; }
+    public TdApi.Proxy? Proxy { get; set; }
         
     public bool IsEnabled { get; set; }
         

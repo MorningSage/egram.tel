@@ -1,5 +1,6 @@
 ﻿using Avalonia.Markup.Xaml;
 using Tel.Egram.Model.Workspace;
+using Tel.Egran.ViewModels.Workspace;
 
 namespace Tel.Egram.Views.Workspace;
 

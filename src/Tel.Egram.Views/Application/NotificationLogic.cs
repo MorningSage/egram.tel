@@ -5,6 +5,7 @@ using ReactiveUI;
 using Splat;
 using Tel.Egram.Views.Notifications;
 using Tel.Egram.Model.Notifications;
+using Tel.Egram.Services.Notifications;
 using Tel.Egram.Services.Utils.Platforms;
 using Tel.Egram.Services.Utils.Reactive;
 
@@ -36,6 +37,7 @@ public static class NotificationLogic
                 {
                     var screen = mainWindow.Screens.Primary;
                     var window = new NotificationWindow();
+                    
                     window.Show();
                         
                     window.DataContext = model;

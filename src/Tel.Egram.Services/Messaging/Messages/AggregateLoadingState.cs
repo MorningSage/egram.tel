@@ -4,34 +4,12 @@ namespace Tel.Egram.Services.Messaging.Messages;
 
 public class AggregateLoadingState
 {
-    private readonly Dictionary<long, long> _lastMessages;
-    private readonly Dictionary<long, Stack<TdApi.Message>> _stackedMessages;
+    private readonly Dictionary<long, long> _lastMessages = new();
+    private readonly Dictionary<long, Stack<TdApi.Message>> _stackedMessages = new();
 
-    public AggregateLoadingState()
-    {
-        _lastMessages = new Dictionary<long, long>();
-        _stackedMessages = new Dictionary<long, Stack<TdApi.Message>>();
-    }
+    public int CountStackedMessages(long chatId) => _stackedMessages.TryGetValue(chatId, out var stack) ? stack.Count : 0;
 
-    public int CountStackedMessages(long chatId)
-    {
-        if (_stackedMessages.TryGetValue(chatId, out var stack))
-        {
-            return stack.Count;
-        }
-
-        return 0;
-    }
-
-    public TdApi.Message PopMessageFromStack(long chatId)
-    {
-        if (_stackedMessages.TryGetValue(chatId, out var stack))
-        {
-            return stack.Pop();
-        }
-
-        return null;
-    }
+    public TdApi.Message? PopMessageFromStack(long chatId) => _stackedMessages.TryGetValue(chatId, out var stack) ? stack.Pop() : null;
 
     public void PushMessageToStack(long chatId, TdApi.Message message)
     {
@@ -50,8 +28,5 @@ public class AggregateLoadingState
         return messageId;
     }
 
-    public void SetLastMessageId(long chatId, long messageId)
-    {
-        _lastMessages[chatId] = messageId;
-    }
+    public void SetLastMessageId(long chatId, long messageId) =>_lastMessages[chatId] = messageId;
 }

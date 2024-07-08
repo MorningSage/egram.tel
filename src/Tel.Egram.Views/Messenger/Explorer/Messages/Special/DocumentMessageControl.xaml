@@ -2,7 +2,12 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Shared"
+    xmlns:special="clr-namespace:Tel.Egran.ViewModels.Messaging.Explorer.Messages.Special;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Messenger.Explorer.Messages.Special.DocumentMessageControl">
+    
+    <Design.DataContext>
+        <special:DocumentMessageViewModel />
+    </Design.DataContext>
     
     <shared:MessageControl>
         

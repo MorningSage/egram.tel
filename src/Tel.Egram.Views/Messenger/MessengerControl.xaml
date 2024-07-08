@@ -6,7 +6,12 @@
     xmlns:explorer="clr-namespace:Tel.Egram.Views.Messenger.Explorer"
     xmlns:editor="clr-namespace:Tel.Egram.Views.Messenger.Editor"
     xmlns:homepage="clr-namespace:Tel.Egram.Views.Messenger.Homepage"
+    xmlns:messaging="clr-namespace:Tel.Egran.ViewModels.Messaging;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Messenger.MessengerControl">
+    
+    <Design.DataContext>
+        <messaging:MessengerViewModel />
+    </Design.DataContext>
     
     <Grid
         ColumnDefinitions="auto,*"

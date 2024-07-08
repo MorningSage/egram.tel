@@ -1,3 +1,5 @@
+using Tel.Egram.Model.Messaging.Chats;
+
 namespace Tel.Egram.Services.Messaging.Chats;
 
 public interface IChatLoader

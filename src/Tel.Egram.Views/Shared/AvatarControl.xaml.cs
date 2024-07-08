@@ -8,29 +8,18 @@ namespace Tel.Egram.Views.Shared;
 
 public class AvatarControl : ContentControl
 {
-    public static readonly StyledProperty<Bitmap> SourceProperty =
-        AvaloniaProperty.Register<AvatarControl, Bitmap>(nameof(Source));
-
-    public static readonly StyledProperty<IBrush> SourceBrushProperty =
-        AvaloniaProperty.Register<AvatarControl, IBrush>(nameof(SourceBrush));
-
-    public static readonly StyledProperty<Color> ColorProperty =
-        AvaloniaProperty.Register<AvatarControl, Color>(nameof(Color));
-
-    public static readonly StyledProperty<IBrush> ColorBrushProperty =
-        AvaloniaProperty.Register<AvatarControl, IBrush>(nameof(ColorBrush));
-
-    public static readonly StyledProperty<string> TextProperty =
-        AvaloniaProperty.Register<AvatarControl, string>(nameof(Text));
-
-    public static readonly StyledProperty<Color> TextColorProperty =
-        AvaloniaProperty.Register<AvatarControl, Color>(nameof(TextColor));
-
-    public static readonly StyledProperty<IBrush> TextColorBrushProperty =
-        AvaloniaProperty.Register<AvatarControl, IBrush>(nameof(TextColorBrush));
-
-    public static readonly StyledProperty<double> SizeProperty =
-        AvaloniaProperty.Register<AvatarControl, double>(nameof(Size));
+    public static readonly StyledProperty<Bitmap> SourceProperty = AvaloniaProperty.Register<AvatarControl, Bitmap>(nameof(Source));
+    public static readonly StyledProperty<IBrush?> SourceBrushProperty = AvaloniaProperty.Register<AvatarControl, IBrush?>(nameof(SourceBrush));
+    
+    public static readonly StyledProperty<Color> ColorProperty = AvaloniaProperty.Register<AvatarControl, Color>(nameof(Color));
+    public static readonly StyledProperty<IBrush?> ColorBrushProperty = AvaloniaProperty.Register<AvatarControl, IBrush?>(nameof(ColorBrush));
+    
+    public static readonly StyledProperty<string> TextProperty = AvaloniaProperty.Register<AvatarControl, string>(nameof(Text));
+    
+    public static readonly StyledProperty<Color> TextColorProperty = AvaloniaProperty.Register<AvatarControl, Color>(nameof(TextColor));
+    public static readonly StyledProperty<IBrush?> TextColorBrushProperty = AvaloniaProperty.Register<AvatarControl, IBrush?>(nameof(TextColorBrush));
+    
+    public static readonly StyledProperty<double> SizeProperty = AvaloniaProperty.Register<AvatarControl, double>(nameof(Size));
         
     public AvatarControl()
     {
@@ -51,7 +40,7 @@ public class AvatarControl : ContentControl
         }
     }
 
-    public IBrush SourceBrush
+    public IBrush? SourceBrush
     {
         get => GetValue(SourceBrushProperty);
         set => SetValue(SourceBrushProperty, value);
@@ -67,7 +56,7 @@ public class AvatarControl : ContentControl
         }
     }
 
-    public IBrush ColorBrush
+    public IBrush? ColorBrush
     {
         get => GetValue(ColorBrushProperty);
         set => SetValue(ColorBrushProperty, value);
@@ -89,7 +78,7 @@ public class AvatarControl : ContentControl
         }
     }
 
-    public IBrush TextColorBrush
+    public IBrush? TextColorBrush
     {
         get => GetValue(TextColorBrushProperty);
         set => SetValue(TextColorBrushProperty, value);
@@ -103,18 +92,14 @@ public class AvatarControl : ContentControl
 
     private static void SourceChanged(AvaloniaPropertyChangedEventArgs e)
     {
-        if (e.Sender is AvatarControl avatarControl)
+        if (e.Sender is not AvatarControl avatarControl) return;
+
+        avatarControl.SourceBrush = e.NewValue switch
         {
-            if (e.NewValue is null)
-            {
-                avatarControl.SourceBrush = null;
-            }
-                
-            if (e.NewValue is Bitmap bitmap)
-            {
-                avatarControl.SourceBrush = new ImageBrush(bitmap);
-            }
-        }
+            null => null,
+            Bitmap bitmap => new ImageBrush(bitmap),
+            _ => avatarControl.SourceBrush
+        };
     }
         
     private static void ColorChanged(AvaloniaPropertyChangedEventArgs e)

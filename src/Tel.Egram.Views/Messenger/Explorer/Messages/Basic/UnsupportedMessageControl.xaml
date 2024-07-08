@@ -1,8 +1,13 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:messages="clr-namespace:Tel.Egram.Model.Messaging.Explorer.Messages;assembly=Tel.Egram.Model"
     x:Class="Tel.Egram.Views.Messenger.Explorer.Messages.Basic.UnsupportedMessageControl">
         
+    <Design.DataContext>
+        <messages:UnsupportedMessageModel />
+    </Design.DataContext>
+    
     <Rectangle Height="8" Fill="#eeeeee" />
     
 </UserControl>

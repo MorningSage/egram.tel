@@ -1,67 +1,34 @@
 ﻿using System.Reactive.Linq;
 using TdLib;
+using Tel.Egram.Model.Messaging.Chats;
 using Tel.Egram.Services.Utils.Reactive;
 using Tel.Egram.Services.Utils.TdLib;
 
 namespace Tel.Egram.Services.Messaging.Chats;
 
-public class FeedLoader : IFeedLoader
+public class FeedLoader(IAgent agent) : IFeedLoader
 {
-    private readonly IAgent _agent;
+    public IObservable<Aggregate> LoadAggregate() => GetAllChats()
+        .Where(chat => chat is { Type: TdApi.ChatType.ChatTypeSupergroup { IsChannel: true }})
+        .Select(chat => new Chat { ChatData = chat })
+        .CollectToList()
+        .Select(list => new Aggregate(list));
 
-    public FeedLoader(IAgent agent)
-    {
-        _agent = agent;
-    }
-        
-    public IObservable<Aggregate> LoadAggregate()
-    {
-        return GetAllChats(new List<TdApi.Chat>())
-            .Where(chat =>
-            {
-                var type = chat.Type as TdApi.ChatType.ChatTypeSupergroup;
-                return !(type is null) && type.IsChannel;
-            })
-            .Select(chat => new Chat
-            {
-                ChatData = chat
-            })
-            .CollectToList()
-            .Select(list => new Aggregate(list));
-    }
+    public IObservable<Chat> LoadChat(long chatId) => agent
+        .Execute(new TdApi.GetChat { ChatId = chatId })
+        .Select(chat => new Chat { ChatData = chat });
 
-    public IObservable<Chat> LoadChat(long chatId)
+    private IObservable<TdApi.Chat> GetAllChats()
     {
-        return _agent.Execute(new TdApi.GetChat
-            {
-                ChatId = chatId
-            })
-            .Select(chat => new Chat
-            {
-                ChatData = chat
-            });
-    }
-
-    private IObservable<TdApi.Chat> GetAllChats(
-        List<TdApi.Chat> chats,
-        long offsetOrder = long.MaxValue,
-        long offsetChatId = 0)
-    {
-        int limit = 100;
-            
+        const int limit = 100;
         return GetChats(limit);
     }
-
+    
     private IObservable<TdApi.Chat> GetChats(int limit)
     {
-        return _agent.Execute(new TdApi.GetChats
-            {
-                Limit = limit
-            })
+        // ToDo: This is not the way we should be getting chats.  Update to LoadChats
+        return agent.Execute(new TdApi.GetChats { Limit = limit })
             .SelectMany(result => result.ChatIds)
-            .SelectMany(chatId => _agent.Execute(new TdApi.GetChat
-            {
-                ChatId = chatId
-            }));
+            .SelectMany(chatId => agent.Execute(new TdApi.GetChat { ChatId = chatId }));
     }
 }

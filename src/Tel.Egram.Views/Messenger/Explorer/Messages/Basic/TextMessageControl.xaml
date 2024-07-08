@@ -2,8 +2,13 @@
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:shared="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Shared"
+    xmlns:basic="clr-namespace:Tel.Egran.ViewModels.Messaging.Explorer.Messages.Basic;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Messenger.Explorer.Messages.Basic.TextMessageControl">
 
+    <Design.DataContext>
+        <basic:TextMessageViewModel />
+    </Design.DataContext>
+    
     <shared:MessageControl>
         
         <TextBlock

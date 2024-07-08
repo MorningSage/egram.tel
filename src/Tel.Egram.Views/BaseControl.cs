@@ -7,10 +7,9 @@ namespace Tel.Egram.Views;
 /// <summary>
 /// Workaround for model activation
 /// </summary>
-public class BaseControl<TViewModel> : ReactiveUserControl<TViewModel>
-    where TViewModel : class
-{   
-    public BaseControl(bool activate = true)
+public class BaseControl<TViewModel> : ReactiveUserControl<TViewModel> where TViewModel : class
+{
+    protected BaseControl(bool activate = true)
     {
         if (activate)
         {

@@ -1,9 +1,9 @@
 ﻿using Avalonia.Markup.Xaml;
-using Tel.Egram.Model.Messenger.Catalog.Entries;
+using Tel.Egran.ViewModels.Messaging.Catalog.Entries;
 
 namespace Tel.Egram.Views.Messenger.Catalog;
 
-public class EntryControl : BaseControl<EntryModel>
+public class EntryControl : BaseControl<EntryViewModel>
 {
     public EntryControl()
     {

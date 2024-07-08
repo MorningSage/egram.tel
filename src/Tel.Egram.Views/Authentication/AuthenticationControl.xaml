@@ -3,7 +3,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:welcome="clr-namespace:Tel.Egram.Views.Authentication.Welcome"
     xmlns:phone="clr-namespace:Tel.Egram.Views.Authentication.Phone"
+    xmlns:authentication="clr-namespace:Tel.Egran.ViewModels.Authentication;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Authentication.AuthenticationControl">
+    
+    <Design.DataContext>
+        <authentication:AuthenticationViewModel />
+    </Design.DataContext>
     
     <Grid
         Classes="AuthenticationPage"

@@ -1,16 +1,21 @@
 ﻿<UserControl
     xmlns="https://github.com/avaloniaui"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:basic="clr-namespace:Tel.Egram.Model.Messenger.Explorer.Messages.Basic;assembly=Tel.Egram.Model"
-    xmlns:visual="clr-namespace:Tel.Egram.Model.Messenger.Explorer.Messages.Visual;assembly=Tel.Egram.Model"
-    xmlns:model="clr-namespace:Tel.Egram.Model.Messenger.Explorer.Messages;assembly=Tel.Egram.Model"
     xmlns:basic1="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Basic"
     xmlns:visual1="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Visual"
-    xmlns:special="clr-namespace:Tel.Egram.Model.Messenger.Explorer.Messages.Special;assembly=Tel.Egram.Model"
     xmlns:special1="clr-namespace:Tel.Egram.Views.Messenger.Explorer.Messages.Special"
+    xmlns:model="clr-namespace:Tel.Egram.Model.Messaging.Explorer.Messages;assembly=Tel.Egram.Model"
+    xmlns:basic="clr-namespace:Tel.Egran.ViewModels.Messaging.Explorer.Messages.Basic;assembly=Tel.Egran.ViewModels"
+    xmlns:visual2="clr-namespace:Tel.Egran.ViewModels.Messaging.Explorer.Messages.Visual;assembly=Tel.Egran.ViewModels"
+    xmlns:special="clr-namespace:Tel.Egran.ViewModels.Messaging.Explorer.Messages.Special;assembly=Tel.Egran.ViewModels"
+    xmlns:explorer="clr-namespace:Tel.Egran.ViewModels.Messaging.Explorer;assembly=Tel.Egran.ViewModels"
     x:Class="Tel.Egram.Views.Messenger.Explorer.ExplorerControl">
     
+    <Design.DataContext>
+        <explorer:ExplorerViewModel />
+    </Design.DataContext>
 
+    
     <!--VirtualizationMode="None"-->
     <ListBox
         Width="516"
@@ -27,24 +32,23 @@
         </ListBox.ItemsPanel>
     
         <ListBox.DataTemplates>
-        
-            <DataTemplate DataType="{x:Type basic:TextMessageModel}">
+            <DataTemplate DataType="{x:Type basic:TextMessageViewModel}">
                 <basic1:TextMessageControl />
             </DataTemplate>
         
-            <DataTemplate DataType="{x:Type visual:PhotoMessageModel}">
+            <DataTemplate DataType="{x:Type visual2:PhotoMessageViewModel}">
                 <visual1:PhotoMessageControl />
             </DataTemplate>
         
-            <DataTemplate DataType="{x:Type visual:VideoMessageModel}">
+            <DataTemplate DataType="{x:Type visual2:VideoMessageViewModel}">
                 <visual1:VideoMessageControl />
             </DataTemplate>
         
-            <DataTemplate DataType="{x:Type visual:StickerMessageModel}">
+            <DataTemplate DataType="{x:Type visual2:StickerMessageViewModel}">
                 <visual1:StickerMessageControl />
             </DataTemplate>
         
-            <DataTemplate DataType="{x:Type special:DocumentMessageModel}">
+            <DataTemplate DataType="{x:Type special:DocumentMessageViewModel}">
                 <special1:DocumentMessageControl />
             </DataTemplate>
         

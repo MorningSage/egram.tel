@@ -2,10 +2,11 @@
 using Avalonia.Markup.Xaml;
 using ReactiveUI;
 using Tel.Egram.Model.Notifications;
+using Tel.Egran.ViewModels.Notifications;
 
 namespace Tel.Egram.Views.Notifications;
 
-public class NotificationWindow : BaseWindow<NotificationModel>
+public class NotificationWindow : BaseWindow<NotificationViewModel>
 {
     private static NotificationWindow _current;
         
