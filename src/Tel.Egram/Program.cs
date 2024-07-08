@@ -1,8 +1,6 @@
 ﻿using System;
 using Avalonia;
-using Avalonia.ReactiveUI;
 using Tel.Egram.Application;
-using Tel.Egram.Services;
 
 namespace Tel.Egram;
 
@@ -22,7 +20,6 @@ internal abstract class Program
         return AppBuilder.Configure<MainApplication>()
             .UsePlatformDetect()
             .WithInterFont()
-            .UseReactiveUI()
             .LogToTrace();
     }
 }
