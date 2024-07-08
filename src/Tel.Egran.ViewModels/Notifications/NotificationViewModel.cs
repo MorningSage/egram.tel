@@ -5,7 +5,7 @@ using Tel.Egram.Model.Notifications;
 namespace Tel.Egran.ViewModels.Notifications;
 
 [AddINotifyPropertyChangedInterface]
-public class NotificationViewModel : IActivatableViewModel
+public class NotificationViewModel : AbstractViewModelBase, IActivatableViewModel
 {
     public ViewModelActivator Activator { get; } = new();
 

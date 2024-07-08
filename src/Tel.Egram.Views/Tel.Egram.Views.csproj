@@ -20,7 +20,6 @@
     </ItemGroup>
     
     <ItemGroup>
-      <ProjectReference Include="..\Tel.Egram.Services\Tel.Egram.Services.csproj" />
       <ProjectReference Include="..\Tel.Egran.ViewModels\Tel.Egran.ViewModels.csproj" />
     </ItemGroup>
     

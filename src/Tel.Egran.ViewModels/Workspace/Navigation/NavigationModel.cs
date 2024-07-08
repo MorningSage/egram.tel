@@ -2,6 +2,8 @@ using System.Reactive.Disposables;
 using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Model.Graphics.Avatars;
+using Tel.Egram.Services.Graphics.Avatars;
+using Tel.Egram.Services.Messaging.Users;
 
 namespace Tel.Egran.ViewModels.Workspace.Navigation;
 
@@ -12,11 +14,11 @@ public class NavigationModel : IActivatableViewModel
 
     public int SelectedTabIndex { get; set; }
 
-    public NavigationModel()
+    public NavigationModel(IAvatarLoader avatarLoader, IUserLoader userLoader)
     {
         this.WhenActivated(disposables =>
         {
-            this.BindUserAvatar().DisposeWith(disposables);
+            this.BindUserAvatar(avatarLoader, userLoader).DisposeWith(disposables);
         });
     }
         

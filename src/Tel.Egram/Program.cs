@@ -1,8 +1,8 @@
 ﻿using System;
 using Avalonia;
 using Avalonia.ReactiveUI;
-using Splat;
 using Tel.Egram.Application;
+using Tel.Egram.Services;
 
 namespace Tel.Egram;
 
@@ -17,16 +17,8 @@ internal abstract class Program
         BuildAvaloniaApp().StartWithClassicDesktopLifetime(args);
     }
 
-    private static void CollectServices(IMutableDependencyResolver services)
-    {
-
-    }
-        
     private static AppBuilder BuildAvaloniaApp()
     {
-        // As BuildAvaloniaApp is used by the designer, we collect services here so that things will be loaded correctly
-        CollectServices(Locator.CurrentMutable);
-        
         return AppBuilder.Configure<MainApplication>()
             .UsePlatformDetect()
             .WithInterFont()

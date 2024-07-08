@@ -1,7 +1,5 @@
 using System.Reactive.Linq;
-using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
-using Tel.Egram.Services;
 using Tel.Egram.Services.Messaging.Notifications;
 using Tel.Egram.Services.Notifications;
 using Tel.Egram.Services.Utils.Reactive;
@@ -11,13 +9,13 @@ namespace Tel.Egran.ViewModels.Messaging;
 
 public static class NotificationLogic
 {
-    private static readonly INotificationSource NotificationSource = Registry.Services.GetRequiredService<INotificationSource>();
-    private static readonly INotificationController NotificationController = Registry.Services.GetRequiredService<INotificationController>();
+    //private static readonly INotificationSource NotificationSource = Registry.Services.GetRequiredService<INotificationSource>();
+    //private static readonly INotificationController NotificationController = Registry.Services.GetRequiredService<INotificationController>();
     
-    public static IDisposable BindNotifications(this MessengerViewModel viewModel)
+    public static IDisposable BindNotifications(this MessengerViewModel viewModel, INotificationSource notificationSource, INotificationController notificationController)
     {
-        var chats = NotificationSource.ChatNotifications();
-        var messages = NotificationSource.MessagesNotifications();
+        var chats = notificationSource.ChatNotifications();
+        var messages = notificationSource.MessagesNotifications();
 
         return messages.Merge(chats)
             .Buffer(TimeSpan.FromSeconds(2))
@@ -31,11 +29,11 @@ public static class NotificationLogic
                         break;
                         
                     case 1:
-                        NotificationController.Show(NotificationViewModel.FromNotification(notifications[0]));
+                        notificationController.Show(NotificationViewModel.FromNotification(notifications[0]));
                         break;
                         
                     default:
-                        NotificationController.Show(NotificationViewModel.FromNotificationList(notifications));
+                        notificationController.Show(NotificationViewModel.FromNotificationList(notifications));
                         break;
                 }
             });

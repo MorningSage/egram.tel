@@ -1,22 +1,19 @@
-using System.Reactive.Disposables;
-using Avalonia.ReactiveUI;
-using ReactiveUI;
+using Avalonia.Controls;
+using Tel.Egran.ViewModels;
 
 namespace Tel.Egram.Views;
 
-/// <summary>
-/// Workaround for model activation
-/// </summary>
-public class BaseWindow<TViewModel> : ReactiveWindow<TViewModel> where TViewModel : class
+public class WindowWithViewModel<TViewModel> : Window where TViewModel : AbstractViewModelBase
 {
-    protected BaseWindow(bool activate = true)
+    protected WindowWithViewModel()
     {
-        if (activate)
-        {
-            this.WhenActivated(disposables =>
-            {
-                Disposable.Create(() => { }).DisposeWith(disposables);
-            });
-        }
+        // ToDo: Eventually
+        //if (activate)
+        //{
+        //    this.WhenActivated(disposables =>
+        //    {
+        //        Disposable.Create(() => { }).DisposeWith(disposables);
+        //    });
+        //}
     }
 }

@@ -6,6 +6,9 @@ using ReactiveUI;
 using Tel.Egram.Model.Messaging.Chats;
 using Tel.Egram.Model.Messaging.Explorer.Items;
 using Tel.Egram.Model.Messaging.Explorer.Loaders;
+using Tel.Egram.Services.Messaging.Chats;
+using Tel.Egram.Services.Messaging.Mappers;
+using Tel.Egram.Services.Messaging.Messages;
 using Tel.Egram.Services.Utils.Reactive;
 using Tel.Egran.ViewModels.Messaging.Explorer.Loaders;
 using Range = Tel.Egram.Services.Utils.Range;
@@ -21,7 +24,7 @@ public class ExplorerViewModel : IActivatableViewModel
     public ObservableCollectionExtended<ItemModel> Items { get; set; } = [];
     public SourceList<ItemModel> SourceItems { get; set; } = new();
 
-    public ExplorerViewModel(Chat chat)
+    public ExplorerViewModel(Chat chat, IChatLoader chatLoader, IMessageLoader messageLoader, IMessageModelFactory messageModelFactory)
     {
         this.WhenActivated(disposables =>
         {
@@ -29,9 +32,9 @@ public class ExplorerViewModel : IActivatableViewModel
 
             var conductor = new MessageLoaderConductor();
                 
-            new InitMessageLoader(conductor).Bind(this, chat).DisposeWith(disposables);
-            new NextMessageLoader(conductor).Bind(this, chat).DisposeWith(disposables);
-            new PrevMessageLoader(conductor).Bind(this, chat).DisposeWith(disposables);
+            new InitMessageLoader(conductor).Bind(this, chat, chatLoader, messageLoader, messageModelFactory).DisposeWith(disposables);
+            new NextMessageLoader(conductor).Bind(this, chat, chatLoader, messageLoader, messageModelFactory).DisposeWith(disposables);
+            new PrevMessageLoader(conductor).Bind(this, chat, chatLoader, messageLoader, messageModelFactory).DisposeWith(disposables);
         });
     }
 

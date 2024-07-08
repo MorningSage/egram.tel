@@ -4,6 +4,8 @@ using DynamicData.Binding;
 using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Model.Messaging.Chats;
+using Tel.Egram.Services.Graphics.Avatars;
+using Tel.Egram.Services.Messaging.Chats;
 using Tel.Egran.ViewModels.Messaging.Catalog.Entries;
 
 namespace Tel.Egran.ViewModels.Messaging.Catalog;
@@ -23,12 +25,12 @@ public class CatalogViewModel : IActivatableViewModel
         
     public Subject<Func<EntryViewModel, bool>> FilterController { get; set; } = new();
 
-    public CatalogViewModel(Section section)
+    public CatalogViewModel(Section section, IChatLoader chatLoader, IChatUpdater chatUpdater, IAvatarLoader avatarLoader)
     {
         this.WhenActivated(disposables =>
         {
             this.BindCatalogFilter(section).DisposeWith(disposables);
-            this.BindChats(section).DisposeWith(disposables);
+            this.BindChats(section, chatLoader, chatUpdater, avatarLoader).DisposeWith(disposables);
         });
     }
 

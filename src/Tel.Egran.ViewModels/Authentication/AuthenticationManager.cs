@@ -1,12 +1,10 @@
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Text;
-using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using TdLib;
 using Tel.Egram.Model.Authentication.Phone;
 using Tel.Egram.Model.Authentication.Results;
-using Tel.Egram.Services;
 using Tel.Egram.Services.Authentication;
 using Tel.Egram.Services.Utils.Reactive;
 
@@ -14,9 +12,7 @@ namespace Tel.Egran.ViewModels.Authentication;
 
 public static class AuthenticationManager
 {
-    private static readonly IAuthenticator Authenticator = Registry.Services.GetRequiredService<IAuthenticator>();
-    
-    public static IDisposable BindAuthenticationCommands(this AuthenticationViewModel model)
+    public static IDisposable BindAuthenticationCommands(this AuthenticationViewModel model, IAuthenticator authenticator)
     {
         var canSendCode      = model.WhenAnyValue(x => x.PhoneNumber).Select(phone => IsPhoneValid(model, phone));
         var canCheckCode     = model.WhenAnyValue(x => x.ConfirmCode).Select(code => !string.IsNullOrWhiteSpace(code));
@@ -31,25 +27,25 @@ public static class AuthenticationManager
                 (AuthenticationViewModel m) =>
                 {
                     var phone = m.PhoneCode.Code + new string(m.PhoneNumber.Where(char.IsDigit).ToArray());
-                    return SendCode(phone);
+                    return SendCode(phone, authenticator);
                 },
                 canSendCode,
                 RxApp.MainThreadScheduler)
             .DisposeWith(disposable);
 
         model.CheckCodeCommand = ReactiveCommand.CreateFromObservable(
-                (AuthenticationViewModel m) => CheckCode(m.ConfirmCode),
+                (AuthenticationViewModel m) => CheckCode(m.ConfirmCode, authenticator),
                 canCheckCode,
                 RxApp.MainThreadScheduler)
             .DisposeWith(disposable);
             
         model.CheckPasswordCommand = ReactiveCommand.CreateFromObservable(
-                (AuthenticationViewModel m) => CheckPassword(m.Password),
+                (AuthenticationViewModel m) => CheckPassword(m.Password, authenticator),
                 canCheckPassword,
                 RxApp.MainThreadScheduler)
             .DisposeWith(disposable);
 
-        Authenticator.ObserveState()
+        authenticator.ObserveState()
             .SubscribeOn(RxApp.TaskpoolScheduler)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Accept(state => HandleState(model, state))
@@ -105,19 +101,19 @@ public static class AuthenticationManager
         model.PasswordIndex = 1;
     }
 
-    private static IObservable<SendCodeResult> SendCode(string phoneNumber)
+    private static IObservable<SendCodeResult> SendCode(string phoneNumber, IAuthenticator authenticator)
     {
-        return Authenticator.SetPhoneNumber(phoneNumber).Select(_ => new SendCodeResult());
+        return authenticator.SetPhoneNumber(phoneNumber).Select(_ => new SendCodeResult());
     }
 
-    private static IObservable<CheckCodeResult> CheckCode(string code)
+    private static IObservable<CheckCodeResult> CheckCode(string code, IAuthenticator authenticator)
     {
-        return Authenticator.CheckCode(code).Select(_ => new CheckCodeResult());
+        return authenticator.CheckCode(code).Select(_ => new CheckCodeResult());
     }
 
-    private static IObservable<CheckPasswordResult> CheckPassword(string password)
+    private static IObservable<CheckPasswordResult> CheckPassword(string password, IAuthenticator authenticator)
     {
-        return Authenticator.CheckPassword(password).Select(_ => new CheckPasswordResult());
+        return authenticator.CheckPassword(password).Select(_ => new CheckPasswordResult());
     }
 
     private static bool IsPhoneValid(AuthenticationViewModel model, string phone)

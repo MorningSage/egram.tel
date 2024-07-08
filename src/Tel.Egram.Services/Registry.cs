@@ -27,12 +27,10 @@ namespace Tel.Egram.Services;
 
 public static class Registry
 {
-    public static IServiceProvider Services { get; } = CollectServices();
-
-    private static ServiceProvider CollectServices()
+    //public static IServiceProvider Services;
+    
+    public static IServiceCollection CollectServices(this IServiceCollection serviceCollection)
     {
-        var serviceCollection = new ServiceCollection();
-
         serviceCollection.AddUtils();
         serviceCollection.AddTdLib();
         serviceCollection.AddPersistence();
@@ -44,7 +42,7 @@ public static class Registry
         serviceCollection.AddSettings();
         serviceCollection.AddMessenger();
 
-        return serviceCollection.BuildServiceProvider();
+        return serviceCollection;
     }
 
     private static void AddUtils(this IServiceCollection services)

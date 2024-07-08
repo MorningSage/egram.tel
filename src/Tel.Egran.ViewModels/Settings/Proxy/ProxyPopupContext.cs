@@ -4,6 +4,7 @@ using DynamicData.Binding;
 using ReactiveUI;
 using Tel.Egram.Model.Popups;
 using Tel.Egram.Model.Settings.Proxy;
+using Tel.Egram.Services.Settings;
 
 namespace Tel.Egran.ViewModels.Settings.Proxy;
 
@@ -24,13 +25,13 @@ public class ProxyPopupContext : PopupContext, IActivatableViewModel
 
     public ViewModelActivator Activator { get; } = new ViewModelActivator();
 
-    public ProxyPopupContext()
+    public ProxyPopupContext(IProxyManager proxyManager)
     {
         this.WhenActivated(disposables =>
         {
             Title = "Proxy configuration";
                 
-            this.BindProxyLogic()
+            this.BindProxyLogic(proxyManager)
                 .DisposeWith(disposables);
         });
     }

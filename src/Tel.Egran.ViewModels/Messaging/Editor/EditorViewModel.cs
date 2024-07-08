@@ -3,6 +3,7 @@ using System.Reactive.Disposables;
 using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Model.Messaging.Chats;
+using Tel.Egram.Services.Messaging.Messages;
 
 namespace Tel.Egran.ViewModels.Messaging.Editor;
 
@@ -14,9 +15,9 @@ public class EditorViewModel : IActivatableViewModel
         
     public ReactiveCommand<Unit, Unit>? SendCommand { get; set; }
         
-    public EditorViewModel(Chat chat)
+    public EditorViewModel(Chat chat, IMessageSender messageSender)
     {
-        this.WhenActivated(disposables => { this.BindSender(chat).DisposeWith(disposables); });
+        this.WhenActivated(disposables => { this.BindSender(chat, messageSender).DisposeWith(disposables); });
     }
 
     private EditorViewModel() { }

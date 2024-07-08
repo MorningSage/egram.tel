@@ -1,9 +1,7 @@
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Microsoft.Extensions.DependencyInjection;
 using TdLib;
 using Tel.Egram.Model.Graphics.Avatars;
-using Tel.Egram.Services;
 using Tel.Egram.Services.Graphics.Avatars;
 using Tel.Egram.Services.Utils.Reactive;
 
@@ -11,16 +9,14 @@ namespace Tel.Egran.ViewModels.Messaging.Catalog.Entries;
 
 public static class AvatarLoadingLogic
 {
-    private static readonly IAvatarLoader AvatarLoader = Registry.Services.GetRequiredService<IAvatarLoader>();
-
-    public static IDisposable BindAvatarLoading(this EntryViewModel viewModel)
+    public static IDisposable BindAvatarLoading(this EntryViewModel viewModel, IAvatarLoader avatarLoader)
     {
         if (viewModel.Avatar != null) return Disposable.Empty;
         
-        viewModel.Avatar = GetAvatar(AvatarLoader, viewModel);
+        viewModel.Avatar = GetAvatar(avatarLoader, viewModel);
 
         return viewModel.Avatar?.IsFallback is null or true
-            ? LoadAvatar(AvatarLoader, viewModel).Accept(avatar => { viewModel.Avatar = avatar; })
+            ? LoadAvatar(avatarLoader, viewModel).Accept(avatar => { viewModel.Avatar = avatar; })
             : Disposable.Empty;
     }
 

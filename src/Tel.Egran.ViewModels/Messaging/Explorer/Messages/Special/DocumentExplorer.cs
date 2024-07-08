@@ -1,7 +1,4 @@
-using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
-using Splat;
-using Tel.Egram.Services;
 using Tel.Egram.Services.Persistence;
 
 namespace Tel.Egran.ViewModels.Messaging.Explorer.Messages.Special;
@@ -11,18 +8,16 @@ namespace Tel.Egran.ViewModels.Messaging.Explorer.Messages.Special;
 /// </summary>
 public static class DocumentExplorer
 {
-    private static readonly IFileExplorer FileExplorer = Registry.Services.GetRequiredService<IFileExplorer>();
-    
-    public static IDisposable BindShowFileCommand(this DocumentMessageViewModel viewModel)
+    public static IDisposable BindShowFileCommand(this DocumentMessageViewModel viewModel, IFileExplorer fileExplorer)
     {
-        viewModel.ShowCommand = ReactiveCommand.Create((DocumentMessageViewModel m) => Explore(m), null, RxApp.MainThreadScheduler);
+        viewModel.ShowCommand = ReactiveCommand.Create((DocumentMessageViewModel m) => Explore(m, fileExplorer), null, RxApp.MainThreadScheduler);
         return viewModel.ShowCommand.Subscribe();
     }
         
-    private static bool Explore(DocumentMessageViewModel viewModel)
+    private static bool Explore(DocumentMessageViewModel viewModel, IFileExplorer fileExplorer)
     {
         if (viewModel.Document.Document_?.Local is not { } asdf || new FileInfo(asdf.Path) is not { Exists: true } fileInfo) return false;
-        FileExplorer.OpenDirectory(fileInfo);
+        fileExplorer.OpenDirectory(fileInfo);
         return true;
     }
 }

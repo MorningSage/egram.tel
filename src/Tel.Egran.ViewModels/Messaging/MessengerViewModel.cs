@@ -2,6 +2,12 @@ using System.Reactive.Disposables;
 using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Model.Messaging.Chats;
+using Tel.Egram.Services.Graphics.Avatars;
+using Tel.Egram.Services.Messaging.Chats;
+using Tel.Egram.Services.Messaging.Mappers;
+using Tel.Egram.Services.Messaging.Messages;
+using Tel.Egram.Services.Messaging.Notifications;
+using Tel.Egram.Services.Notifications;
 using Tel.Egran.ViewModels.Messaging.Catalog;
 using Tel.Egran.ViewModels.Messaging.Editor;
 using Tel.Egran.ViewModels.Messaging.Explorer;
@@ -23,16 +29,16 @@ public class MessengerViewModel : IActivatableViewModel
         
     public EditorViewModel EditorModel { get; set; }
 
-    public MessengerViewModel(Section section)
+    public MessengerViewModel(Section section, IChatLoader chatLoader, IChatUpdater chatUpdater, IAvatarLoader avatarLoader, IMessageSender messageSender, IMessageLoader messageLoader, INotificationSource notificationSource, INotificationController notificationController, IMessageModelFactory messageModelFactory)
     {
         this.WhenActivated(disposables =>
         {
-            this.BindCatalog(section).DisposeWith(disposables);
-            this.BindInformer().DisposeWith(disposables);
-            this.BindExplorer().DisposeWith(disposables);
+            this.BindCatalog(section, chatLoader, chatUpdater, avatarLoader).DisposeWith(disposables);
+            this.BindInformer(avatarLoader).DisposeWith(disposables);
+            this.BindExplorer(chatLoader, messageLoader, messageModelFactory).DisposeWith(disposables);
             this.BindHome().DisposeWith(disposables);
-            this.BindEditor().DisposeWith(disposables);
-            this.BindNotifications().DisposeWith(disposables);
+            this.BindEditor(messageSender).DisposeWith(disposables);
+            this.BindNotifications(notificationSource, notificationController).DisposeWith(disposables);
         });
     }
         

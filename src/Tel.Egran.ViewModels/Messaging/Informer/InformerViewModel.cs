@@ -3,6 +3,7 @@ using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Model.Graphics.Avatars;
 using Tel.Egram.Model.Messaging.Chats;
+using Tel.Egram.Services.Graphics.Avatars;
 
 namespace Tel.Egran.ViewModels.Messaging.Informer;
 
@@ -17,9 +18,9 @@ public class InformerViewModel : IActivatableViewModel
         
     public Avatar Avatar { get; set; }
         
-    public InformerViewModel(Chat chat)
+    public InformerViewModel(Chat chat, IAvatarLoader avatarLoader)
     {
-        this.WhenActivated(disposables => this.BindInformer(chat).DisposeWith(disposables));
+        this.WhenActivated(disposables => this.BindInformer(chat, avatarLoader).DisposeWith(disposables));
     }
 
     public InformerViewModel(Aggregate aggregate)
@@ -27,10 +28,8 @@ public class InformerViewModel : IActivatableViewModel
         this.WhenActivated(disposables => this.BindInformer(aggregate).DisposeWith(disposables));
     }
 
-    private InformerViewModel()
-    {
-    }
-        
+    private InformerViewModel() { }
+    
     public static InformerViewModel Hidden()
     {
         return new InformerViewModel

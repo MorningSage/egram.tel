@@ -1,10 +1,8 @@
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using Microsoft.Extensions.DependencyInjection;
 using ReactiveUI;
 using Tel.Egram.Model.Messaging.Explorer.Messages;
 using Tel.Egram.Model.Messaging.Explorer.Messages.Visual;
-using Tel.Egram.Services;
 using Tel.Egram.Services.Graphics.Previews;
 using Tel.Egram.Services.Utils.Reactive;
 using Tel.Egran.ViewModels.Messaging.Explorer.Messages.Visual;
@@ -13,17 +11,15 @@ namespace Tel.Egran.ViewModels.Messaging.Explorer.Messages;
 
 public static class PreviewLoadingLogic
 {
-    private static readonly IPreviewLoader PreviewLoader = Registry.Services.GetRequiredService<IPreviewLoader>();
-    
-    public static IDisposable BindPreviewLoading(this ReplyModel model)
+    public static IDisposable BindPreviewLoading(this ReplyModel model, IPreviewLoader previewLoader)
     {
         if (model.Preview != null) return Disposable.Empty;
         
-        model.Preview = GetPreview(model);
+        model.Preview = GetPreview(model, previewLoader);
 
         if (model.Preview?.Bitmap == null)
         {
-            return LoadPreview(model)
+            return LoadPreview(model, previewLoader)
                 .SubscribeOn(RxApp.TaskpoolScheduler)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Accept(preview =>
@@ -38,15 +34,15 @@ public static class PreviewLoadingLogic
         return Disposable.Empty;
     }
 
-    public static IDisposable BindPreviewLoading(this PhotoMessageViewModel model)
+    public static IDisposable BindPreviewLoading(this PhotoMessageViewModel model, IPreviewLoader previewLoader)
     {
         if (model.VisualMessage is not { Preview: null }) return Disposable.Empty;
         
-        model.VisualMessage.Preview = GetPreview(model);
+        model.VisualMessage.Preview = GetPreview(model, previewLoader);
 
         if (model.VisualMessage.Preview?.Bitmap == null)
         {
-            return LoadPreview(model)
+            return LoadPreview(model, previewLoader)
                 .SubscribeOn(RxApp.TaskpoolScheduler)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Accept(preview =>
@@ -58,15 +54,15 @@ public static class PreviewLoadingLogic
         return Disposable.Empty;
     }
         
-    public static IDisposable BindPreviewLoading(this VideoMessageViewModel model)
+    public static IDisposable BindPreviewLoading(this VideoMessageViewModel model, IPreviewLoader previewLoader)
     {
         if (model.VisualMessage is not { Preview: null }) return Disposable.Empty;
         
-        model.VisualMessage.Preview = GetPreview(model);
+        model.VisualMessage.Preview = GetPreview(model, previewLoader);
 
         if (model.VisualMessage.Preview?.Bitmap == null)
         {
-            return LoadPreview(model)
+            return LoadPreview(model, previewLoader)
                 .SubscribeOn(RxApp.TaskpoolScheduler)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Accept(preview =>
@@ -78,15 +74,15 @@ public static class PreviewLoadingLogic
         return Disposable.Empty;
     }
         
-    public static IDisposable BindPreviewLoading(this StickerMessageViewModel model)
+    public static IDisposable BindPreviewLoading(this StickerMessageViewModel model, IPreviewLoader previewLoader)
     {
         if (model.VisualMessage is not { Preview: null }) return Disposable.Empty;
         
-        model.VisualMessage.Preview = GetPreview(model);
+        model.VisualMessage.Preview = GetPreview(model, previewLoader);
 
         if (model.VisualMessage.Preview?.Bitmap == null)
         {
-            return LoadPreview(model)
+            return LoadPreview(model, previewLoader)
                 .SubscribeOn(RxApp.TaskpoolScheduler)
                 .ObserveOn(RxApp.MainThreadScheduler)
                 .Accept(preview =>
@@ -98,73 +94,73 @@ public static class PreviewLoadingLogic
         return Disposable.Empty;
     }
 
-    private static Preview? GetPreview(ReplyModel model)
+    private static Preview? GetPreview(ReplyModel model, IPreviewLoader previewLoader)
     {
         if (model.PhotoData != null)
         {
-            return PreviewLoader.GetPreview(model.PhotoData, PreviewQuality.Low);
+            return previewLoader.GetPreview(model.PhotoData, PreviewQuality.Low);
         }
 
         if (model.VideoData?.Thumbnail != null)
         {
-            return PreviewLoader.GetPreview(model.VideoData.Thumbnail);
+            return previewLoader.GetPreview(model.VideoData.Thumbnail);
         }
 
         if (model.StickerData?.Thumbnail != null)
         {
-            return PreviewLoader.GetPreview(model.StickerData.Thumbnail);
+            return previewLoader.GetPreview(model.StickerData.Thumbnail);
         }
 
         return null;
     }
 
-    private static IObservable<Preview> LoadPreview(ReplyModel model)
+    private static IObservable<Preview> LoadPreview(ReplyModel model, IPreviewLoader previewLoader)
     {
         if (model.PhotoData != null)
         {
-            return PreviewLoader.LoadPreview(model.PhotoData, PreviewQuality.Low);
+            return previewLoader.LoadPreview(model.PhotoData, PreviewQuality.Low);
         }
             
         if (model.VideoData?.Thumbnail != null)
         {
-            return PreviewLoader.LoadPreview(model.VideoData.Thumbnail);
+            return previewLoader.LoadPreview(model.VideoData.Thumbnail);
         }
             
         if (model.StickerData?.Thumbnail != null)
         {
-            return PreviewLoader.LoadPreview(model.StickerData.Thumbnail);
+            return previewLoader.LoadPreview(model.StickerData.Thumbnail);
         }
             
         return Observable.Empty<Preview>();
     }
         
-    private static Preview? GetPreview(PhotoMessageViewModel model) => model.PhotoData != null
-        ? PreviewLoader.GetPreview(model.PhotoData, PreviewQuality.High)
+    private static Preview? GetPreview(PhotoMessageViewModel model, IPreviewLoader previewLoader) => model.PhotoData != null
+        ? previewLoader.GetPreview(model.PhotoData, PreviewQuality.High)
         : null;
 
-    private static IObservable<Preview> LoadPreview(PhotoMessageViewModel model) => model.PhotoData != null
-        ? PreviewLoader.LoadPreview(model.PhotoData, PreviewQuality.Low).Concat(PreviewLoader.LoadPreview(model.PhotoData, PreviewQuality.High))
+    private static IObservable<Preview> LoadPreview(PhotoMessageViewModel model, IPreviewLoader previewLoader) => model.PhotoData != null
+        ? previewLoader.LoadPreview(model.PhotoData, PreviewQuality.Low).Concat(previewLoader.LoadPreview(model.PhotoData, PreviewQuality.High))
         : Observable.Empty<Preview>();
 
-    private static Preview? GetPreview(VideoMessageViewModel model) => model.VideoData?.Thumbnail != null
-        ? PreviewLoader.GetPreview(model.VideoData.Thumbnail)
+    private static Preview? GetPreview(VideoMessageViewModel model, IPreviewLoader previewLoader) => model.VideoData?.Thumbnail != null
+        ? previewLoader.GetPreview(model.VideoData.Thumbnail)
         : null;
 
-    private static IObservable<Preview> LoadPreview(VideoMessageViewModel model) => model.VideoData?.Thumbnail != null
-        ? PreviewLoader.LoadPreview(model.VideoData.Thumbnail)
+    private static IObservable<Preview> LoadPreview(VideoMessageViewModel model, IPreviewLoader previewLoader) => model.VideoData?.Thumbnail != null
+        ? previewLoader.LoadPreview(model.VideoData.Thumbnail)
         : Observable.Empty<Preview>();
 
-    private static Preview? GetPreview(StickerMessageViewModel model) => model.StickerData?.Thumbnail != null
-        ? PreviewLoader.GetPreview(model.StickerData.Thumbnail)
+    private static Preview? GetPreview(StickerMessageViewModel model, IPreviewLoader previewLoader) => model.StickerData?.Thumbnail != null
+        ? previewLoader.GetPreview(model.StickerData.Thumbnail)
         : null;
 
-    private static IObservable<Preview> LoadPreview(StickerMessageViewModel model)
+    private static IObservable<Preview> LoadPreview(StickerMessageViewModel model, IPreviewLoader previewLoader)
     {
         if (model.StickerData == null) return Observable.Empty<Preview>();
         
         return model.StickerData.Thumbnail != null
-            ? PreviewLoader.LoadPreview(model.StickerData.Thumbnail).Concat(PreviewLoader.LoadPreview(model.StickerData))
-            : PreviewLoader.LoadPreview(model.StickerData);
+            ? previewLoader.LoadPreview(model.StickerData.Thumbnail).Concat(previewLoader.LoadPreview(model.StickerData))
+            : previewLoader.LoadPreview(model.StickerData);
     }
         
 }

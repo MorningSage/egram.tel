@@ -2,9 +2,7 @@ using System.Reactive.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
 using DynamicData.Binding;
-using Microsoft.Extensions.DependencyInjection;
 using Tel.Egram.Model.Authentication.Phone;
-using Tel.Egram.Services;
 using Tel.Egram.Services.Persistence;
 using Tel.Egram.Services.Utils.Reactive;
 
@@ -12,12 +10,10 @@ namespace Tel.Egran.ViewModels.Authentication.Phone;
 
 public static class AuthenticationPhoneHelper
 {
-    private static readonly IResourceManager ResourceManager = Registry.Services.GetRequiredService<IResourceManager>();
-            
-    public static IDisposable LoadPhoneCodes(this AuthenticationViewModel viewModel) => Task.Run(() =>
+    public static IDisposable LoadPhoneCodes(this AuthenticationViewModel viewModel, IResourceManager resourceManager) => Task.Run(() =>
     {
         // ToDo: Add default items if something below fails
-        var codes = ResourceManager.GetPhoneCodes();
+        var codes = resourceManager.GetPhoneCodes();
 
         viewModel.PhoneCodes = new ObservableCollectionExtended<PhoneCodeModel>(codes.Select(c => new PhoneCodeModel
         {

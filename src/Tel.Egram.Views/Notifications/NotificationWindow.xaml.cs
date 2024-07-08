@@ -6,17 +6,17 @@ using Tel.Egran.ViewModels.Notifications;
 
 namespace Tel.Egram.Views.Notifications;
 
-public class NotificationWindow : BaseWindow<NotificationViewModel>
+public class NotificationWindow : WindowWithViewModel<NotificationViewModel>
 {
     private static NotificationWindow _current;
         
-    public NotificationWindow() : base(false)
+    public NotificationWindow() //: base(false)
     {
-        this.WhenActivated(disposables =>
-        {
-            this.BindAutohide()
-                .DisposeWith(disposables);
-        });
+        //this.WhenActivated(disposables =>
+        //{
+        //    this.BindAutohide()
+        //        .DisposeWith(disposables);
+        //});
             
         AvaloniaXamlLoader.Load(this);
     }

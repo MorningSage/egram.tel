@@ -12,20 +12,18 @@ namespace Tel.Egran.ViewModels.Settings.Proxy;
 
 public static class ProxyListLogic
 {
-    private static readonly IProxyManager ProxyManager = Registry.Services.GetRequiredService<IProxyManager>();
-    
-    public static IDisposable BindProxyLogic(this ProxyPopupContext context) => new CompositeDisposable(
-        context.BindRemoveAction(),
-        context.BindEnableAction(),
+    public static IDisposable BindProxyLogic(this ProxyPopupContext context, IProxyManager proxyManager) => new CompositeDisposable(
+        context.BindRemoveAction(proxyManager),
+        context.BindEnableAction(proxyManager),
         context.BindAddAction(),
-        context.BindSaveAction(),
-        context.BindList(),
+        context.BindSaveAction(proxyManager),
+        context.BindList(proxyManager),
         context.BindEditing()
     );
 
-    private static IDisposable BindList(this ProxyPopupContext context)
+    private static IDisposable BindList(this ProxyPopupContext context, IProxyManager proxyManager)
     {
-        return ProxyManager.GetAllProxies()
+        return proxyManager.GetAllProxies()
             .SubscribeOn(RxApp.TaskpoolScheduler)
             .ObserveOn(RxApp.MainThreadScheduler)
             .Accept(proxies =>
@@ -77,10 +75,10 @@ public static class ProxyListLogic
             });
     }
 
-    private static IDisposable BindRemoveAction(this ProxyPopupContext context)
+    private static IDisposable BindRemoveAction(this ProxyPopupContext context, IProxyManager proxyManager)
     {
         context.RemoveProxyCommand = ReactiveCommand.CreateFromObservable(
-            (ProxyModel proxyModel) => context.RemoveProxy(proxyModel),
+            (ProxyModel proxyModel) => context.RemoveProxy(proxyModel, proxyManager),
             null,
             RxApp.MainThreadScheduler
         );
@@ -92,10 +90,10 @@ public static class ProxyListLogic
         });
     }
 
-    private static IDisposable BindEnableAction(this ProxyPopupContext context)
+    private static IDisposable BindEnableAction(this ProxyPopupContext context, IProxyManager proxyManager)
     {
         context.EnableProxyCommand = ReactiveCommand.CreateFromObservable(
-            (ProxyModel proxyModel) => context.EnableProxy(proxyModel),
+            (ProxyModel proxyModel) => context.EnableProxy(proxyModel, proxyManager),
             null,
             RxApp.MainThreadScheduler
         );
@@ -129,10 +127,10 @@ public static class ProxyListLogic
             });
     }
 
-    private static IDisposable BindSaveAction(this ProxyPopupContext context)
+    private static IDisposable BindSaveAction(this ProxyPopupContext context, IProxyManager proxyManager)
     {   
         context.SaveProxyCommand = ReactiveCommand.CreateFromObservable(
-            (ProxyModel proxyModel) => context.SaveProxy(proxyModel),
+            (ProxyModel proxyModel) => context.SaveProxy(proxyModel, proxyManager),
             null,
             RxApp.MainThreadScheduler
         );
@@ -159,38 +157,38 @@ public static class ProxyListLogic
         return Observable.Return(proxyModel);
     }
 
-    private static IObservable<ProxyModel> RemoveProxy(this ProxyPopupContext context, ProxyModel proxyModel)
+    private static IObservable<ProxyModel> RemoveProxy(this ProxyPopupContext context, ProxyModel proxyModel, IProxyManager proxyManager)
     {
         if (proxyModel.Proxy != null && proxyModel.Proxy.Id != 0)
         {
-            return ProxyManager.RemoveProxy(proxyModel.Proxy).Select(_ => proxyModel);
+            return proxyManager.RemoveProxy(proxyModel.Proxy).Select(_ => proxyModel);
         }
             
         return Observable.Return(proxyModel);
     }
 
-    private static IObservable<ProxyModel> SaveProxy(this ProxyPopupContext context, ProxyModel proxyModel)
+    private static IObservable<ProxyModel> SaveProxy(this ProxyPopupContext context, ProxyModel proxyModel, IProxyManager proxyManager)
     {
         if (proxyModel.Proxy?.Id == 0)
         {
-            return ProxyManager
+            return proxyManager
                 .AddProxy(proxyModel.ToProxy())
                 .Do(proxy => proxyModel.Proxy = proxy)
                 .Select(_ => proxyModel);
         }
 
-        return ProxyManager
+        return proxyManager
             .UpdateProxy(proxyModel.Proxy!)
             .Do(proxy => proxyModel.Proxy = proxy)
             .Select(_ => proxyModel);
     }
 
-    private static IObservable<ProxyModel> EnableProxy(this ProxyPopupContext context, ProxyModel proxyModel)
+    private static IObservable<ProxyModel> EnableProxy(this ProxyPopupContext context, ProxyModel proxyModel, IProxyManager proxyManager)
     {
         if (proxyModel.IsEnabled) return Observable.Return(proxyModel);
 
         return proxyModel.Proxy != null
-            ? ProxyManager.EnableProxy(proxyModel.Proxy).Select(_ => proxyModel)
-            : ProxyManager.DisableProxy().Select(_ => proxyModel);
+            ? proxyManager.EnableProxy(proxyModel.Proxy).Select(_ => proxyModel)
+            : proxyManager.DisableProxy().Select(_ => proxyModel);
     }
 }

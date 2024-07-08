@@ -5,6 +5,10 @@ using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Model.Authentication.Phone;
 using Tel.Egram.Model.Authentication.Results;
+using Tel.Egram.Services.Authentication;
+using Tel.Egram.Services.Persistence;
+using Tel.Egram.Services.Popups;
+using Tel.Egram.Services.Settings;
 using Tel.Egran.ViewModels.Authentication.Phone;
 using Tel.Egran.ViewModels.Authentication.Proxy;
 
@@ -31,13 +35,13 @@ public class AuthenticationViewModel : IActivatableViewModel
     public string ConfirmCode { get; set; } = string.Empty;
     public string Password { get; set; } = string.Empty;
 
-    public AuthenticationViewModel()
+    public AuthenticationViewModel(IResourceManager resourceManager, IPopupController popupController, IAuthenticator authenticator, IProxyManager proxyManager)
     {
         this.WhenActivated(disposables =>
         {
-            this.LoadPhoneCodes().DisposeWith(disposables);
-            this.BindProxyCommand().DisposeWith(disposables);
-            this.BindAuthenticationCommands().DisposeWith(disposables);
+            this.LoadPhoneCodes(resourceManager).DisposeWith(disposables);
+            this.BindProxyCommand(popupController, proxyManager).DisposeWith(disposables);
+            this.BindAuthenticationCommands(authenticator).DisposeWith(disposables);
         });
     }
 

@@ -2,6 +2,7 @@ using System.Reactive.Disposables;
 using PropertyChanged;
 using ReactiveUI;
 using Tel.Egram.Model.Popups;
+using Tel.Egram.Services.Popups;
 
 namespace Tel.Egran.ViewModels.Popups;
 
@@ -13,14 +14,14 @@ public class PopupModel : IActivatableViewModel
 
     public bool IsVisible { get; set; } = true;
 
-    public PopupModel(PopupContext context)
+    public PopupModel(PopupContext context, IPopupController popupController)
     {
         Contexts = [ context ];
         Context = context;
             
         this.WhenActivated(disposables =>
         {
-            this.BindPopup().DisposeWith(disposables);
+            this.BindPopup(popupController).DisposeWith(disposables);
         });
     }
 

@@ -2,6 +2,9 @@ using System.Reactive.Disposables;
 using ReactiveUI;
 using TdLib;
 using Tel.Egram.Model.Messaging.Explorer.Messages.Special;
+using Tel.Egram.Services.Graphics.Avatars;
+using Tel.Egram.Services.Graphics.Previews;
+using Tel.Egram.Services.Persistence;
 
 namespace Tel.Egran.ViewModels.Messaging.Explorer.Messages.Special;
 
@@ -23,15 +26,15 @@ public class DocumentMessageViewModel : IActivatableViewModel
         
     public ReactiveCommand<DocumentMessageViewModel, bool> ShowCommand { get; set; }
         
-    public DocumentMessageViewModel()
+    public DocumentMessageViewModel(IFileLoader fileLoader, IFileExplorer fileExplorer, IAvatarLoader avatarLoader, IPreviewLoader previewLoader)
     {       
         this.WhenActivated(disposables =>
         {
-            MessageModel?.BindAvatarLoading().DisposeWith(disposables);
-            MessageModel?.Reply?.BindPreviewLoading().DisposeWith(disposables);
+            MessageModel?.BindAvatarLoading(avatarLoader).DisposeWith(disposables);
+            MessageModel?.Reply?.BindPreviewLoading(previewLoader).DisposeWith(disposables);
 
-            this.BindDownloadCommand().DisposeWith(disposables);
-            this.BindShowFileCommand().DisposeWith(disposables);
+            this.BindDownloadCommand(fileLoader).DisposeWith(disposables);
+            this.BindShowFileCommand(fileExplorer).DisposeWith(disposables);
         });
     }
         

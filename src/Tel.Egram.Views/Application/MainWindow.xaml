@@ -19,31 +19,26 @@
     </Design.DataContext>
     
     <Panel>
-    
-        <Carousel
-            SelectedIndex="{Binding PageIndex}">
-        
-            <startup:StartupControl
-                DataContext="{Binding StartupModel}" />
-        
-            <authentication:AuthenticationControl
-                DataContext="{Binding AuthenticationModel}" />
-        
-            <workspace:WorkspaceControl
-                DataContext="{Binding WorkspaceModel}" />
-        
+        <Carousel SelectedIndex="{Binding PageIndex}">
+            <!-- Introduction to the app -->
+            <startup:StartupControl DataContext="{Binding StartupModel}" />
+            <!-- Logic for logging in, if needed-->
+            <authentication:AuthenticationControl DataContext="{Binding AuthenticationModel}" />
+            <!-- Main content once logged in -->
+            <workspace:WorkspaceControl DataContext="{Binding WorkspaceModel}" />
         </Carousel>
 
-        <TextBlock
-            IsVisible="False"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Bottom"
-            Text="{Binding ConnectionState}" />
+        <!-- Connection string indicating the connection status -->
+        <TextBlock IsVisible="True"
+           HorizontalAlignment="Left" VerticalAlignment="Bottom"
+           Text="{Binding ConnectionState}"
+        />
 
+        <!-- Any popups that need to be shown to the user and dismissed -->
         <popups:PopupControl
             IsVisible="{Binding IsVisible}"
-            DataContext="{Binding PopupModel}" />
-
+            DataContext="{Binding PopupModel}"
+        />
     </Panel>
     
 </Window>
