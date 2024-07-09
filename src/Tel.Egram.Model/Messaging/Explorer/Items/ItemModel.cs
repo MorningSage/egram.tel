@@ -1,9 +1,8 @@
-using PropertyChanged;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace Tel.Egram.Model.Messaging.Explorer.Items;
 
-[AddINotifyPropertyChangedInterface]
-public abstract class ItemModel
+public abstract partial class ItemModel : ObservableObject
 {
         
 }

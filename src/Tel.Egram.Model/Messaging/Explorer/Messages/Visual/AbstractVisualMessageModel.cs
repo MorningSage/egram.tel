@@ -1,6 +1,8 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace Tel.Egram.Model.Messaging.Explorer.Messages.Visual;
 
-public abstract class AbstractVisualMessageModel : MessageModel
+public abstract partial class AbstractVisualMessageModel : MessageModel
 {
-    public abstract Preview? Preview { get; set; }
+    [ObservableProperty] private Preview? _preview = null;
 }

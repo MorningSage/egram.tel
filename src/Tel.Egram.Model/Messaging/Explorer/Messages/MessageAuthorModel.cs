@@ -4,7 +4,6 @@ namespace Tel.Egram.Model.Messaging.Explorer.Messages;
 
 public class MessageAuthorModel
 {
-    public string Name { get; set; }
-        
-    public Avatar Avatar { get; set; }
+    public required string Name { get; set; }
+    public required Avatar Avatar { get; set; }
 }

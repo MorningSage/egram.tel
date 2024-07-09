@@ -1,6 +1,8 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace Tel.Egram.Model.Messaging.Explorer.Messages.Basic;
 
-public class BasicMessageModel : MessageModel
+public partial class BasicMessageModel : MessageModel
 {
-    public required string Text { get; init; }
+    [ObservableProperty] private string _text = string.Empty;
 }

@@ -1,12 +1,12 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using TdLib;
 
 namespace Tel.Egram.Model.Messaging.Explorer.Messages.Special;
 
-public class DocumentMessageModel : AbstractSpecialMessageModel
+public partial class DocumentMessageModel : AbstractSpecialMessageModel
 {
-    public required TdApi.Document Document { get; init; }
-    
-    public required string FileName  { get; init; }
-    public required string Caption  { get; init; }
-    public required string Size  { get; init; }
+    [ObservableProperty] private TdApi.Document? _document = null;
+    [ObservableProperty] private string _fileName = string.Empty;
+    [ObservableProperty] private string _caption = string.Empty;
+    [ObservableProperty] private string _size = string.Empty;
 }

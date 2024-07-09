@@ -1,8 +1,9 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using Tel.Egram.Model.Messaging.Explorer.Items;
 
 namespace Tel.Egram.Model.Messaging.Explorer.Badges;
 
-public class SplitBadgeModel : ItemModel
+public partial class SplitBadgeModel : ItemModel
 {
-    public string Text { get; set; }
+    [ObservableProperty] private string _text = string.Empty;
 }

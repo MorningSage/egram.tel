@@ -1,10 +1,10 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using TdLib;
 
 namespace Tel.Egram.Model.Messaging.Explorer.Messages.Visual;
 
-public class PhotoMessageModel : AbstractVisualMessageModel
+public partial class PhotoMessageModel : AbstractVisualMessageModel
 {
-    public override Preview? Preview { get; set; }
-    public required TdApi.Photo PhotoData { get; init; }
-    public required string Text { get; init; }
+    [ObservableProperty] private TdApi.Photo? _photo = null;
+    [ObservableProperty] private string _text = string.Empty;
 }
