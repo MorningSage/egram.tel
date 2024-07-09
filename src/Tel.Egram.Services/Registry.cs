@@ -6,12 +6,13 @@ using Tel.Egram.Services.Authentication;
 using Tel.Egram.Services.Graphics;
 using Tel.Egram.Services.Graphics.Avatars;
 using Tel.Egram.Services.Graphics.Previews;
+using Tel.Egram.Services.Mappers.Messaging;
+using Tel.Egram.Services.Mappers.Messaging.BasicMessages;
+using Tel.Egram.Services.Mappers.Messaging.NoteMessages;
+using Tel.Egram.Services.Mappers.Messaging.SpecialMessages;
+using Tel.Egram.Services.Mappers.Messaging.VisualMessages;
+using Tel.Egram.Services.Mappers.Proxy;
 using Tel.Egram.Services.Messaging.Chats;
-using Tel.Egram.Services.Messaging.Mappers;
-using Tel.Egram.Services.Messaging.Mappers.BasicMessages;
-using Tel.Egram.Services.Messaging.Mappers.NoteMessages;
-using Tel.Egram.Services.Messaging.Mappers.SpecialMessages;
-using Tel.Egram.Services.Messaging.Mappers.VisualMessages;
 using Tel.Egram.Services.Messaging.Messages;
 using Tel.Egram.Services.Messaging.Notifications;
 using Tel.Egram.Services.Messaging.Users;
@@ -140,6 +141,9 @@ public static class Registry
         services.AddSingleton<ISpecialMessageModelFactory, SpecialMessageModelFactory>();
         services.AddSingleton<IVisualMessageModelFactory,  VisualMessageModelFactory>();
         services.AddSingleton<IMessageModelFactory,        MessageModelFactory>();
+        
+        // proxy
+        services.AddSingleton<IProxyMapper, ProxyMapper>();
     }
 
     private static void AddSettings(this IServiceCollection _)

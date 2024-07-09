@@ -12,7 +12,7 @@ public class ChatLoader(IAgent agent) : IChatLoader
 
     public IObservable<Chat> LoadChat(long chatId) => agent.Execute(new TdApi.GetChat { ChatId = chatId }).SelectSeq(chat =>
     {
-        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { ChatData = chat });
+        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { User = null, ChatData = chat });
         
         return GetUser(type.UserId).Select(user => new Chat
         {
@@ -23,7 +23,7 @@ public class ChatLoader(IAgent agent) : IChatLoader
 
     public IObservable<Chat> LoadChats() => GetAllChats().SelectSeq(chat =>
     {
-        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { ChatData = chat });
+        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { User = null, ChatData = chat });
         
         return GetUser(type.UserId).Select(user => new Chat
         {
@@ -34,26 +34,26 @@ public class ChatLoader(IAgent agent) : IChatLoader
     });
 
     public IObservable<Chat> LoadChannels() => LoadChats().Where(chat =>
-        chat.ChatData.Type is TdApi.ChatType.ChatTypeSupergroup { IsChannel: true }
+        chat.ChatData?.Type is TdApi.ChatType.ChatTypeSupergroup { IsChannel: true }
     );
 
     public IObservable<Chat> LoadDirects() => LoadChats().Where(chat => 
-        chat.ChatData.Type is TdApi.ChatType.ChatTypePrivate && chat.User is { Type: TdApi.UserType.UserTypeRegular }
+        chat.ChatData?.Type is TdApi.ChatType.ChatTypePrivate && chat.User is { Type: TdApi.UserType.UserTypeRegular }
     );
 
     public IObservable<Chat> LoadGroups() => LoadChats().Where(chat => 
-        chat.ChatData.Type is TdApi.ChatType.ChatTypeSupergroup supergroupType
+        chat.ChatData?.Type is TdApi.ChatType.ChatTypeSupergroup supergroupType
             ? !supergroupType.IsChannel
-            : chat.ChatData.Type is TdApi.ChatType.ChatTypeBasicGroup
+            : chat.ChatData?.Type is TdApi.ChatType.ChatTypeBasicGroup
     );
 
     public IObservable<Chat> LoadBots() => LoadChats().Where(chat => 
-        chat.ChatData.Type is TdApi.ChatType.ChatTypePrivate && chat.User is { Type: TdApi.UserType.UserTypeBot }
+        chat.ChatData?.Type is TdApi.ChatType.ChatTypePrivate && chat.User is { Type: TdApi.UserType.UserTypeBot }
     );
 
     public IObservable<Chat> LoadPromo() => agent.Execute(new TdApi.GetChat { ChatId = PromoChatId }).SelectSeq(chat =>
     {
-        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { ChatData = chat });
+        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { User = null, ChatData = chat });
         
         return GetUser(type.UserId).Select(user => new Chat
         {

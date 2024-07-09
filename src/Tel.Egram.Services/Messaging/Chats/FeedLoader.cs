@@ -10,13 +10,13 @@ public class FeedLoader(IAgent agent) : IFeedLoader
 {
     public IObservable<Aggregate> LoadAggregate() => GetAllChats()
         .Where(chat => chat is { Type: TdApi.ChatType.ChatTypeSupergroup { IsChannel: true }})
-        .Select(chat => new Chat { ChatData = chat })
+        .Select(chat => new Chat { User = null, ChatData = chat })
         .CollectToList()
         .Select(list => new Aggregate(list));
 
     public IObservable<Chat> LoadChat(long chatId) => agent
         .Execute(new TdApi.GetChat { ChatId = chatId })
-        .Select(chat => new Chat { ChatData = chat });
+        .Select(chat => new Chat { User = null, ChatData = chat });
 
     private IObservable<TdApi.Chat> GetAllChats()
     {

@@ -4,23 +4,10 @@ using Tel.Egram.Services.Utils.TdLib;
 
 namespace Tel.Egram.Services.Messaging.Users;
 
-public class UserLoader : IUserLoader
+public class UserLoader(IAgent agent) : IUserLoader
 {
-    private readonly IAgent _agent;
-
-    public UserLoader(
-        IAgent agent
-    )
+    public IObservable<User> GetMe() => agent.Execute(new TdApi.GetMe()).Select(user => new User
     {
-        _agent = agent;
-    }
-        
-    public IObservable<User> GetMe()
-    {
-        return _agent.Execute(new TdApi.GetMe())
-            .Select(user => new User
-            {
-                UserData = user
-            });
-    }
+        UserData = user
+    });
 }

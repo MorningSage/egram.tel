@@ -24,7 +24,7 @@ public static class ObservableExtensions
     /// <summary>
     /// Subscribe with error handling
     /// </summary>
-    public static IDisposable Accept<T>(this IObservable<T> observable, Action<T> onNext)
+    public static IDisposable SafeSubscribe<T>(this IObservable<T> observable, Action<T> onNext)
     {
         return observable.Subscribe(onNext, e => Console.Error.WriteLine(e));
     }
@@ -32,7 +32,7 @@ public static class ObservableExtensions
     /// <summary>
     /// Subscribe with error handling
     /// </summary>
-    public static IDisposable Accept<T>(this IObservable<T> observable)
+    public static IDisposable SafeSubscribe<T>(this IObservable<T> observable)
     {
         return observable.Subscribe(_ => { }, e => Console.Error.WriteLine(e));
     }

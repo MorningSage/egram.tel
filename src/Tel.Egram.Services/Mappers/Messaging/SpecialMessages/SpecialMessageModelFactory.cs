@@ -4,7 +4,7 @@ using Tel.Egram.Model.Messaging.Explorer.Messages.Special;
 using Tel.Egram.Model.Messaging.Messages;
 using Tel.Egram.Services.Utils.Formatting;
 
-namespace Tel.Egram.Services.Messaging.Mappers.SpecialMessages;
+namespace Tel.Egram.Services.Mappers.Messaging.SpecialMessages;
 
 public class SpecialMessageModelFactory(IStringFormatter stringFormatter) : ISpecialMessageModelFactory
 {

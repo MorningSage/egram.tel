@@ -36,7 +36,7 @@ public class ChatUpdater(IAgent agent) : IChatUpdater
 
     private IObservable<Chat> GetChat(long chatId) => agent.Execute(new TdApi.GetChat { ChatId = chatId }).SelectMany(chat =>
     {
-        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { ChatData = chat });
+        if (chat.Type is not TdApi.ChatType.ChatTypePrivate type) return Observable.Return(new Chat { User = null, ChatData = chat });
         
         return GetUser(type.UserId).Select(user => new Chat
         {

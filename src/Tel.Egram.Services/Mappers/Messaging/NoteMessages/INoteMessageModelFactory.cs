@@ -2,7 +2,7 @@ using TdLib;
 using Tel.Egram.Model.Messaging.Explorer.Messages;
 using Tel.Egram.Model.Messaging.Messages;
 
-namespace Tel.Egram.Services.Messaging.Mappers.NoteMessages;
+namespace Tel.Egram.Services.Mappers.Messaging.NoteMessages;
 
 public interface INoteMessageModelFactory
 {

@@ -1,7 +1,4 @@
-﻿using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using Microsoft.Extensions.Caching.Memory;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
@@ -11,10 +8,6 @@ using Tel.Egram.Services.Persistence;
 using Tel.Egram.Services.Utils.Platforms;
 using Bitmap = Avalonia.Media.Imaging.Bitmap;
 using Color = Avalonia.Media.Color;
-using DrawingImage = System.Drawing.Image;
-using DrawingBitmap = System.Drawing.Bitmap;
-using DrawingGraphics = System.Drawing.Graphics;
-using DrawingRectangle = System.Drawing.Rectangle;
 
 namespace Tel.Egram.Services.Graphics.Avatars;
 
@@ -130,14 +123,7 @@ public class AvatarLoader(IPlatform platform, IStorage storage, IFileLoader file
                 {
                     if (File.Exists(filePath) && !File.Exists(resizedFilePath))
                     {
-                        if (platform is WindowsPlatform)
-                        {
-                            ResizeWithSystemDrawing(filePath, resizedFilePath, size);
-                        }
-                        else
-                        {
-                            ResizeWithImageSharp(filePath, resizedFilePath, size);
-                        }
+                        ResizeWithImageSharp(filePath, resizedFilePath, size);
                     }
 
                     if (!File.Exists(resizedFilePath)) return null;
@@ -160,39 +146,10 @@ public class AvatarLoader(IPlatform platform, IStorage storage, IFileLoader file
 
         return Path.Combine(storage.AvatarCacheDirectory, $"{originalName}_{size}{originalExtension}");
     }
-
-    private static void ResizeWithSystemDrawing(string filePath, string resizedFilePath, int size)
-    {
-#if WINDOWS
-        var image = DrawingImage.FromFile(filePath);
-
-        var destRect = new DrawingRectangle(0, 0, size, size);
-        var destImage = new DrawingBitmap(size, size);
-
-        destImage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
-
-        using (var graphics = DrawingGraphics.FromImage(destImage))
-        {
-            graphics.CompositingMode    = CompositingMode.SourceCopy;
-            graphics.CompositingQuality = CompositingQuality.HighQuality;
-            graphics.InterpolationMode  = InterpolationMode.HighQualityBicubic;
-            graphics.SmoothingMode      = SmoothingMode.HighQuality;
-            graphics.PixelOffsetMode    = PixelOffsetMode.HighQuality;
-
-            using (var wrapMode = new ImageAttributes())
-            {
-                wrapMode.SetWrapMode(WrapMode.TileFlipXY);
-                graphics.DrawImage(image, destRect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapMode);
-            }
-        }
-
-        destImage.Save(resizedFilePath);
-#endif
-    }
-
+    
     private static void ResizeWithImageSharp(string filePath, string resizedFilePath, int size)
     {
-        using var image = SixLabors.ImageSharp.Image.Load(filePath);
+        using var image = Image.Load(filePath);
         image.Mutate(ctx=>ctx.Resize(size, size));
         image.Save(resizedFilePath);
     }

@@ -1,9 +1,7 @@
-﻿using System.Diagnostics;
-using System.Reactive.Linq;
+﻿using System.Reactive.Linq;
 using TdLib;
 using Tel.Egram.Model.Messaging.Chats;
 using Tel.Egram.Model.Messaging.Messages;
-using Tel.Egram.Services.Messaging.Chats;
 using Tel.Egram.Services.Utils.Reactive;
 using Tel.Egram.Services.Utils.TdLib;
 
@@ -35,9 +33,11 @@ public class MessageLoader(IAgent agent) : IMessageLoader
 
     public IObservable<Message> LoadInitMessages(Chat chat, long fromMessageId, int limit)
     {
+        if (chat.ChatData is not { } chatData) return Observable.Empty<Message>();
+        
         var scope = new MessageLoaderScope(agent);
             
-        return GetMessages(chat.ChatData, fromMessageId, limit, -(limit - 1) / 2).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        return GetMessages(chatData, fromMessageId, limit, -(limit - 1) / 2).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
         {
             scope.Dispose();
         });
@@ -45,9 +45,11 @@ public class MessageLoader(IAgent agent) : IMessageLoader
 
     public IObservable<Message> LoadPrevMessages(Chat chat, long fromMessageId, int limit)
     {
+        if (chat.ChatData is not { } chatData) return Observable.Empty<Message>();
+        
         var scope = new MessageLoaderScope(agent);
             
-        return GetMessages(chat.ChatData, fromMessageId, limit, 0).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        return GetMessages(chatData, fromMessageId, limit, 0).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
         {
             scope.Dispose();
         });
@@ -55,9 +57,11 @@ public class MessageLoader(IAgent agent) : IMessageLoader
 
     public IObservable<Message> LoadNextMessages(Chat chat, long fromMessageId, int limit)
     {
+        if (chat.ChatData is not { } chatData) return Observable.Empty<Message>();
+        
         var scope = new MessageLoaderScope(agent);
             
-        return GetMessages(chat.ChatData, fromMessageId, limit, -(limit - 1)).Where(m => m.Id != fromMessageId).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        return GetMessages(chatData, fromMessageId, limit, -(limit - 1)).Where(m => m.Id != fromMessageId).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
         {
             scope.Dispose();
         });
@@ -65,9 +69,11 @@ public class MessageLoader(IAgent agent) : IMessageLoader
 
     public IObservable<Message> LoadPinnedMessage(Chat chat)
     {
+        if (chat.ChatData is not { } chatData) return Observable.Empty<Message>();
+        
         var scope = new MessageLoaderScope(agent);
             
-        return GetPinnedMessage(chat.ChatData).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
+        return GetPinnedMessage(chatData).SelectSeq(m => MapToMessage(scope, m)).Finally(() =>
         {
             scope.Dispose();
         });
@@ -95,7 +101,7 @@ public class MessageLoader(IAgent agent) : IMessageLoader
                     TdApi.MessageSender.MessageSenderChat senderChat when senderChat.ChatId != 0L => scope.GetChat(senderChat.ChatId).Select(chat =>
                     {
                         // ToDo: "Senders" can be users or chats.  This needs to be updated to ensure everything still works
-                        message.UserData = null;
+                        message.ChatData = chat;
                         return message;
                     }),
                     _ => Observable.Return(message)
@@ -133,15 +139,17 @@ public class MessageLoader(IAgent agent) : IMessageLoader
             
         var list = aggregate.Chats.Select(f =>
         {
-            var stackedCount = state.CountStackedMessages(f.ChatData.Id);
+            if (f.ChatData is not { } chatData) return Observable.Empty<TdApi.Message>();
+            
+            var stackedCount = state.CountStackedMessages(chatData.Id);
                 
             return Enumerable.Range(0, stackedCount)
-                .Select(_ => state.PopMessageFromStack(f.ChatData.Id)) // get stacked messages for this chat
+                .Select(_ => state.PopMessageFromStack(chatData.Id)) // get stacked messages for this chat
                 .ToObservable()
                 .Concat(stackedCount < Limit
                     ? LoadChannelMessages(f, new ChatLoadingState // load messages from the server
                     {
-                        LastMessageId = state.GetLastMessageId(f.ChatData.Id)
+                        LastMessageId = state.GetLastMessageId(chatData.Id)
                     }, Limit, 0)
                     : Observable.Empty<TdApi.Message>())
                 .CollectToList()
@@ -184,8 +192,10 @@ public class MessageLoader(IAgent agent) : IMessageLoader
 
     private IObservable<TdApi.Message> LoadChannelMessages(Chat chat, ChatLoadingState state, int limit, int offset)
     {
+        if (chat.ChatData is not { } chatData) return Observable.Empty<TdApi.Message>();
+        
         // get messages for corresponding chat
-        return GetMessages(chat.ChatData, state.LastMessageId, limit, offset).Do(message =>
+        return GetMessages(chatData, state.LastMessageId, limit, offset).Do(message =>
         {
             if (state.LastMessageId < message.Id)
             {

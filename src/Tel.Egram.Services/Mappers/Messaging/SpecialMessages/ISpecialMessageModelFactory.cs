@@ -3,7 +3,7 @@ using Tel.Egram.Model.Messaging.Explorer.Messages;
 using Tel.Egram.Model.Messaging.Explorer.Messages.Special;
 using Tel.Egram.Model.Messaging.Messages;
 
-namespace Tel.Egram.Services.Messaging.Mappers.SpecialMessages;
+namespace Tel.Egram.Services.Mappers.Messaging.SpecialMessages;
 
 public interface ISpecialMessageModelFactory
 {

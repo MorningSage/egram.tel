@@ -1,13 +1,13 @@
 using TdLib;
 using Tel.Egram.Model.Messaging.Explorer.Messages;
 using Tel.Egram.Model.Messaging.Messages;
-using Tel.Egram.Services.Messaging.Mappers.BasicMessages;
-using Tel.Egram.Services.Messaging.Mappers.NoteMessages;
-using Tel.Egram.Services.Messaging.Mappers.SpecialMessages;
-using Tel.Egram.Services.Messaging.Mappers.VisualMessages;
+using Tel.Egram.Services.Mappers.Messaging.BasicMessages;
+using Tel.Egram.Services.Mappers.Messaging.NoteMessages;
+using Tel.Egram.Services.Mappers.Messaging.SpecialMessages;
+using Tel.Egram.Services.Mappers.Messaging.VisualMessages;
 using Tel.Egram.Services.Utils.Formatting;
 
-namespace Tel.Egram.Services.Messaging.Mappers;
+namespace Tel.Egram.Services.Mappers.Messaging;
 
 public class MessageModelFactory(IBasicMessageModelFactory basicMessageModelFactory, INoteMessageModelFactory noteMessageModelFactory, ISpecialMessageModelFactory specialMessageModelFactory, IVisualMessageModelFactory visualMessageModelFactory, IStringFormatter stringFormatter) : IMessageModelFactory
 {
