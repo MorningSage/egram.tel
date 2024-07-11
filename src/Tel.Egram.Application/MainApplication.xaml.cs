@@ -6,8 +6,8 @@ using TdLib;
 using Tel.Egram.Services;
 using Tel.Egram.Services.Persistence;
 using Tel.Egram.Views.Application;
-using Tel.Egran.ViewModels.Application;
-using Tel.Egran.ViewModels.DependencyInjection;
+using Tel.Egram.ViewModels.Application;
+using Tel.Egram.ViewModels.DependencyInjection;
 
 namespace Tel.Egram.Application;
 
@@ -28,11 +28,9 @@ public class MainApplication : Avalonia.Application
         
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
-            desktop.Startup += (sender, args) => model.Activator.Activate();
             desktop.MainWindow = new MainWindow { DataContext = model };
             desktop.Exit += async (sender, args) =>
             {
-                model.Activator.Deactivate();
                 await Services.GetRequiredService<TdClient>().DestroyAsync();
             };
         }

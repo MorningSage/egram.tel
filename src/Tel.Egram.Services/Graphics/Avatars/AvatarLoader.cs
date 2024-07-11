@@ -22,23 +22,23 @@ public class AvatarLoader(IPlatform platform, IStorage storage, IFileLoader file
         Label  = GetLabel(kind)
     };
 
-    public Avatar GetAvatar(TdApi.User user, AvatarSize size) => new()
+    public Avatar GetAvatar(TdApi.User? user, AvatarSize size) => new()
     {
-        Bitmap = GetBitmap(user.ProfilePhoto?.Small, platform.PixelDensity * (int) size),
+        Bitmap = GetBitmap(user?.ProfilePhoto?.Small, platform.PixelDensity * (int) size),
         Color  = GetColor(user),
         Label  = GetLabel(user)
     };
 
-    public Avatar GetAvatar(TdApi.Chat chat, AvatarSize size) => new()
+    public Avatar GetAvatar(TdApi.Chat? chat, AvatarSize size) => new()
     {
-        Bitmap = GetBitmap(chat.Photo?.Small, platform.PixelDensity * (int) size),
+        Bitmap = GetBitmap(chat?.Photo?.Small, platform.PixelDensity * (int) size),
         Color  = GetColor(chat),
         Label  = GetLabel(chat)
     };
 
     public IObservable<Avatar> LoadAvatar(AvatarKind kind, AvatarSize size) => Observable.Return(GetAvatar(kind, size));
 
-    public IObservable<Avatar> LoadAvatar(TdApi.User user, AvatarSize size) => LoadBitmap(user.ProfilePhoto?.Small, platform.PixelDensity * (int) size)
+    public IObservable<Avatar> LoadAvatar(TdApi.User? user, AvatarSize size) => LoadBitmap(user?.ProfilePhoto?.Small, platform.PixelDensity * (int) size)
         .Select(bitmap => new Avatar
         {
             Bitmap = bitmap,
@@ -46,7 +46,7 @@ public class AvatarLoader(IPlatform platform, IStorage storage, IFileLoader file
             Label  = GetLabel(user)
         });
 
-    public IObservable<Avatar> LoadAvatar(TdApi.Chat chat, AvatarSize size) => LoadBitmap(chat.Photo?.Small, platform.PixelDensity * (int) size)
+    public IObservable<Avatar> LoadAvatar(TdApi.Chat? chat, AvatarSize size) => LoadBitmap(chat?.Photo?.Small, platform.PixelDensity * (int) size)
         .Select(bitmap => new Avatar
         {
             Bitmap = bitmap,
