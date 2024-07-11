@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{767B3FCF-751
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tel.Egram.Views", "src\Tel.Egram.Views\Tel.Egram.Views.csproj", "{E272E3DE-72EF-42BF-9E76-09C569A4BCE9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tel.Egran.ViewModels", "src\Tel.Egran.ViewModels\Tel.Egran.ViewModels.csproj", "{BC6F21AC-F1DF-4D32-B783-CBF03473EACC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tel.Egram.ViewModels", "src\Tel.Egram.ViewModels\Tel.Egram.ViewModels.csproj", "{BC6F21AC-F1DF-4D32-B783-CBF03473EACC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
