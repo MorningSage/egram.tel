@@ -1,42 +1,43 @@
-using System.Reactive.Disposables;
-using PropertyChanged;
-using ReactiveUI;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Tel.Egram.Model.Graphics.Avatars;
 using Tel.Egram.Model.Messaging.Chats;
 using Tel.Egram.Services.Graphics.Avatars;
+using Tel.Egram.Services.Utils.Reactive;
 
 namespace Tel.Egran.ViewModels.Messaging.Informer;
 
-[AddINotifyPropertyChangedInterface]
-public class InformerViewModel : IActivatableViewModel
+public partial class InformerViewModel : AbstractViewModelBase
 {
-    public bool IsVisible { get; set; } = true;
-        
-    public string Title { get; set; }
-        
-    public string Label { get; set; }
-        
-    public Avatar Avatar { get; set; }
+    [ObservableProperty] private bool _isVisible = true;
+    [ObservableProperty] private string _title;
+    [ObservableProperty] private string _label;
+    [ObservableProperty] private Avatar _avatar;
         
     public InformerViewModel(Chat chat, IAvatarLoader avatarLoader)
     {
-        this.WhenActivated(disposables => this.BindInformer(chat, avatarLoader).DisposeWith(disposables));
+        BindInformer(chat, avatarLoader);
     }
 
     public InformerViewModel(Aggregate aggregate)
     {
-        this.WhenActivated(disposables => this.BindInformer(aggregate).DisposeWith(disposables));
+        BindInformer(aggregate);
     }
 
     private InformerViewModel() { }
     
-    public static InformerViewModel Hidden()
+    public static InformerViewModel Hidden() => new() { IsVisible = false };
+
+    private void BindInformer(Chat chat, IAvatarLoader avatarLoader)
     {
-        return new InformerViewModel
-        {
-            IsVisible = false
-        };
+        Title = chat.ChatData.Title;
+        Label = chat.ChatData.Title;
+                    
+        avatarLoader.LoadAvatar(chat.ChatData, AvatarSize.Regular).SafeSubscribe(avatar => Avatar = avatar);
     }
-        
-    public ViewModelActivator Activator { get; } = new();
+
+    private void BindInformer(Aggregate aggregate)
+    {
+        Title = aggregate.Id.ToString();
+        Label = aggregate.Id.ToString();
+    }
 }

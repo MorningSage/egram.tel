@@ -1,12 +1,9 @@
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using PropertyChanged;
-using ReactiveUI;
+using CommunityToolkit.Mvvm.ComponentModel;
 using TdLib;
 using Tel.Egram.Model.Application;
 using Tel.Egram.Services.Authentication;
 using Tel.Egram.Services.Popups;
-using Tel.Egram.Services.Utils.Reactive;
 using Tel.Egram.Services.Utils.TdLib;
 using Tel.Egran.ViewModels.Authentication;
 using Tel.Egran.ViewModels.Popups;
@@ -14,109 +11,77 @@ using Tel.Egran.ViewModels.Workspace;
 
 namespace Tel.Egran.ViewModels.Application;
 
-[AddINotifyPropertyChangedInterface]
-public class MainWindowViewModel : AbstractViewModelBase, IActivatableViewModel
+public partial class MainWindowViewModel : AbstractViewModelBase
 {
-    private readonly IPopupController _popupController;
-    private readonly IAgent _agent;
     private readonly IAuthenticator _authenticator;
     private readonly AuthenticationViewModel _authenticationViewModel;
-    private readonly WorkspaceModel _workspaceModel;
+    private readonly WorkspaceViewModel _workspaceViewModel;
 
-    public StartupModel? StartupModel { get; set; }
-        
-    public AuthenticationViewModel? AuthenticationModel { get; set; }
-        
-    public WorkspaceModel? WorkspaceModel { get; set; }
-        
-    public ViewModelActivator Activator { get; } = new();
+    [ObservableProperty] private StartupModel? _startupModel;
+    [ObservableProperty] private AuthenticationViewModel? _authenticationModel;
+    [ObservableProperty] private WorkspaceViewModel? _workspaceModel;
+    [ObservableProperty] private PopupViewModel? _popupModel;
+    [ObservableProperty] private int _pageIndex;
+    [ObservableProperty] private string _windowTitle = string.Empty;
+    [ObservableProperty] private string _connectionState = "Initializing...";
     
-    public PopupModel? PopupModel { get; set; }
+    // ToDo: Eventually, would be nice to display popup view automatically if Length of popups > 0
+    [ObservableProperty] private bool _popupVisible;
 
-    public int PageIndex { get; set; } = 0;
-
-    public string WindowTitle { get; set; } = string.Empty;
-
-    public string ConnectionState { get; set; } = "Initializing...";
-
-    public MainWindowViewModel(IPopupController popupController, IAgent agent, IAuthenticator authenticator, AuthenticationViewModel authenticationViewModel, WorkspaceModel workspaceModel)
+    public MainWindowViewModel(IPopupController popupController, IAgent agent, IAuthenticator authenticator, AuthenticationViewModel authenticationViewModel, WorkspaceViewModel workspaceViewModel)
     {
-        _popupController = popupController;
-        _agent = agent;
-        _authenticator = authenticator;
+        _authenticator           = authenticator;
         _authenticationViewModel = authenticationViewModel;
-        _workspaceModel = workspaceModel;
-
-        this.WhenActivated(disposables =>
+        _workspaceViewModel      = workspaceViewModel;
+        
+        BindAuthentication();
+        
+        /* Subscribe to changes in the connection state to Telegram servers and store a readable string for the View */
+        agent.Updates.OfType<TdApi.Update.UpdateConnectionState>().Subscribe(update => ConnectionState = update.State switch
         {
-            BindAuthentication().DisposeWith(disposables);
-            BindConnectionInfo().DisposeWith(disposables);
-            BindPopup(popupController).DisposeWith(disposables);
+            TdApi.ConnectionState.ConnectionStateConnecting        => "Connecting...",
+            TdApi.ConnectionState.ConnectionStateConnectingToProxy => "Connecting to proxy...",
+            TdApi.ConnectionState.ConnectionStateReady             => "Ready.",
+            TdApi.ConnectionState.ConnectionStateUpdating          => "Updating...",
+            TdApi.ConnectionState.ConnectionStateWaitingForNetwork => "Waiting for network...",
+            _                                                      => update.State.GetType().Name
+        });
+        
+        /* Subscribe to the trigger for when the popup is changed */
+        popupController.Trigger.Subscribe(context =>
+        {
+            PopupVisible = context is not null;
+            PopupModel   = context is not null ? new PopupViewModel(context, popupController) : null;
         });
     }
-
-    private IDisposable BindPopup(IPopupController popupController)
-    {
-        PopupModel = PopupModel.Hidden();
-
-        return _popupController.Trigger
-            .SubscribeOn(RxApp.TaskpoolScheduler)
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Accept(context => PopupModel = context == null ? PopupModel.Hidden() : new PopupModel(context, popupController));
-    }
     
-    private IDisposable BindConnectionInfo()
+    private void BindAuthentication()
     {
-        return _agent.Updates.OfType<TdApi.Update.UpdateConnectionState>()
-            .ObserveOn(RxApp.MainThreadScheduler)
-            .Accept(update => ConnectionState = update.State switch
-            {
-                TdApi.ConnectionState.ConnectionStateConnecting        => "Connecting...",
-                TdApi.ConnectionState.ConnectionStateConnectingToProxy => "Connecting to proxy...",
-                TdApi.ConnectionState.ConnectionStateReady             => "Ready.",
-                TdApi.ConnectionState.ConnectionStateUpdating          => "Updating...",
-                TdApi.ConnectionState.ConnectionStateWaitingForNetwork => "Waiting for network...",
-                _                                                      => update.State.GetType().Name
-            });
-    }
-    
-    private CompositeDisposable BindAuthentication()
-    {
-        var disposable    = new CompositeDisposable();
-            
-        var stateUpdates = _authenticator
-            .ObserveState()
-            .SubscribeOn(RxApp.TaskpoolScheduler)
-            .ObserveOn(RxApp.MainThreadScheduler);
-            
+        var stateUpdates = _authenticator.ObserveState();
+
         stateUpdates.OfType<TdApi.AuthorizationState.AuthorizationStateWaitTdlibParameters>()
             .SelectMany(_ => _authenticator.SetupParameters())
-            .Accept()
-            .DisposeWith(disposable);
+            .Subscribe();
 
-        stateUpdates
-            .Accept(state =>
+        stateUpdates.Subscribe(state =>
+        {
+            switch (state)
             {
-                switch (state)
-                {
-                    case TdApi.AuthorizationState.AuthorizationStateWaitTdlibParameters _:
-                        GoToStartupPage();
-                        break;
-                
-                    case TdApi.AuthorizationState.AuthorizationStateWaitPhoneNumber _:
-                    case TdApi.AuthorizationState.AuthorizationStateWaitCode _:
-                    case TdApi.AuthorizationState.AuthorizationStateWaitPassword _:
-                        GoToAuthenticationPage();
-                        break;
+                case TdApi.AuthorizationState.AuthorizationStateWaitTdlibParameters _:
+                    GoToStartupPage();
+                    break;
             
-                    case TdApi.AuthorizationState.AuthorizationStateReady _:
-                        GoToWorkspacePage();
-                        break;
-                }
-            })
-            .DisposeWith(disposable);
-
-        return disposable;
+                case TdApi.AuthorizationState.AuthorizationStateWaitPhoneNumber _:
+                case TdApi.AuthorizationState.AuthorizationStateWaitCode _:
+                case TdApi.AuthorizationState.AuthorizationStateWaitPassword _:
+                    GoToAuthenticationPage();
+                    break;
+        
+                case TdApi.AuthorizationState.AuthorizationStateReady _:
+                    GoToWorkspacePage();
+                    break;
+            }
+        });
     }
     
     private void GoToStartupPage()
@@ -137,7 +102,7 @@ public class MainWindowViewModel : AbstractViewModelBase, IActivatableViewModel
     
     private void GoToWorkspacePage()
     {
-        WorkspaceModel    ??= _workspaceModel;
+        WorkspaceModel    ??= _workspaceViewModel;
         PageIndex           = (int) Page.Workspace;
         StartupModel        = null;
         AuthenticationModel = null;

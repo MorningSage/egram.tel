@@ -1,5 +1,6 @@
-using System.Reactive.Disposables;
-using ReactiveUI;
+using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using TdLib;
 using Tel.Egram.Model.Messaging.Explorer.Messages.Special;
 using Tel.Egram.Services.Graphics.Avatars;
@@ -8,35 +9,37 @@ using Tel.Egram.Services.Persistence;
 
 namespace Tel.Egran.ViewModels.Messaging.Explorer.Messages.Special;
 
-public class DocumentMessageViewModel : IActivatableViewModel
+public partial class DocumentMessageViewModel : AbstractMessageViewModel<DocumentMessageModel>
 {
-    public DocumentMessageModel? MessageModel { get; set; }
+    private readonly IFileLoader _fileLoader;
+    private readonly IFileExplorer _fileExplorer;
     
-    public TdApi.Document Document { get; set; }
+    [ObservableProperty] private TdApi.Document _document;
+    [ObservableProperty] private bool _isDownloaded;
+    [ObservableProperty] private string _name;
+    [ObservableProperty] private string _text;
+    [ObservableProperty] private string _size;
+    
+    public DocumentMessageViewModel(IFileLoader fileLoader, IFileExplorer fileExplorer, IAvatarLoader avatarLoader, IPreviewLoader previewLoader) : base(avatarLoader, previewLoader)
+    {
+        _fileLoader = fileLoader;
+        _fileExplorer = fileExplorer;
         
-    public bool IsDownloaded { get; set; }
-        
-    public string Name { get; set; }
-        
-    public string Text { get; set; }
-        
-    public string Size { get; set; }
-        
-    public ReactiveCommand<DocumentMessageViewModel, bool> DownloadCommand { get; set; }
-        
-    public ReactiveCommand<DocumentMessageViewModel, bool> ShowCommand { get; set; }
-        
-    public DocumentMessageViewModel(IFileLoader fileLoader, IFileExplorer fileExplorer, IAvatarLoader avatarLoader, IPreviewLoader previewLoader)
-    {       
-        this.WhenActivated(disposables =>
-        {
-            MessageModel?.BindAvatarLoading(avatarLoader).DisposeWith(disposables);
-            MessageModel?.Reply?.BindPreviewLoading(previewLoader).DisposeWith(disposables);
-
-            this.BindDownloadCommand(fileLoader).DisposeWith(disposables);
-            this.BindShowFileCommand(fileExplorer).DisposeWith(disposables);
-        });
+        var file = Document.Document_;
+        IsDownloaded = (file.Local?.IsDownloadingCompleted ?? false) && File.Exists(file.Local?.Path);
     }
-        
-    public ViewModelActivator Activator { get; } = new();
+
+    [RelayCommand]
+    private void Download() => _fileLoader
+        .LoadFile(Document.Document_, LoadPriority.Mid)
+        .FirstAsync(f => f.Local is { IsDownloadingCompleted: true })
+        .Select(f => f.Local.IsDownloadingCompleted)
+        .Subscribe(b => IsDownloaded = b);
+
+    [RelayCommand]
+    private void Show()
+    {
+        if (Document.Document_?.Local is not { } localFile || new FileInfo(localFile.Path) is not { Exists: true } fileInfo) return;
+        _fileExplorer.OpenDirectory(fileInfo);
+    }
 }

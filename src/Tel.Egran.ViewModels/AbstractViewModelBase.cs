@@ -1,6 +1,8 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace Tel.Egran.ViewModels;
 
-public abstract class AbstractViewModelBase
+public abstract partial class AbstractViewModelBase : ObservableObject
 {
-    
+
 }

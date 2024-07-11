@@ -1,33 +1,41 @@
-using System.Reactive.Disposables;
-using PropertyChanged;
-using ReactiveUI;
+using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
+using TdLib;
 using Tel.Egram.Model.Graphics.Avatars;
 using Tel.Egram.Services.Graphics.Avatars;
+using Tel.Egram.Services.Utils.Reactive;
 
 namespace Tel.Egran.ViewModels.Messaging.Catalog.Entries;
 
-[AddINotifyPropertyChangedInterface]
-public class EntryViewModel : IActivatableViewModel
+public abstract partial class EntryViewModel : AbstractViewModelBase
 {
-    public long Id { get; set; }
-        
-    public int Order { get; set; }
-        
-    public string Title { get; set; }
-        
-    public Avatar? Avatar { get; set; }
-
-    public bool HasUnread { get; set; }
-
-    public string UnreadCount { get; set; }
-
-    public EntryViewModel(IAvatarLoader avatarLoader)
+    [ObservableProperty] private long _id;
+    [ObservableProperty] private int _order;
+    [ObservableProperty] private string _title = string.Empty;
+    [ObservableProperty] private Avatar? _avatar;
+    [ObservableProperty] private bool _hasUnread;
+    [ObservableProperty] private string _unreadCount = string.Empty;
+    
+    protected EntryViewModel(IAvatarLoader avatarLoader)
     {
-        this.WhenActivated(disposables =>
+        Avatar = this switch
         {
-            this.BindAvatarLoading(avatarLoader).DisposeWith(disposables);
-        });
-    }
+            HomeEntryViewModel                          => avatarLoader.GetAvatar(AvatarKind.Home, AvatarSize.Small),
+            ChatEntryViewModel chatEntryModel           => avatarLoader.GetAvatar(chatEntryModel.Chat.ChatData, AvatarSize.Small),
+            AggregateEntryViewModel aggregateEntryModel => avatarLoader.GetAvatar(new TdApi.Chat { Id = aggregateEntryModel.Aggregate.Id }, AvatarSize.Small),
+            _                                           => null
+        };
 
-    public ViewModelActivator Activator { get; } = new();
+        if (!(Avatar?.IsFallback ?? true)) return;
+        
+        var loadedAvatar = this switch
+        {
+            HomeEntryViewModel                          => avatarLoader.LoadAvatar(AvatarKind.Home, AvatarSize.Small),
+            ChatEntryViewModel chatEntryModel           => avatarLoader.LoadAvatar(chatEntryModel.Chat.ChatData, AvatarSize.Small),
+            AggregateEntryViewModel aggregateEntryModel => avatarLoader.LoadAvatar(new TdApi.Chat { Id = aggregateEntryModel.Aggregate.Id }, AvatarSize.Small),
+            _                                           => Observable.Empty<Avatar>()
+        };
+
+        loadedAvatar.SafeSubscribe(a => Avatar = a);
+    }
 }

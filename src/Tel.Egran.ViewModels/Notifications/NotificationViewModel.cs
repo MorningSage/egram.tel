@@ -1,41 +1,18 @@
-using PropertyChanged;
-using ReactiveUI;
 using Tel.Egram.Model.Notifications;
 
 namespace Tel.Egran.ViewModels.Notifications;
 
-[AddINotifyPropertyChangedInterface]
-public class NotificationViewModel : AbstractViewModelBase, IActivatableViewModel
+public class NotificationViewModel : AbstractViewModelBase
 {
-    public ViewModelActivator Activator { get; } = new();
-
-    public static NotificationModel FromNotification(NotificationModel notificationView)
+    public static NotificationModel FromNotification(NotificationModel notificationView) => notificationView.Message switch
     {
-        var chat = notificationView.Chat;
-        var message = notificationView.Message;
+        null => new NotificationModel { Title = "New chat",    Text = notificationView.Chat.Title },
+        _    => new NotificationModel { Title = "New message", Text = notificationView.Chat.Title }
+    };
 
-        if (message != null)
-        {
-            return new NotificationModel
-            {
-                Title = "New message",
-                Text = chat.Title
-            };
-        }
-
-        return new NotificationModel
-        {
-            Title = "New chat",
-            Text = chat.Title
-        };
-    }
-
-    public static NotificationModel FromNotificationList(IList<NotificationModel> notifications)
+    public static NotificationModel FromNotificationList(IList<NotificationModel> _) => new()
     {
-        return new NotificationModel
-        {
-            Title = "New messages",
-            Text = "You have new messages"
-        };
-    }
+        Title = "New messages",
+        Text  = "You have new messages"
+    };
 }

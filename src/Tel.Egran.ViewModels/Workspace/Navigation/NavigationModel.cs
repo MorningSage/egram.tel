@@ -1,26 +1,21 @@
-using System.Reactive.Disposables;
-using PropertyChanged;
-using ReactiveUI;
+using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using Tel.Egram.Model.Graphics.Avatars;
 using Tel.Egram.Services.Graphics.Avatars;
 using Tel.Egram.Services.Messaging.Users;
+using Tel.Egram.Services.Utils.Reactive;
 
 namespace Tel.Egran.ViewModels.Workspace.Navigation;
 
-[AddINotifyPropertyChangedInterface]
-public class NavigationModel : IActivatableViewModel
+public partial class NavigationModel : AbstractViewModelBase
 {
-    public Avatar Avatar { get; set; }
-
-    public int SelectedTabIndex { get; set; }
+    [ObservableProperty] private Avatar? _avatar;
+    [ObservableProperty] private int _selectedTabIndex;
 
     public NavigationModel(IAvatarLoader avatarLoader, IUserLoader userLoader)
     {
-        this.WhenActivated(disposables =>
-        {
-            this.BindUserAvatar(avatarLoader, userLoader).DisposeWith(disposables);
-        });
+        userLoader.GetMe()
+            .SelectMany(user => avatarLoader.LoadAvatar(user.UserData, AvatarSize.Regular))
+            .SafeSubscribe(avatar => Avatar = avatar);
     }
-        
-    public ViewModelActivator Activator { get; } = new();
 }

@@ -9,7 +9,7 @@ public static class InjectionExtensions
     {
         services.AddSingleton<MainWindowViewModel>();
         
-        
+        // ToDo: Add all view models
         
         return services;
     }

@@ -1,28 +1,40 @@
-using System.Reactive;
-using System.Reactive.Disposables;
-using PropertyChanged;
-using ReactiveUI;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using TdLib;
 using Tel.Egram.Model.Messaging.Chats;
 using Tel.Egram.Services.Messaging.Messages;
 
 namespace Tel.Egran.ViewModels.Messaging.Editor;
 
-[AddINotifyPropertyChangedInterface]
-public class EditorViewModel : IActivatableViewModel
+public partial class EditorViewModel : AbstractViewModelBase
 {
-    public bool IsVisible { get; set; } = true;
-    public string? Text { get; set; }
-        
-    public ReactiveCommand<Unit, Unit>? SendCommand { get; set; }
-        
+    private readonly Chat _chat;
+    private readonly IMessageSender _messageSender;
+
+    [ObservableProperty] private bool _isVisible = true;
+    [ObservableProperty] private string? _text;
+
+    private bool CanSendMessage => !string.IsNullOrWhiteSpace(Text);
+    
     public EditorViewModel(Chat chat, IMessageSender messageSender)
     {
-        this.WhenActivated(disposables => { this.BindSender(chat, messageSender).DisposeWith(disposables); });
+        _chat = chat;
+        _messageSender = messageSender;
     }
 
     private EditorViewModel() { }
-        
+    
     public static EditorViewModel Hidden() => new() { IsVisible = false };
-
-    public ViewModelActivator Activator { get; } = new();
+    
+    [RelayCommand(CanExecute = nameof(CanSendMessage))]
+    private void SendMessage()
+    {
+        _messageSender.SendMessage(_chat.ChatData, new TdApi.InputMessageContent.InputMessageText
+        {
+            ClearDraft = true,
+            Text = new TdApi.FormattedText { Text = Text }
+        });
+        
+        Text = null;
+    }
 }

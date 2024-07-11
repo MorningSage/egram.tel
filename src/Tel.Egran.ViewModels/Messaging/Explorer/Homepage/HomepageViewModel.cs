@@ -1,21 +1,15 @@
+using CommunityToolkit.Mvvm.ComponentModel;
 using DynamicData.Binding;
-using PropertyChanged;
-using ReactiveUI;
 using Tel.Egram.Model.Messaging.Explorer.Messages;
 
 namespace Tel.Egran.ViewModels.Messaging.Explorer.Homepage;
 
-[AddINotifyPropertyChangedInterface]
-public class HomepageViewModel : IActivatableViewModel
+public partial class HomepageViewModel : AbstractViewModelBase
 {
-    public bool IsVisible { get; set; } = true;
-        
-    public string SearchText { get; set; }
-        
-    public ObservableCollectionExtended<MessageModel> PromotedMessages { get; set; }
+    [ObservableProperty] private bool _isVisible = true;
+    [ObservableProperty] private string _searchText;
+    [ObservableProperty] private ObservableCollectionExtended<MessageModel> _promotedMessages;
     
-    public ViewModelActivator Activator => new();
-
     public static HomepageViewModel Hidden()
     {
         return new HomepageViewModel

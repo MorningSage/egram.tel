@@ -10,4 +10,8 @@
       <ProjectReference Include="..\Tel.Egram.Services\Tel.Egram.Services.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="DynamicData" Version="7.9.5" />
+    </ItemGroup>
+
 </Project>

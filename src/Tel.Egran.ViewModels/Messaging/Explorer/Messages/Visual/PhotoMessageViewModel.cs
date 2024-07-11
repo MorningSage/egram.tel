@@ -1,29 +1,38 @@
-using System.Reactive.Disposables;
-using ReactiveUI;
+using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using TdLib;
 using Tel.Egram.Model.Messaging.Explorer.Messages.Visual;
 using Tel.Egram.Services.Graphics.Avatars;
 using Tel.Egram.Services.Graphics.Previews;
+using Tel.Egram.Services.Utils.Reactive;
 
 namespace Tel.Egran.ViewModels.Messaging.Explorer.Messages.Visual;
 
-public class PhotoMessageViewModel : IActivatableViewModel
+public partial class PhotoMessageViewModel : AbstractMessageViewModel<AbstractVisualMessageModel>
 {
-    public string Text { get; set; }
-    public AbstractVisualMessageModel? VisualMessage { get; set; }
+    private readonly IPreviewLoader _previewLoader;
+    
+    [ObservableProperty] private string _text;
+    [ObservableProperty] private TdApi.Photo? _photoData;
         
-    public TdApi.Photo? PhotoData { get; set; }
-        
-    public PhotoMessageViewModel(IPreviewLoader previewLoader, IAvatarLoader avatarLoader)
+    public PhotoMessageViewModel(IPreviewLoader previewLoader, IAvatarLoader avatarLoader) : base(avatarLoader, previewLoader)
     {
-        this.WhenActivated(disposables =>
-        {
-            VisualMessage?.Reply?.BindPreviewLoading(previewLoader).DisposeWith(disposables);
-            
-            VisualMessage?.BindAvatarLoading(avatarLoader).DisposeWith(disposables);
-            this.BindPreviewLoading(previewLoader).DisposeWith(disposables);
-        });
-    }
+        _previewLoader = previewLoader;
         
-    public ViewModelActivator Activator { get; } = new();
+        BindPreviewLoading();
+    }
+
+    private void BindPreviewLoading()
+    {
+        if (MessageModel is not { Preview: null }) return;
+        
+        MessageModel.Preview = PhotoData is not null ? _previewLoader.GetPreview(PhotoData, PreviewQuality.High) : null;
+
+        if (MessageModel.Preview?.Bitmap is not null || PhotoData is null) return;
+        
+        _previewLoader
+            .LoadPreview(PhotoData, PreviewQuality.Low)
+            .Concat(_previewLoader.LoadPreview(PhotoData, PreviewQuality.High))
+            .SafeSubscribe(preview => MessageModel.Preview = preview);
+    }
 }

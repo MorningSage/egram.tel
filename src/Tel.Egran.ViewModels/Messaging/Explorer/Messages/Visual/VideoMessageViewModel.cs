@@ -1,29 +1,35 @@
-using System.Reactive.Disposables;
-using ReactiveUI;
+using CommunityToolkit.Mvvm.ComponentModel;
 using TdLib;
 using Tel.Egram.Model.Messaging.Explorer.Messages.Visual;
 using Tel.Egram.Services.Graphics.Avatars;
 using Tel.Egram.Services.Graphics.Previews;
+using Tel.Egram.Services.Utils.Reactive;
 
 namespace Tel.Egran.ViewModels.Messaging.Explorer.Messages.Visual;
 
-public class VideoMessageViewModel : IActivatableViewModel
+public partial class VideoMessageViewModel : AbstractMessageViewModel<AbstractVisualMessageModel>
 {
-    public AbstractVisualMessageModel? VisualMessage { get; set; }
-    public string Text { get; set; }
+    private readonly IPreviewLoader _previewLoader;
+    
+    [ObservableProperty] private string _text;
+    [ObservableProperty] private TdApi.Video? _videoData;
         
-    public TdApi.Video? VideoData { get; set; }
-        
-    public VideoMessageViewModel(IPreviewLoader previewLoader, IAvatarLoader avatarLoader)
+    public VideoMessageViewModel(IPreviewLoader previewLoader, IAvatarLoader avatarLoader) : base(avatarLoader, previewLoader)
     {
-        this.WhenActivated(disposables =>
-        {
-            VisualMessage?.Reply?.BindPreviewLoading(previewLoader).DisposeWith(disposables);
-            
-            VisualMessage?.BindAvatarLoading(avatarLoader).DisposeWith(disposables);
-            this.BindPreviewLoading(previewLoader).DisposeWith(disposables);
-        });
-    }
+        _previewLoader = previewLoader;
         
-    public ViewModelActivator Activator { get; } = new();
+        BindPreviewLoading();
+    }
+    
+    private void BindPreviewLoading()
+    {
+        if (MessageModel is not { Preview: null }) return;
+        
+        MessageModel.Preview = VideoData?.Thumbnail != null ? _previewLoader.GetPreview(VideoData.Thumbnail) : null;
+
+        if (MessageModel.Preview?.Bitmap is not null || VideoData?.Thumbnail is null) return;
+        
+        _previewLoader.LoadPreview(VideoData.Thumbnail).SafeSubscribe(preview => MessageModel.Preview = preview);
+    }
+    
 }

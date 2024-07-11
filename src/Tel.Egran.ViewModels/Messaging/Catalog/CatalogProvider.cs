@@ -1,7 +1,6 @@
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using DynamicData;
-using ReactiveUI;
 using Tel.Egram.Model.Messaging.Chats;
 using Tel.Egram.Services.Graphics.Avatars;
 using Tel.Egram.Services.Messaging.Chats;
@@ -23,43 +22,37 @@ public static class CatalogProvider
 
         var disposable = new CompositeDisposable();
 
-        viewModel.LoadHome(section, avatarLoader).DisposeWith(disposable);
+        viewModel.LoadHome(section, avatarLoader);
             
         Chats.Connect()
             .Filter(filter)
             .Sort(sorting)
-            .SubscribeOn(RxApp.TaskpoolScheduler)
-            .ObserveOn(RxApp.MainThreadScheduler)
             .Bind(entries)
-            .Accept()
-            .DisposeWith(disposable);
+            .Subscribe();
             
-        BindOrderUpdates(chatLoader, chatUpdater, avatarLoader).DisposeWith(disposable);
-        BindEntryUpdates(chatUpdater, avatarLoader).DisposeWith(disposable);
-        LoadChats(chatLoader, avatarLoader).DisposeWith(disposable);
+        BindOrderUpdates(chatLoader, chatUpdater, avatarLoader);
+        BindEntryUpdates(chatUpdater, avatarLoader);
+        LoadChats(chatLoader, avatarLoader);
 
         return disposable;
     }
     
-    private static IDisposable LoadHome(this CatalogViewModel viewModel, Section section, IAvatarLoader avatarLoader)
+    private static void LoadHome(this CatalogViewModel viewModel, Section section, IAvatarLoader avatarLoader)
     {
-        if (section == Section.Home)
-        {
-            viewModel.Entries.Add(HomeEntryViewModel.GetInstance(avatarLoader));
-            viewModel.SelectedEntry = HomeEntryViewModel.GetInstance(avatarLoader);
-            
-            Chats.AddOrUpdate(HomeEntryViewModel.GetInstance(avatarLoader));
-        }
+        if (section != Section.Home) return;
         
-        return Disposable.Empty;
+        viewModel.Entries.Add(HomeEntryViewModel.GetInstance(avatarLoader));
+        viewModel.SelectedEntry = HomeEntryViewModel.GetInstance(avatarLoader);
+            
+        Chats.AddOrUpdate(HomeEntryViewModel.GetInstance(avatarLoader));
     }
 
     /// <summary>
     /// Load chats into observable cache
     /// </summary>
-    private static IDisposable LoadChats(IChatLoader chatLoader, IAvatarLoader avatarLoader)
+    private static void LoadChats(IChatLoader chatLoader, IAvatarLoader avatarLoader)
     {
-        return chatLoader.LoadChats()
+        chatLoader.LoadChats()
             .Select(chat => GetChatEntryModel(chat, avatarLoader))
             .Aggregate(new List<EntryViewModel>(), (list, model) =>
             {
@@ -67,7 +60,7 @@ public static class CatalogProvider
                 list.Add(model);
                 return list;
             })
-            .Accept(entries =>
+            .SafeSubscribe(entries =>
             {
                 entries.Insert(0, HomeEntryViewModel.GetInstance(avatarLoader));
                     
@@ -79,12 +72,10 @@ public static class CatalogProvider
     /// <summary>
     /// Subscribe to updates that involve order change
     /// </summary>
-    private static IDisposable BindOrderUpdates(IChatLoader chatLoader, IChatUpdater chatUpdater, IAvatarLoader avatarLoader)
+    private static void BindOrderUpdates(IChatLoader chatLoader, IChatUpdater chatUpdater, IAvatarLoader avatarLoader)
     {
-        return chatUpdater.GetOrderUpdates()
+        chatUpdater.GetOrderUpdates()
             .Buffer(TimeSpan.FromSeconds(2))
-            .SubscribeOn(RxApp.TaskpoolScheduler)
-            .ObserveOn(RxApp.MainThreadScheduler)
             .Where(changes => changes.Count > 0)
             .SelectMany(_ => chatLoader.LoadChats()
                 .Select(chat => GetChatEntryModel(chat, avatarLoader))
@@ -93,7 +84,7 @@ public static class CatalogProvider
             {
                 for (var i = 0; i < entries.Count; i++) entries[i].Order = i;
             })
-            .Accept(entries =>
+            .SafeSubscribe(entries =>
             {
                 entries.Insert(0, HomeEntryViewModel.GetInstance(avatarLoader));
                 Chats.EditDiff(entries, (m1, m2) => m1.Id == m2.Id);
@@ -104,27 +95,26 @@ public static class CatalogProvider
     /// <summary>
     /// Subscribe to updates for individual entries
     /// </summary>
-    private static IDisposable BindEntryUpdates(IChatUpdater chatUpdater, IAvatarLoader avatarLoader)
+    private static void BindEntryUpdates(IChatUpdater chatUpdater, IAvatarLoader avatarLoader)
     {
-        return chatUpdater.GetChatUpdates()
+        chatUpdater.GetChatUpdates()
             .Buffer(TimeSpan.FromSeconds(1))
             .SelectMany(chats => chats)
             .Select(chat => new { Chat = chat, Entry = GetChatEntryModel(chat, avatarLoader) })
-            .Accept(item => { UpdateChatEntryModel((ChatEntryViewModel)item.Entry, item.Chat); });
+            .SafeSubscribe(item => UpdateChatEntryModel((ChatEntryViewModel)item.Entry, item.Chat));
     }
 
     private static EntryViewModel GetChatEntryModel(Chat chat, IAvatarLoader avatarLoader)
     {
         var chatData = chat.ChatData;
+
+        if (EntryStore.TryGetValue(chatData.Id, out var entry)) return entry;
+        
+        entry = new ChatEntryViewModel(avatarLoader) { Chat = chat };
             
-        if (!EntryStore.TryGetValue(chatData.Id, out var entry))
-        {
-            entry = new ChatEntryViewModel(avatarLoader) { Chat = chat };
-            
-            UpdateChatEntryModel((ChatEntryViewModel) entry, chat);
+        UpdateChatEntryModel((ChatEntryViewModel) entry, chat);
                 
-            EntryStore.Add(chatData.Id, entry);
-        }
+        EntryStore.Add(chatData.Id, entry);
 
         return entry;
     }

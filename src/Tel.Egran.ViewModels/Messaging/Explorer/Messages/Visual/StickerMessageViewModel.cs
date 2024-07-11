@@ -1,27 +1,38 @@
-using System.Reactive.Disposables;
-using ReactiveUI;
+using System.Reactive.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 using TdLib;
 using Tel.Egram.Model.Messaging.Explorer.Messages.Visual;
 using Tel.Egram.Services.Graphics.Avatars;
 using Tel.Egram.Services.Graphics.Previews;
+using Tel.Egram.Services.Utils.Reactive;
 
 namespace Tel.Egran.ViewModels.Messaging.Explorer.Messages.Visual;
 
-public class StickerMessageViewModel : IActivatableViewModel
+public partial class StickerMessageViewModel : AbstractMessageViewModel<AbstractVisualMessageModel>
 {
-    public AbstractVisualMessageModel? VisualMessage { get; set; }
-    public TdApi.Sticker? StickerData { get; set; }
+    private readonly IPreviewLoader _previewLoader;
+    
+    [ObservableProperty] private TdApi.Sticker? _stickerData;
         
-    public StickerMessageViewModel(IPreviewLoader previewLoader, IAvatarLoader avatarLoader)
+    public StickerMessageViewModel(IPreviewLoader previewLoader, IAvatarLoader avatarLoader) : base(avatarLoader, previewLoader)
     {
-        this.WhenActivated(disposables =>
-        {
-            VisualMessage?.Reply?.BindPreviewLoading(previewLoader).DisposeWith(disposables);
-            
-            VisualMessage?.BindAvatarLoading(avatarLoader).DisposeWith(disposables);
-            this.BindPreviewLoading(previewLoader).DisposeWith(disposables);
-        });
-    }
+        _previewLoader = previewLoader;
         
-    public ViewModelActivator Activator { get; } = new();
+        BindPreviewLoading();
+    }
+
+    private void BindPreviewLoading()
+    {
+        if (MessageModel is not { Preview: null }) return;
+        
+        MessageModel.Preview = StickerData?.Thumbnail != null ? _previewLoader.GetPreview(StickerData.Thumbnail) : null;
+
+        if (MessageModel.Preview?.Bitmap is not null || StickerData is null) return;
+
+        var preview = StickerData.Thumbnail != null
+            ? _previewLoader.LoadPreview(StickerData.Thumbnail).Concat(_previewLoader.LoadPreview(StickerData))
+            : _previewLoader.LoadPreview(StickerData);
+
+        preview.SafeSubscribe(a => MessageModel.Preview = a);
+    }
 }
